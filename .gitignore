@@ -1,33 +1,58 @@
-# Chỉ up folder model rỗng
-/model/*
-!/model/.gitkeep
+# Bỏ video
+public_test/videos
+train/videos
 
-# bỏ các thư mục build, cache Python
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.log
-*.tmp
-*.bak
+.Python
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Bỏ môi trường ảo
+# Môi trường ảo
+env/
 venv/
+.venv/
 .env
 *.env
 .env*/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Bỏ các file ẩn tạm của hệ điều hành
+# OS generated files
 .DS_Store
+.Trashes
 Thumbs.db
 desktop.ini
 
-# Bỏ thư mục .idea, .vscode nếu dùng IDE
+# IDEs
 .vscode/
 .idea/
 
-# Bỏ file txt không mong muốn
+# Data, output, and logs
+Frames/
+output/
+public_test
+train
+download_videos.py
+*.log
+*.tmp
+*.bak
 debug.txt
+
+# Chỉ up folder model rỗng do nặng
+/model/*
+!/model/.gitkeep
 
 # Không up file trong LLama_cpp do nặng
 /LLama_cpp/llama-cpp-python/*
