@@ -78,7 +78,7 @@ def extract_frames_to_queue(
 
                 if frame_id % interval == 0:
                     if not q.full():
-                        print("✅ Đưa vào queue:", frame_id)
+                        # print("✅ Đưa vào queue:", frame_id)
                         q.put(frame.copy())  # copy để tránh lỗi bộ nhớ
                     else:
                         print("⚠️ Queue đầy, bỏ qua frame")
@@ -87,7 +87,7 @@ def extract_frames_to_queue(
 
         cap.release()
         q.put(None)  # báo hiệu kết thúc video
-        print(f"✅ Hoàn tất: {os.path.basename(video_path)}")
+        print(f"✅ Trích xuất frame hoàn tất: {os.path.basename(video_path)}")
 
     # chạy trong thread riêng để queue nhận frame bất đồng bộ
     threading.Thread(target=worker, daemon=True).start()
