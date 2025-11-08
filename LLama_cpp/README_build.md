@@ -30,20 +30,18 @@ git submodule update --init --recursive
 3️⃣ Cấu hình build GPU
 GPU	Compute Capability	CMake option
 GTX 10xx (Pascal)	6.1	-DCMAKE_CUDA_ARCHITECTURES=61
-RTX 20xx (Turing)	7.5	-DCMAKE_CUDA_ARCHITECTURES=75 ✅
+RTX 20xx (Turing)	7.5	-DCMAKE_CUDA_ARCHITECTURES=75 
 RTX 30xx (Ampere)	8.6	-DCMAKE_CUDA_ARCHITECTURES=86
 RTX 40xx (Ada)	8.9	-DCMAKE_CUDA_ARCHITECTURES=89
-
+( Cái này để ae xem là mik dùng GPU gì để thông số lúc cài cho phù hợp)
 4️⃣ Build và cài đặt
-conda activate rag
+conda activate rag (LƯU ý chỗ này và những chỗ có conda là vì máy tôi cài python qua Anaconda nên lệnh như này, ae Python trực tiếp nhớ sửa nhé)
 set FORCE_CMAKE=1
-set CMAKE_ARGS=-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=75
+set CMAKE_ARGS=-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=75 (Đây VD tôi dùng RTX 20xx thì để 75 nhé)
 pip install -e . --force-reinstall --no-cache-dir
 Nếu build thành công, ae sẽ thấy thư mục build/ sinh ra trong llama-cpp-python/.
 
 5️⃣ Kiểm tra GPU hoạt động
-python
-Copy code
 from llama_cpp import Llama
 import llama_cpp
 
