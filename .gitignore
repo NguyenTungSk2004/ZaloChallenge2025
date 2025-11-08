@@ -1,0 +1,33 @@
+# Chỉ up folder model rỗng
+/model/*
+!/model/.gitkeep
+
+# bỏ các thư mục build, cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.tmp
+*.bak
+
+# Bỏ môi trường ảo
+venv/
+.env
+*.env
+.env*/
+
+# Bỏ các file ẩn tạm của hệ điều hành
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Bỏ thư mục .idea, .vscode nếu dùng IDE
+.vscode/
+.idea/
+
+# Bỏ file txt không mong muốn
+debug.txt
+
+# Không up file trong LLama_cpp do nặng
+/LLama_cpp/llama-cpp-python/*
