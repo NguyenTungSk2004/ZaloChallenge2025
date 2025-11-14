@@ -1,0 +1,1522 @@
+[
+  {
+    "bien_so": "P.101",
+    "noi_dung": "Đường cấm, cấm tất cả các loại phương tiện đi lại cả hai hướng, trừ các xe được ưu tiên theo quy định (xe cứu hỏa, xe cứu thương, xe hộ đê,...)"
+  },
+  {
+    "bien_so": "P.102",
+    "noi_dung": "Cấm đi ngược chiều, có tác dụng báo cho người tham gia giao thông biết tất các các phương tiện giao thông đều không được ngược chiều kể từ sau biển báo biển báo 102 thường được cắm ở ở phần lỗi rẽ giữa dải phân cách của đoạn đường 2 chiều"
+  },
+  {
+    "bien_so": "P.103a",
+    "noi_dung": "Cấm xe ôtô, Cấm các loại xe cơ giới đi vào, trừ mô tô 2 bánh, xe gắn máy và xe ưu tiên theo quy định"
+  },
+  {
+    "bien_so": "P.103b",
+    "noi_dung": "Cấm xe ô tô rẽ phải; Cấm các loại xe cơ giới rẽ phải, trừ mô tô 2 bánh, xe gắn máy và xe ưu tiên theo quy định"
+  },
+  {
+    "bien_so": "P.103c",
+    "noi_dung": "Cấm xe ôtô rẽ trái; Cấm các loại xe cơ giới rẽ trái, trừ mô tô 2 bánh, xe gắn máy và xe ưu tiên theo quy định"
+  },
+  {
+    "bien_so": "P.104",
+    "noi_dung": "Cấm xe máy. Để báo đường cấm các loại  xe  máy, trừ các xe được  ưu tiên  theo quy định, đặt biển số P.104 Cấm xe máy. Biển không có giá trị cấm những người dắt xe máy."
+  },
+  {
+    "bien_so": "P.105",
+    "noi_dung": "Cấm xe ôtô và xe máy. Để báo đường cấm các loại xe cơ giới và xe máy đi qua trừ các xe được ưu tiên theo quy định,đặt biển số P.105 Cấm xe ô tô và xe máy."
+  },
+  {
+    "bien_so": "P.106",
+    "noi_dung": "Cấm xe ôtô tải, mô tô kéo, các mô tô chuyên dùng đi vào (trừ xe ưu tiên theo quy định)"
+  },
+  {
+    "bien_so": "P.106a",
+    "noi_dung": "Cấm xe ôtô tải theo trọng lượng: Cấm xe tải có khối lượng chuyên chở lớn hơn giá trị ghi trong biển báo đi vào"
+  },
+  {
+    "bien_so": "P.106b",
+    "noi_dung": "Cấm xe ôtô tải chở hàng nguy hiểm đi vào. Để báo đường cấm  các loại xe ô tô  tải có  khối  lượng chuyên chở  (theo  Giấy chứng nhận kiểm định an toàn kỹ thuật và bảo vệ môi trường phương tiện giao thông cơ giới đường bộ) lớn hơn một giá trị nhất định, đặt biển số P.106b. Biển có hiệu lực cấm các xe ôtô tải có  khối l ượng chuyên chở (xác định theo  Giấy chứng nhận  kiểm định an toàn kỹ thuật và bảo vệ môi trường phương tiện giao thông cơ giới đường bộ) lớn hơn  giá trị chữ số ghi trong biển (chữ số tấn ghi bằng màu trắng trên hình vẽ xe). Biển có hiệu lực cấm đối với cả máy kéo và các xe máy chuyên dùng đi vào đoạn đường đặt biển."
+  },
+  {
+    "bien_so": "P.106c",
+    "noi_dung": "Cấm các xe chở hàng nguy hiểm"
+  },
+  {
+    "bien_so": "P.107",
+    "noi_dung": "Cấm xe ô tô khách và xe ô tô tải; Cấm các loại xe ô tô chở khách, xe tải, mô tô kéo, mô tô thi công chuyên dụng đi vào, trừ xe ưu tiên theo quy định"
+  },
+  {
+    "bien_so": "P.107a",
+    "noi_dung": "Cấm xe ô tô khách; Cấm các loại ô tô chở khách đi vào (trừ xe ưu tiên theo quy định). Không cấm xe buýt. Trong trường hợp cấm xe khách theo số chỗ ngồi sẽ có biển phụ bên dưới"
+  },
+  {
+    "bien_so": "P.107b",
+    "noi_dung": "Cấm xe ô tô taxi đi vào. Trường hợp cấm xe taxi theo giờ sẽ có biển phụ bên dưới"
+  },
+  {
+    "bien_so": "P.108",
+    "noi_dung": "Cấm xe kéo rơ-moóc, kể cả xe khách – máy kéo – mô tô kéo theo rơ-mooc đi vào, trừ loại ô tô sơ-mi-rơ-mooc và xe ưu tiên theo quy định"
+  },
+  {
+    "bien_so": "P.108a",
+    "noi_dung": "Cấm xe sơ-mi rơ-moóc.  Cấm các loại xe sơ-mi-rơ-mooc, xe kéo rơ-mooc đi vào (trừ xe ưu tiên theo quy định)"
+  },
+  {
+    "bien_so": "P.109",
+    "noi_dung": "Cấm máy kéo. Cấm các loại máy kéo, máy kéo bánh xích/bánh hơi đi vào"
+  },
+  {
+    "bien_so": "P.110a",
+    "noi_dung": "Cấm xe đạp. Cấm xe đạp đi vào. Không áp dụng cấm người dẫn xe đạp"
+  },
+  {
+    "bien_so": "P.110b",
+    "noi_dung": "Cấm xe đạp thồ. Không áp dụng cấm người dẫn xe đạp thồ"
+  },
+  {
+    "bien_so": "P.111a",
+    "noi_dung": "Cấm xe gắn máy. Cấm các loại mô tô, xe gắn máy đi vào. Không áp dụng cấm người đi xe đạp"
+  },
+  {
+    "bien_so": "P.111b",
+    "noi_dung": "Cấm xe ba bánh loại có động cơ(xe lam,xích lô máy)"
+  },
+  {
+    "bien_so": "P.111c",
+    "noi_dung": "Cấm xe 3 bánh không động cơ: Cấm xe 3 bánh không gắn động cơ như xe xích lô, xe lôi đạp…"
+  },
+  {
+    "bien_so": "P.111d",
+    "noi_dung": "Cấm xe ba bánh loại không có động cơ(xích lô)"
+  },
+  {
+    "bien_so": "P.112",
+    "noi_dung": "Cấm người đi bộ đi vào"
+  },
+  {
+    "bien_so": "P.113",
+    "noi_dung": "Cấm xe người kéo,đẩy; Cấm xe thô sơ, xe do người đẩy/kéo đi vào. Không áp dụng cấm xe nôi trẻ em, phương tiện chuyên dùng của người khuyết tật"
+  },
+  {
+    "bien_so": "P.114",
+    "noi_dung": "Cấm xe vật nuôi kéo; Cấm xe sử dụng súc vật kéo hay chở trên lưng đi vào"
+  },
+  {
+    "bien_so": "P.115",
+    "noi_dung": "Hạn chế trọng tải toàn bộ xe; Cấm các loại xe cơ giới/thô sơ (kể cả xe ưu tiên) có tải trọng toàn bộ xe vượt quá trị số ghi trên biển đi vào"
+  },
+  {
+    "bien_so": "P.116",
+    "noi_dung": "Hạn chế tải trọng trên trục xe; Cấm các loại xe cơ giới/thô sơ (kể cả xe ưu tiên) có tải trọng toàn bộ xe phân bổ trên một trục xe vượt quá trị số ghi trên biển đi vào"
+  },
+  {
+    "bien_so": "P.117",
+    "noi_dung": "Hạn chế chiều cao; Cấm các loại xe cơ giới/thô sơ (kể cả xe ưu tiên) có chiều cao vượt quá trị số ghi trên biển đi vào"
+  },
+  {
+    "bien_so": "P.118",
+    "noi_dung": "Hạn chế chiều ngang xe; Cấm các loại xe cơ giới/thô sơ (kể cả xe ưu tiên) có chiều ngang vượt quá trị số ghi trên biển đi vào"
+  },
+  {
+    "bien_so": "P.119",
+    "noi_dung": "Hạn chế chiều dài xe; Cấm các loại xe cơ giới/thô sơ (kể cả xe ưu tiên) có chiều dài vượt quá trị số ghi trên biển đi vào"
+  },
+  {
+    "bien_so": "P.120",
+    "noi_dung": "Hạn chế chiều dài xe cơ giới kéo theo rơ-moóc hoặc sơ-mi rơ-moóc; Cấm các loại xe cơ giới kéo mooc, xe sơ-mi-rơ-mooc có chiều dài vượt quá trị số ghi trên biển (kể cả xe ưu tiên) đi vào"
+  },
+  {
+    "bien_so": "P.121",
+    "noi_dung": "Cự ly tối thiểu giữa hai xe; Các xe ô tô phải di chuyển cách nhau một khoảng tối thiểu ghi trên biển"
+  },
+  {
+    "bien_so": "P.122",
+    "noi_dung": "Biến báo STOP: Biển báo STOP cấm tất cả các loại xe, kể cả xe ưu tiên"
+  },
+  {
+    "bien_so": "P.123a",
+    "noi_dung": "Cấm rẽ trái; Cấm xe các loại xe cơ giới/thô sơ rẽ trái (trừ xe ưu tiên theo quy định). Không áp dụng cấm quay đầu xe"
+  },
+  {
+    "bien_so": "P.123b",
+    "noi_dung": "Cấm rẽ phải; Cấm xe các loại xe cơ giới/thô sơ rẽ phải (trừ xe ưu tiên theo quy định). Không áp dụng cấm quay đầu xe"
+  },
+  {
+    "bien_so": "P.124a",
+    "noi_dung": "Cấm quay đầu xe. Cấm các loại xe quay đầu kiểu chữ U theo chiều mũi tên trên biển"
+  },
+  {
+    "bien_so": "P.124b",
+    "noi_dung": "Cấm ô tô quay đầu xe. Cấm xe ô tô quay đầu kiểu chữ U theo chiều mũi tên trên biển"
+  },
+  {
+    "bien_so": "P.124c",
+    "noi_dung": "Cấm rẽ trái và quay đầu xe. Cấm các loại xe rẽ trái và quay đầu trái theo chiều mũi tên trên biển"
+  },
+  {
+    "bien_so": "P.124d",
+    "noi_dung": "Cấm rẽ phải và quay đầu xe. Cấm các loại xe rẽ phải và quay đầu phải theo chiều mũi tên trên biển"
+  },
+  {
+    "bien_so": "P.124e",
+    "noi_dung": "Cấm ô tô rẽ trái và quay đầu xe. Cấm xe ô tô rẽ trái và quay đầu trái theo chiều mũi tên trên biển"
+  },
+  {
+    "bien_so": "P.124f",
+    "noi_dung": "Cấm ô tô rẽ phải và quay đầu xe. Cấm xe ô tô rẽ phải và quay đầu phải theo chiều mũi tên trên biển"
+  },
+  {
+    "bien_so": "P.125",
+    "noi_dung": "Cấm vượt. Cấm các loại xe cơ giới vượt nhau (kể cả xe ưu tiên theo quy định), nhưng được phép vượt mô tô 2 bánh, xe gắn máy"
+  },
+  {
+    "bien_so": "P.126",
+    "noi_dung": "Cấm xe ô tô tải vượt. Cấm các loại xe tải vượt xe cơ giới khác, được phép vượt mô tô 2 bánh, xe gắn máy. Không áp dụng các loại xe cơ giới khác vượt xe nhau và vượt xe tải"
+  },
+  {
+    "bien_so": "P.127",
+    "noi_dung": "Tốc độ tối đa cho phép. Các xe cơ giới chạy không vượt quá tốc độ ghi trên biển (trừ xe ưu tiên theo quy định)"
+  },
+  {
+    "bien_so": "P.127a",
+    "noi_dung": "Tốc độ tối đa cho phép về ban đêm. Các xe cơ giới chạy không vượt quá tốc độ ghi trên biển (trừ xe ưu tiên theo quy định)"
+  },
+  {
+    "bien_so": "P.127b",
+    "noi_dung": "Biển ghép tốc độ tối đa cho phép trên từng làn đường. Xe chạy trên làn nào phải tuân thủ tốc độ tối đa cho phép trên làn đường đó"
+  },
+  {
+    "bien_so": "P.127c",
+    "noi_dung": "Biển ghép tốc độ tối đa cho phép theo phương tiện, trên từng làn đường. Các loại phương tiện phải đi đúng làn đường và tuân thủ tốc độ tối đa cho phép trên làn đường đó"
+  },
+  {
+    "bien_so": "DP.127",
+    "noi_dung": "Biển hết tốc độ tối đa cho phép theo biển ghép. Biển này báo hiệu rằng các quy định về tốc độ riêng cho từng làn đường hoặc từng loại phương tiện, được quy định bởi các biển ghép như P.127b, P.127c, đã hết hiệu lực"
+  },
+  {
+    "bien_so": "P.128",
+    "noi_dung": "Cấm sử dụng còi. Cấm các loại xe sử dụng còi"
+  },
+  {
+    "bien_so": "P.129",
+    "noi_dung": "Kiểm tra. Báo hiệu nơi đặt trạm kiểm tra, các loại xe vận tải đi qua phải dừng lại để kiểm tra theo quy định"
+  },
+  {
+    "bien_so": "P.130",
+    "noi_dung": "Cấm dừng xe và đỗ xe. Cấm các loại xe cơ giới dừng và đỗ xe phía đường có đặt biển (trừ xe ưu tiên theo quy định)"
+  },
+  {
+    "bien_so": "P.131a",
+    "noi_dung": "Cấm đỗ xe, có hiệu lực cấm các loại xe cơ giới đỗ ở phía đường có đặt biển"
+  },
+  {
+    "bien_so": "P.131b",
+    "noi_dung": "Cấm đỗ xe ngày lẻ, có hiệu lực cấm các loại xe cơ giới đỗ ở phía đường có đặt biển vào những ngày lẻ"
+  },
+  {
+    "bien_so": "P.131c",
+    "noi_dung": "Cấm đỗ xe ngày chẵn, có hiệu lực cấm các loại xe cơ giới đỗ ở phía đường có đặt biển vào những ngày chẵn"
+  },
+  {
+    "bien_so": "P.132",
+    "noi_dung": "Nhường đường cho xe cơ giới đi ngược chiều qua đường hẹp, Các loại xe cơ giới/thô sơ, kể cả xe ưu tiên theo quy định,  phải nhường đường cho các loại xe cơ giới đang di chuyển chiều ngược lại"
+  },
+  {
+    "bien_so": "DP.133",
+    "noi_dung": "Hết cấm vượt. Biển thông báo hết đoạn đường cấm vượt"
+  },
+  {
+    "bien_so": "DP.134",
+    "noi_dung": "Hết tốc độ tối đa cho phép. Biển thông báo hết đoạn đường hạn chế tốc độ tối đa"
+  },
+  {
+    "bien_so": "DP.135",
+    "noi_dung": "Hết tất cả các lệnh cấm. Biển thông báo hết đoạn đường áp dụng tất cả các lệnh cấm"
+  },
+  {
+    "bien_so": "P.136",
+    "noi_dung": "Cấm đi thẳng. Cấm các loại xe cơ giới/thô sơ đi thẳng vào đoạn đường phía trước"
+  },
+  {
+    "bien_so": "P.137",
+    "noi_dung": "Cấm rẽ trái, rẽ phải. Cấm các loại xe cơ giới rẽ trái, rẽ phải. Biển đặt ở những vị trí ngay trước nút giao đường. Trong trường hợp có quy định thời gian cấm sẽ có biển phụ ở dưới"
+  },
+  {
+    "bien_so": "P.138",
+    "noi_dung": "Cấm đi thẳng, rẽ trái. Cấm các loại xe cơ giới đi thẳng, rẽ trái. Biển đặt ở những vị trí ngay trước nút giao đường. Trong trường hợp có quy định thời gian cấm sẽ có biển phụ ở dưới"
+  },
+  {
+    "bien_so": "P.139",
+    "noi_dung": "Cấm đi thẳng,rẽ phải. Cấm các loại xe cơ giới đi thẳng, rẽ phải. Biển đặt ở những vị trí ngay trước nút giao đường. Trong trường hợp có quy định thời gian cấm sẽ có biển phụ ở dưới"
+  },
+  {
+    "bien_so": "P.140",
+    "noi_dung": "Cấm xe công nông và các loại xe tương tự. Cấm các loại xe công nông, xe tương tự công nông đi vào"
+  },
+  {
+    "bien_so": "W.201a",
+    "noi_dung": "Chỗ ngoặt nguy hiểm vòng bên trái.Báo trước sắp tới chỗ ngoặt vòng bên trái"
+  },
+  {
+    "bien_so": "W.201b",
+    "noi_dung": "Chỗ ngoặt nguy hiểm vòng bên phải. Báo trước sắp tới chỗ ngoặt vòng bên phải"
+  },
+  {
+    "bien_so": "W.201c",
+    "noi_dung": "Chỗ ngoặt nguy hiểm có nguy cơ lật xe bên phải. Báo trước sắp tới chỗ ngoặt nguy hiểm có nguy cơ lật xe bên phải khi đường cong vòng sang trái"
+  },
+  {
+    "bien_so": "W.201d",
+    "noi_dung": "Chỗ ngoặt nguy hiểm có nguy cơ lật xe bên trái. Báo trước sắp tới chỗ ngoặt nguy hiểm có nguy cơ lật xe bên trái khi đường cong vòng sang phải"
+  },
+  {
+    "bien_so": "W.202a",
+    "noi_dung": "Hai chỗ ngoặt ngược chiều nhau liên tiếp bên trái. Báo trước có từ 2 chỗ ngoặt, ở gần nhau trong đó có ít nhất một chỗ ngoặt nguy hiểm mà chỗ ngoặt đầu tiên hướng vòng bên trái"
+  },
+  {
+    "bien_so": "W.202b",
+    "noi_dung": "Hai chỗ ngoặt ngược chiều nhau liên tiếp bên phải. Báo trước có từ 2 chỗ ngoặt, ở gần nhau trong đó có ít nhất một chỗ ngoặt nguy hiểm mà chỗ ngoặt đầu tiên hướng vòng bên phải"
+  },
+  {
+    "bien_so": "W.203a",
+    "noi_dung": "Đường bị thu hẹp cả hai bên. Báo trước đường sắp bị thu hẹp cả hai bên"
+  },
+  {
+    "bien_so": "W.203b",
+    "noi_dung": "Đường bị thu hẹp bên trái. Báo trước đường bị hẹp phía bên trái"
+  },
+  {
+    "bien_so": "W.203c",
+    "noi_dung": "Đường bị thu hẹp bên phải. Báo trước đường bị hẹp phía bên phải"
+  },
+  {
+    "bien_so": "W.204",
+    "noi_dung": "Đường hai chiều. Báo đoạn đường phía trước do sửa chữa hoặc có trở ngại khác nên phải đi vào phần đường còn lại hoặc đường tạm theo cả 2 chiều"
+  },
+  {
+    "bien_so": "W.205a",
+    "noi_dung": "Đường giao nhau. Báo hiệu sắp đến ngã tư giao nhau với đường cùng cấp"
+  },
+  {
+    "bien_so": "W.205b",
+    "noi_dung": "Đường giao nhau. Báo hiệu đường giao nhau cùng cấp phía bên phải"
+  },
+  {
+    "bien_so": "W.205c",
+    "noi_dung": "Đường giao nhau. Báo hiệu đường giao nhau cùng cấp phía bên trái"
+  },
+  {
+    "bien_so": "W.205d",
+    "noi_dung": "Đường giao nhau. Đường giao nhau cùng cấp phía trước"
+  },
+  {
+    "bien_so": "W.205e",
+    "noi_dung": "Đường giao nhau. Báo hiệu sắp đến đoạn đường giao nhau cùng cấp"
+  },
+  {
+    "bien_so": "W.206",
+    "noi_dung": "Giao nhau chạy theo vòng xuyến. Báo hiệu nơi giao nhau có đảo an toàn ở giữa"
+  },
+  {
+    "bien_so": "W.207a",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên"
+  },
+  {
+    "bien_so": "W.207b",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên ở bên phải"
+  },
+  {
+    "bien_so": "W.207c",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên ở bên trái"
+  },
+  {
+    "bien_so": "W.207d",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên liên tiếp"
+  },
+  {
+    "bien_so": "W.207e",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên liên tiếp"
+  },
+  {
+    "bien_so": "W.207f",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên ở bên trái"
+  },
+  {
+    "bien_so": "W.207g",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên ở bên phải"
+  },
+  {
+    "bien_so": "W.207h",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên ở bên phải"
+  },
+  {
+    "bien_so": "W.207i",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên ở bên phải và phía trước"
+  },
+  {
+    "bien_so": "W.207k",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên ở phía trước"
+  },
+  {
+    "bien_so": "W.207l",
+    "noi_dung": "Giao nhau với đường không ưu tiên(đườngnhánh). Đặt trên đường ưu tiên, để báo trước sắp đến nơi giao nhau với đường không ưu tiên ở bên trái và phía trước"
+  },
+  {
+    "bien_so": "W.208",
+    "noi_dung": "Giao nhau với đường ưu tiên(đường chính). Đặt trên đường không ưu tiên"
+  },
+  {
+    "bien_so": "W.209",
+    "noi_dung": "Giao nhau có tính hiệu đèn. Báo trước nơi giao nhau có đèn tín hiệu điều khiển giao thông. Đặt nơi đèn tín hiều không được nhìn thấy rõ ràng và kịp thời"
+  },
+  {
+    "bien_so": "W.210",
+    "noi_dung": "Giao nhau với đường sắt có rào chắn. Báo trước sắp đến chỗ giao nhau đường bộ và đường sắt, có rào chắn ở 2 bên đường sắt và có nhân viên ngành đường sắt điều khiển"
+  },
+  {
+    "bien_so": "W.211",
+    "noi_dung": "Giao nhau với đường sắt không có rào chắn. Báo trước sắp đến chỗ giao nhau đường bộ và đường sắt, không có rào chắn ở 2 bên đường sắt và không có người điều khiển giao thông"
+  },
+  {
+    "bien_so": "W.212",
+    "noi_dung": "Cầu hẹp. Báo cầu phía trước là loại cầu có chiều rộng phần xe chạy nhỏ hơn hoặc bằng 1 làn đường (4,5m). Các xe khi lưu thông qua loại cầu này phải nhường nhau và chờ ở 2 đầu cầu"
+  },
+  {
+    "bien_so": "W.213",
+    "noi_dung": "Cầu tạm. Báo cầu phía trước là loại cầu tạm, được làm để sử dụng tạm thời cho xe qua lại"
+  },
+  {
+    "bien_so": "W.214",
+    "noi_dung": "Cầu quay cầu cất. Báo cầu phía trước là loại cầu xoay, cầu cất là những loại cầu trong từng khoảng thời gian có ngắt giao thông đường bộ để cho tàu thuyền qua lại. Các phương tiện đi trên đường bộ phải chờ đợi để đi qua"
+  },
+  {
+    "bien_so": "W.215a",
+    "noi_dung": "Kè, vực sâu phía trước, Báo phía trước có bờ kè, vực sâu, hoặc bờ sông áp sát đường phía trước, cần đề phòng tình huống nguy hiểm vượt kè, rơi  xuống vực sâu (thường cắm ở những chỗ ngoặt nguy hiểm)"
+  },
+  {
+    "bien_so": "W.215b",
+    "noi_dung": "Kè, vực sâu bên đường phía bên phải; Báo phía trước có bờ kè, vực sâu, hoặc bờ sông áp sát đường phía bên phải, cần đề phòng tình huống nguy hiểm vượt kè, rơi  xuống vực sâu (thường cắm ở những chỗ ngoặt nguy hiểm)"
+  },
+  {
+    "bien_so": "W.215c",
+    "noi_dung": "Kè, vực sâu bên đường phía bên trái; Báo phía trước có bờ kè, vực sâu, hoặc bờ sông áp sát đường phía bên phải, cần đề phòng tình huống nguy hiểm vượt kè, rơi  xuống vực sâu (thường cắm ở những chỗ ngoặt nguy hiểm)"
+  },
+  {
+    "bien_so": "W.216a",
+    "noi_dung": "Đường ngầm. Báo trước những chỗ có đường ngầm (đường tràn). Đường ngầm là những đoạn đường vượt qua sông, suối, khe cạn mà nước có thể chảy tràn qua mặt đường thường xuyên"
+  },
+  {
+    "bien_so": "W.216b",
+    "noi_dung": "Đường ngầm có nguy cơ lũ quét. Báo trước những chỗ có đường ngầm (đường tràn). Đường ngầm là những đoạn đường vượt qua sông, suối, khe cạn mà nước có thể chảy tràn qua mặt đường thường xuyên có nguy cơ có lũ quét"
+  },
+  {
+    "bien_so": "W.217",
+    "noi_dung": "Bến phà. Báo trước sắp đến bến phà"
+  },
+  {
+    "bien_so": "W.218",
+    "noi_dung": "Cửa chui. Báo trước sắp đến những đường có cổng chắn ngang như cổng đường hầm, cổng thành, cầu vượt đường bộ dạng vòm,…"
+  },
+  {
+    "bien_so": "W.219",
+    "noi_dung": "Dốc xuống nguy hiểm. Báo trước sắp tới dốc xuống nguy  hiểm,người điều khiển phương tiện phải chọn cách chạy phù hợp để đảm bảo an toàn"
+  },
+  {
+    "bien_so": "W.220",
+    "noi_dung": "Dốc lên nguy hiểm. Báo trước sắp lên dốc nguy  hiểm,người điều khiển phương tiện phải chọn cách chạy phù hợp để đảm bảo an toàn"
+  },
+  {
+    "bien_so": "W.221a",
+    "noi_dung": "Đường lồi lõm. Báo trước sắp tới đoạn đường có mặt đường không bằng phẳng, lồi lõm, sống trâu,… xe chạy với tốc độ cao sẽ bị nguy hiểm"
+  },
+  {
+    "bien_so": "W.221b",
+    "noi_dung": "Đường có gồ giảm tốc. Báo trước đoạn đường có sóng mấp mô nhân tạo (gờ giảm tốc) để hạn chế tốc độ xe chạy, bắt buộc lái xe phải chạy với tốc độ chậm trước khi qua những điểm cần kiểm soát, kiểm tra hay khu đông dân cư,…"
+  },
+  {
+    "bien_so": "W.222a",
+    "noi_dung": "Đường trơn. Báo trước  sắp tới đoạn đường có thể xảy ra trơn trượt khi thời tiết xấu, cần tránh hãm phanh, tăng ga, sang số đột ngột hoặc xe chạy với tốc độ cao sẽ gặp nguy hiểm. Khi gặp biển báo này người điều khiển phương tiện phải giảm tốc độ xe chạy và thận trọng"
+  },
+  {
+    "bien_so": "W.222b",
+    "noi_dung": "Lề đường nguy hiểm. Để báo những nơi lề đường không ổn định, khi xe đi vào dễ gây văng đất đá hoặc bánh xe quay tại chỗ"
+  },
+  {
+    "bien_so": "W.223a",
+    "noi_dung": "Vách núi nguy hiểm. Báo trước đường đi sát vách núi bên trái"
+  },
+  {
+    "bien_so": "W.223b",
+    "noi_dung": "Vách núi nguy hiểm. Báo trước đường đi sát vách núi bên phải"
+  },
+  {
+    "bien_so": "W.224",
+    "noi_dung": "Đường người đi bộ cắt ngang. Báo trước sắp đến phần đường ngang dành cho người đi bộ qua đường, các loại xe cộ phải nhường ưu tiên cho người đi bộ và chỉ được chạy xe nếu như không gây nguy hiểm cho người đi bộ"
+  },
+  {
+    "bien_so": "W.225",
+    "noi_dung": "Trẻ em. Báo trước gần đến đoạn đường thường có trẻ em đi ngang qua hoặc tụ tập trên đường vườn trẻ, trường học,…"
+  },
+  {
+    "bien_so": "W.226",
+    "noi_dung": "Đường người đi xe đạp cắt ngang. Báo trước đến đoạn đường thường có người đi xe đạp từ những đường nhỏ cắt ngang hoặc từ đường dành cho xe đạp nhập vào đường ô tô"
+  },
+  {
+    "bien_so": "W.227",
+    "noi_dung": "Công trường. Báo trước gần tới đoạn đường đang tiến hành tu sửa có người và máy móc đang làm việc trên mặt đường. Người điều khiển phương tiện phải giảm tốc độ xe, không gây nguy hiểm cho người và máy móc trên đoạn đường đó"
+  },
+  {
+    "bien_so": "W.228(a,b)",
+    "noi_dung": "Đá lở, Báo trước gần tới một đoạn đường có thể có đất đá từ trên ta luy sụt lở bất ngờ gây nguy hiểm cho xe cộ và người đi đường, đặc biệt là ở những đoạn đường miền núi. Người lái xe phải chú ý đặc biệt khi thời tiết xấu khi tầm nhìn bị hạn chế và khi dừng hay đỗ xe sau những trận mưa lớn."
+  },
+  {
+    "bien_so": "W.228c",
+    "noi_dung": "Sỏi đá bắn lên, Để báo trước nơi có kết cấu mặt đường rời rạc, khi phương tiện đi qua, làm cho các viên đá, sỏi băng lên gây nguy hiểm và mất an toàn cho người và phương tiện tham gia giao thông."
+  },
+  {
+    "bien_so": "W.228d",
+    "noi_dung": "Nền đường yếu, Để cảnh báo những đoạn nền đường yếu, đoạn đường đang theo dõi lún mà việc vận hành xe ở tốc độ cao có thể gây nguy hiểm"
+  },
+  {
+    "bien_so": "W.229",
+    "noi_dung": "Dải máy bay lên xuống. Báo trước tới đoạn đường sát đường băng của sân bay và cắt ngang qua hướng máy bay lên xuống ở độ cao nhỏ"
+  },
+  {
+    "bien_so": "W.230",
+    "noi_dung": "Gia súc. Báo trước tới đoạn đường thường có gia súc thả rông hoặc lùa qua ngang đường nguy hiểm, biển này thường đặt ở vùng đồng cỏ của nông trường chăn nuôi, vùng thảo nguyên. Người lái xe có trách nhiệm dừng lại bảo đảm cho gia súc có thể qua đường không bị nguy hiểm"
+  },
+  {
+    "bien_so": "W.231",
+    "noi_dung": "Thú rừng vượt qua đường. Báo trước tới đoạn đường thường có thú rừng qua đường"
+  },
+  {
+    "bien_so": "W.232",
+    "noi_dung": "Gió ngang. Báo trước  tới đoạn đường thường có gió ngang thổi mạnh nguy hiểm. Người lái xe cần đề phòng tình huống gió thổi lật xe"
+  },
+  {
+    "bien_so": "W.233",
+    "noi_dung": "Nguy hiểm khác. Báo trước có thể gặp nguy hiểm bất ngờ"
+  },
+  {
+    "bien_so": "W.234",
+    "noi_dung": "Giao nhau với đường hai chiều. Biển này đặt trên đường một chiều để báo trước sắp đến chỗ giao nhau với đường hai chiều"
+  },
+  {
+    "bien_so": "W.235",
+    "noi_dung": "Đường đôi. Báo hiệu sắp tới đoạn đường đôi (2 chiều phân biệt rõ ràng bằng giải phân cách cứng)"
+  },
+  {
+    "bien_so": "W.236",
+    "noi_dung": "Kết thúc đường đôi"
+  },
+  {
+    "bien_so": "W.237",
+    "noi_dung": "Cầu vồng. Báo trước sắp đến chiếc cầu có độ vồng rất lớn ảnh hưởng tới tầm nhìn"
+  },
+  {
+    "bien_so": "W.238",
+    "noi_dung": "Đường cao tốc phía trước"
+  },
+  {
+    "bien_so": "W.239a",
+    "noi_dung": "Đường cáp điện ở phía trên. Báo trước đoạn đường có đường dây điện cắt ngang phía trên tuyến đường, thường kèm theo biển phụ “Chiều cao an toàn” ở phía dưới"
+  },
+  {
+    "bien_so": "W.239b",
+    "noi_dung": "Chiều cao tĩnh không thực tế. Để báo chiều cao tĩnh không thực tế của các vị trí có khoảng cách từ điểm cao nhất của mặt đường đến điểm thấp nhất của chướng ngại vật bị giới hạn"
+  },
+  {
+    "bien_so": "W.240",
+    "noi_dung": "Đường hầm. Báo trước sắp đi vào đường hầm chạy hai chiều, mà chiếu sáng lại không tốt"
+  },
+  {
+    "bien_so": "W.241",
+    "noi_dung": "Ùn tắc giao thông. Để báo đoạn đường hay xảy ra ùn tắc giao thông"
+  },
+  {
+    "bien_so": "W.242a",
+    "noi_dung": "Nơi đường sắt giao vuông góc với đường bộ. Báo trước vị trí giao nhau đường sắt chỉ có một đường cắt ngang đường bộ"
+  },
+  {
+    "bien_so": "W.242b",
+    "noi_dung": "Nơi đường sắt giao vuông góc với đường bộ. Báo trước vị trí giao nhau đường sắt có 2 hay nhiều đường cắt ngang đường bộ"
+  },
+  {
+    "bien_so": "W.243a",
+    "noi_dung": "Nơi đường sắt giao không vuông góc với đường bộ. Để báo trước sắp đến vị trí giao cắt đường bộ với đường sắt cùng mức, không vuông góc và không có người gác, không có rào chắn, đặt ở nơi cách ray gần nhất nơi giao đường sắt 50 m. Biển được đặt ở phía dưới biển số W.211 “Giao nhau với đường sắt không có rào chắn”"
+  },
+  {
+    "bien_so": "W.243b",
+    "noi_dung": "Nơi đường sắt giao không vuông góc với đường bộ. Để báo trước sắp đến vị trí giao cắt đường bộ với đường sắt cùng mức, không vuông góc và không có người gác, không có rào chắn, đặt ở nơi cách ray gần nhất nơi giao đường sắt 100 m. Biển được đặt ở phía dưới biển số W.211 “Giao nhau với đường sắt không có rào chắn”"
+  },
+  {
+    "bien_so": "W.243c",
+    "noi_dung": "Nơi đường sắt giao không vuông góc với đường bộ. Để báo trước sắp đến vị trí giao cắt đường bộ với đường sắt cùng mức, không vuông góc và không có người gác, không có rào chắn, đặt ở nơi cách ray gần nhất nơi giao đường sắt 150 m. Biển được đặt ở phía dưới biển số W.211 “Giao nhau với đường sắt không có rào chắn”"
+  },
+  {
+    "bien_so": "W.244",
+    "noi_dung": "Đoạn đường hay xảy ra tai nạn"
+  },
+  {
+    "bien_so": "W.245a",
+    "noi_dung": "Đi chậm. Dùng để nhắc lái xe giảm tốc độ đi chậm"
+  },
+  {
+    "bien_so": "W.245b",
+    "noi_dung": "Đi chậm. Đi chậm có chỉ dẫn tiếng Anh. Dùng để nhắc lái xe giảm tốc độ đi chậm. Đối với các tuyến đường đối ngoại, bắt buộc dùng biển này"
+  },
+  {
+    "bien_so": "W.246a",
+    "noi_dung": "Chú ý chướng ngại vật - Vòng tránh ra hai bên. Báo trước chướng ngại vật phía trước, đi theo được cả 2 hướng mũi tên"
+  },
+  {
+    "bien_so": "W.246b",
+    "noi_dung": "Chú ý chướng ngại vật - Vòng tránh sang bên trái. Chướng ngại vật phía trước đi theo hướng mũi tên trên biển báo"
+  },
+  {
+    "bien_so": "W.246c",
+    "noi_dung": "Chú ý chướng ngại vật - Vòng tránh sang bên phải. Chướng ngại vật phía trước đi theo hướng mũi tên trên biển báo"
+  },
+  {
+    "bien_so": "W.247",
+    "noi_dung": "Chú ý xe đỗ. Để cảnh báo có các loại xe ô tô, máy kéo, rơ-moóc hoặc sơ-mi rơ-moóc được kéo bởi xe ô tô hoặc ô tô đầu kéo, xe máy chuyên dùng đang đỗ chiếm một phần đường xe chạy"
+  },
+  {
+    "bien_so": "R.122",
+    "noi_dung": "Dừng lại. Biển có hiệu lực buộc các loại xe cơ giới và thô sơ kể cả xe được ưu tiên theo quy định dừng lại trước biển hoặc trước vạch ngang đường và chỉ được phép đi khi thấy các tín hiệu (do người điều khiển giao thông hoặc đèn cờ) cho phép đi"
+  },
+  {
+    "bien_so": "R.301a",
+    "noi_dung": "Hướng đi phải theo. Các xe chỉ được đi thẳng"
+  },
+  {
+    "bien_so": "R.301b",
+    "noi_dung": "Hướng đi phải theo. Các xe chỉ được rẽ phải"
+  },
+  {
+    "bien_so": "R.301c",
+    "noi_dung": "Hướng đi phải theo. Các xe chỉ được rẽ trái"
+  },
+  {
+    "bien_so": "R.301d",
+    "noi_dung": "Hướng đi phải theo. Các xe chỉ được rẽ phải"
+  },
+  {
+    "bien_so": "R.301e",
+    "noi_dung": "Hướng đi phải theo. Các xe chỉ được rẽ trái"
+  },
+  {
+    "bien_so": "R.301f",
+    "noi_dung": "Hướng đi phải theo. Các xe chỉ được đi thẳng và rẽ phải"
+  },
+  {
+    "bien_so": "R.301g",
+    "noi_dung": "Hướng đi phải theo. Các xe chỉ được đi thẳng và rẽ trái"
+  },
+  {
+    "bien_so": "R.301h",
+    "noi_dung": "Hướng đi phải theo. Các xe chỉ được rẽ trái và rẽ phải"
+  },
+  {
+    "bien_so": "R.302a",
+    "noi_dung": "Hướng phải đi vòng chướng ngại vật. Báo các loại xe (cơ giới và thô sơ) phải đi vòng chướng ngại vật theo hướng mũi tên, chỉ được vòng sang phải."
+  },
+  {
+    "bien_so": "R.302b",
+    "noi_dung": "Hướng phải đi vòng chướng ngại vật. Báo các loại xe (cơ giới và thô sơ) phải đi vòng chướng ngại vật theo hướng mũi tên, chỉ được vòng sang trái."
+  },
+  {
+    "bien_so": "R.302c",
+    "noi_dung": "Hướng phải đi vòng chướng ngại vật. Báo các loại xe (cơ giới và thô sơ) phải đi vòng chướng ngại vật theo hướng mũi tên, được phép vòng sang trái hoặc sang phải."
+  },
+  {
+    "bien_so": "R.303",
+    "noi_dung": "Nơi giao nhau chạy theo vòng xuyến. Để báo cho các loại xe (thô sơ và cơ giới) phải chạy vòng theo đảo an toàn ở nơi đường giao nhau phải đặt biển"
+  },
+  {
+    "bien_so": "R.304",
+    "noi_dung": "Đường dành cho xe thô sơ. Để báo đường dành cho xe thô sơ (kể cả xe của người tàn tật) và người đi bộ"
+  },
+  {
+    "bien_so": "R.305",
+    "noi_dung": "Đường dành cho người đi bộ. Để báo đường dành cho người đi bộ"
+  },
+  {
+    "bien_so": "R.306",
+    "noi_dung": "Tốc độ tối thiểu cho phép. Để báo tốc độ tối thiểu cho phép các xe cơ giới chạy"
+  },
+  {
+    "bien_so": "R.307",
+    "noi_dung": "Hết tốc độ tối thiểu. Đến hết đoạn đường tốc độ tối thiểu. Biển có giá trị báo cho người tham gia giao thông biết hiệu lực của biển số R.306 hết tác dụng, kể từ biển này các xe được phép chạy chậm hơn trị số ghi trên biển nhưng không được gây cản trở các xe khác"
+  },
+  {
+    "bien_so": "R.308a",
+    "noi_dung": "Tuyến đường cầu vượt cắt qua. Biển báo hiệu phía trước có cầu vượt, hướng dẫn xe đi thẳng hoặc rẽ trái."
+  },
+  {
+    "bien_so": "R.308b",
+    "noi_dung": "Tuyến đường cầu vượt cắt qua. Biển báo hiệu phía trước có cầu vượt, hướng dẫn xe đi thẳng hoặc rẽ phải."
+  },
+  {
+    "bien_so": "R.309",
+    "noi_dung": "Ấn còi"
+  },
+  {
+    "bien_so": "R.310a",
+    "noi_dung": "Hướng đi phải theo cho các xe chở hàng nguy hiểm. Biển báo hiệu các xe chở hàng nguy hiểm chỉ được đi thẳng."
+  },
+  {
+    "bien_so": "R.310b",
+    "noi_dung": "Hướng đi phải theo cho các xe chở hàng nguy hiểm. Biển báo hiệu các xe chở hàng nguy hiểm chỉ được rẽ phải."
+  },
+  {
+    "bien_so": "R.310c",
+    "noi_dung": "Hướng đi phải theo cho các xe chở hàng nguy hiểm. Biển báo hiệu các xe chở hàng nguy hiểm chỉ được rẽ trái."
+  },
+  {
+    "bien_so": "R.403a",
+    "noi_dung": "Đường dành cho xe ô tô"
+  },
+  {
+    "bien_so": "R.403c",
+    "noi_dung": "Đường dành cho xe buýt"
+  },
+  {
+    "bien_so": "R.403d",
+    "noi_dung": "Đường dành cho xe ô tô con"
+  },
+  {
+    "bien_so": "R.403e",
+    "noi_dung": "Đường dành cho xe máy"
+  },
+  {
+    "bien_so": "R.404a",
+    "noi_dung": "Hết đoạn đường dành cho xe ô tô"
+  },
+  {
+    "bien_so": "R.404b",
+    "noi_dung": "Hết đoạn Đường dành cho xe ô tô, xe máy"
+  },
+  {
+    "bien_so": "R.404c",
+    "noi_dung": "Hết đoạn đường dành cho xe buýt"
+  },
+  {
+    "bien_so": "R.404d",
+    "noi_dung": "Hết đoạn Đường dành cho xe ô tô con"
+  },
+  {
+    "bien_so": "R.404e",
+    "noi_dung": "Hết đoạn Đường dành cho xe máy"
+  },
+  {
+    "bien_so": "R.404f",
+    "noi_dung": "Hết đoạn Đường dành cho xe máy và xe đạp"
+  },
+  {
+    "bien_so": "R.404g",
+    "noi_dung": "Hết đoạn Đường dành cho xe chở hàng bốn bánh gắn động cơ"
+  },
+  {
+    "bien_so": "R.404h",
+    "noi_dung": "Hết đoạn Đường dành cho xe chở người bốn bánh gắn động cơ"
+  },
+  {
+    "bien_so": "R.404k",
+    "noi_dung": "Hết đoạn Đường dành cho xe chở hàng,xe chở người bốn bánh gắn động cơ"
+  },
+  {
+    "bien_so": "R.411",
+    "noi_dung": "Hướng đi trên mỗi làn đường phải theo, để báo hiệu cho người tham gia giao thông biết số lượng làn đường trên mặt đường và hướng đi trên mỗi làn đường theo vạch kẻ đường"
+  },
+  {
+    "bien_so": "R.412a",
+    "noi_dung": "Làn Đường dành cho xe ô tô khách"
+  },
+  {
+    "bien_so": "R.412b",
+    "noi_dung": "Làn Đường dành cho xe ô tô con"
+  },
+  {
+    "bien_so": "R.412c",
+    "noi_dung": "Làn Đường dành cho xe ô tô tải"
+  },
+  {
+    "bien_so": "R.412d",
+    "noi_dung": "Làn Đường dành cho xe máy"
+  },
+  {
+    "bien_so": "R.412e",
+    "noi_dung": "Làn Đường dành cho xe buýt"
+  },
+  {
+    "bien_so": "R.412f",
+    "noi_dung": "Làn Đường dành cho xe ô tô"
+  },
+  {
+    "bien_so": "R.412g",
+    "noi_dung": "Làn Đường dành cho xe máy và xe đạp"
+  },
+  {
+    "bien_so": "R.412h",
+    "noi_dung": "Làn Đường dành cho xe đạp"
+  },
+  {
+    "bien_so": "R.412i",
+    "noi_dung": "Kết thúc Làn Đường dành cho xe ô tô khách"
+  },
+  {
+    "bien_so": "R.412j",
+    "noi_dung": "Kết thúc Làn Đường dành cho xe ô tô con"
+  },
+  {
+    "bien_so": "R.412k",
+    "noi_dung": "Kết thúc Làn Đường dành cho xe ô tô tải"
+  },
+  {
+    "bien_so": "R.412l",
+    "noi_dung": "Kết thúc Làn Đường dành cho xe máy"
+  },
+  {
+    "bien_so": "R.412m",
+    "noi_dung": "Kết thúc Làn Đường dành cho xe buýt"
+  },
+  {
+    "bien_so": "R.412n",
+    "noi_dung": "Kết thúc Làn Đường dành cho xe ô tô"
+  },
+  {
+    "bien_so": "R.412o",
+    "noi_dung": "Kết thúc Làn Đường dành cho xe máy và xe đạp"
+  },
+  {
+    "bien_so": "R.412p",
+    "noi_dung": "Kết thúc Làn Đường dành cho xe đạp"
+  },
+  {
+    "bien_so": "R.415",
+    "noi_dung": "Biển gộp Làn Đường theo phương tiện. Để báo hiệu cho người tham gia giao thông biết số lượng làn đường và loại xe được phép lưu thông trên từng làn đường theo quy định"
+  },
+  {
+    "bien_so": "R.420",
+    "noi_dung": "Bắt đầu khu đông dân cư. Để báo hiệu bắt đầu đoạn đường vào phạm vi khu đông dân cư"
+  },
+  {
+    "bien_so": "R.421",
+    "noi_dung": "Hết khu đông dân cư. Để báo hiệu hết đoạn đường qua phạm vi khu đông dân cư"
+  },
+  {
+    "bien_so": "R.E,9a",
+    "noi_dung": "Cấm đỗ xe trong khu vực"
+  },
+  {
+    "bien_so": "R.E,9b",
+    "noi_dung": "Cấm đỗ xe theo giờ trong khu vực"
+  },
+  {
+    "bien_so": "R.E,9c",
+    "noi_dung": "Khu vực đỗ xe"
+  },
+  {
+    "bien_so": "R.E,9d",
+    "noi_dung": "Tốc độ tối đa trong khu vực"
+  },
+  {
+    "bien_so": "R.E,10a",
+    "noi_dung": "Hết cấm đỗ xe trong khu vực"
+  },
+  {
+    "bien_so": "R.E,10b",
+    "noi_dung": "Hết cấm đỗ xe theo giờ trong khu vực"
+  },
+  {
+    "bien_so": "R.E,10c",
+    "noi_dung": "Hết khu vực đỗ xe"
+  },
+  {
+    "bien_so": "R.E,10d",
+    "noi_dung": "Hết tốc độ tối đa trong khu vực"
+  },
+  {
+    "bien_so": "R.E,11a",
+    "noi_dung": "Đường hầm. Để chỉ dẫn đoạn đường qua hầm có áp dụng quy định giao thông riêng"
+  },
+  {
+    "bien_so": "R.E,11b",
+    "noi_dung": "Kết thúc đường hầm. Để chỉ dẫn hết đoạn đường qua hầm, các quy định giao thông riêng không còn áp dụng"
+  },
+  {
+    "bien_so": "I.401",
+    "noi_dung": "Bắt đầu đường ưu tiên. Đặt tương ứng ngay tại vị trí bắt đầu và đường dành cho ô tô"
+  },
+  {
+    "bien_so": "I.402",
+    "noi_dung": "Hết đoạn đường ưu tiên. Đặt tương ứng ngay tại vị trí kết thúc và đường dành cho ô tô"
+  },
+  {
+    "bien_so": "I.405a",
+    "noi_dung": "Đường cụt. Dùng để chỉ lối rẽ vào đường cụt (biển đặt trên đường chính, trước nơi giao nhau)."
+  },
+  {
+    "bien_so": "I.405b",
+    "noi_dung": "Đường cụt. Dùng để chỉ lối rẽ vào đường cụt (biển đặt trên đường chính, trước nơi giao nhau)."
+  },
+  {
+    "bien_so": "I.405c",
+    "noi_dung": "Đường cụt. Dùng để chỉ dẫn phía trước là đường cụt (biển đặt trên đường cụt, cách đầu đường 300-500m)."
+  },
+  {
+    "bien_so": "I.406",
+    "noi_dung": "Được ưu tiên qua đường hẹp. Để chỉ dẫn cho người lái xe cơ giới biết mình được quyền ưu tiên đi trước trên đoạn đường hẹp. Nếu trên hướng đi ngược chiều có xe (cơ giới hoặc thô sơ) đã đi vào phạm vi đường hẹp thì xe đi theo chiều ưu tiên cũng phải nhường đường "
+  },
+  {
+    "bien_so": "I.407a",
+    "noi_dung": "Đường một chiều. Biển chỉ dẫn các phương tiện đi theo chiều mũi tên. Biển này được đặt sau nơi đường giao nhau."
+  },
+  {
+    "bien_so": "I.407b",
+    "noi_dung": "Đường một chiều. Biển chỉ dẫn các phương tiện đi theo chiều mũi tên. Biển này được đặt trước nơi đường giao nhau (trên đường chuẩn bị rẽ trái vào đường một chiều)."
+  },
+  {
+    "bien_so": "I.407c",
+    "noi_dung": "Đường một chiều. Biển chỉ dẫn các phương tiện đi theo chiều mũi tên. Biển này được đặt trước nơi đường giao nhau (trên đường chuẩn bị rẽ phải vào đường một chiều)."
+  },
+  {
+    "bien_so": "I.408",
+    "noi_dung": "Nơi đỗ xe. Biển dùng để chỉ dẫn những nơi được phép đỗ xe, những bãi đỗ xe, bến xe..."
+  },
+  {
+    "bien_so": "I.408a",
+    "noi_dung": "Nơi đỗ xe một phần trên hè phố. Biển dùng để chỉ dẫn những nơi được phép đỗ xe một phần trên hè phố rộng.Xe phải đỗ sao cho các bánh phía ghế phụ ở trên hè phố"
+  },
+  {
+    "bien_so": "I.409",
+    "noi_dung": "Chỗ quay xe. Biển dùng để chỉ dẫn vị trí được phép quay đầu xe"
+  },
+  {
+    "bien_so": "I.410",
+    "noi_dung": "Khu vực quay xe. Biển dùng để chỉ dẫn khu vực được phép quay đầu xe. Trên biển có mô tả cách thức tiến hành quay xe"
+  },
+  {
+    "bien_so": "I.413a",
+    "noi_dung": "Đường phía trước có làn đường dành cho ôtô khách. Biển dùng để chỉ dẫn cho người tham gia giao thông biết đường phía trước có làn đường dành riêng cho ôtô khách theo chiều ngược lại"
+  },
+  {
+    "bien_so": "I.413b",
+    "noi_dung": "Rẽ ra đường có làn đường dành cho ôtô khách. Biển báo hiệu rẽ trái ra đường có làn đường dành riêng cho ôtô khách"
+  },
+  {
+    "bien_so": "I.413c",
+    "noi_dung": "Rẽ ra đường có làn đường dành cho ôtô khách. Biển báo hiệu rẽ phải ra đường có làn đường dành riêng cho ôtô khách"
+  },
+  {
+    "bien_so": "I.414a",
+    "noi_dung": "Chỉ hướng đường. Đặt ở nơi đường giao nhau, dùng để chỉ dẫn hướng đường đến một địa danh, khu dân cư trên hướng đường cần chỉ dẫn."
+  },
+  {
+    "bien_so": "I.414b",
+    "noi_dung": "Chỉ hướng đường. Đặt ở nơi đường giao nhau, dùng để chỉ dẫn hướng đường đến một địa danh, khu dân cư trên hướng đường cần chỉ dẫn."
+  },
+  {
+    "bien_so": "I.414c",
+    "noi_dung": "Chỉ hướng đường. Đặt ở nơi đường giao nhau, dùng để chỉ dẫn hướng đường đến từ hai địa danh, khu dân cư trở lên trên hướng đường cần chỉ dẫn."
+  },
+  {
+    "bien_so": "I.414d",
+    "noi_dung": "Chỉ hướng đường. Đặt ở nơi đường giao nhau, dùng để chỉ dẫn hướng đường đến từ hai địa danh, khu dân cư trở lên trên hướng đường cần chỉ dẫn."
+  },
+  {
+    "bien_so": "I.415",
+    "noi_dung": "Mũi tên chỉ hướng đi. Dùng để chỉ dẫn hướng đi đến một địa danh lân cận tiếp theo và khoảng cách đến nơi đó."
+  },
+  {
+    "bien_so": "I.416",
+    "noi_dung": "Đường tránh. Dùng để chỉ dẫn lối đi đường tránh, đường vòng trong trường hợp đường cấm (ví dụ: đường, cầu bị tắc hoặc đang thi công)."
+  },
+  {
+    "bien_so": "I.417a",
+    "noi_dung": "Chỉ hướng đường phải đi cho từng loại xe. Dùng để chỉ hướng đường phải đi cho từng loại xe (ví dụ: cấm hoặc hạn chế) để đến một khu dân cư tiếp theo."
+  },
+  {
+    "bien_so": "I.417b",
+    "noi_dung": "Chỉ hướng đường phải đi cho từng loại xe. Dùng để chỉ hướng đường phải đi cho từng loại xe (ví dụ: cấm hoặc hạn chế) để đến một khu dân cư tiếp theo."
+  },
+  {
+    "bien_so": "I.417c",
+    "noi_dung": "Chỉ hướng đường phải đi cho từng loại xe. Dùng để chỉ hướng đường phải đi cho từng loại xe (ví dụ: cấm hoặc hạn chế) để đến một khu dân cư tiếp theo."
+  },
+  {
+    "bien_so": "I.418",
+    "noi_dung": "Lối đi ở những vị trí cấm rẽ. Dùng để chỉ lối đi ở các nơi đường giao nhau bị cấm rẽ. Biển được đặt ở nơi đường giao nhau trước đường cấm rẽ."
+  },
+  {
+    "bien_so": "I.419a",
+    "noi_dung": "Chỉ dẫn địa giới. Dùng để chỉ dẫn địa giới hành chính giữa các thành phố, tỉnh, huyện. Áp dụng cho các tuyến đường thông thường."
+  },
+  {
+    "bien_so": "I.419b",
+    "noi_dung": "Chỉ dẫn địa giới trên tuyến đường đối ngoại. Dùng để chỉ dẫn địa giới hành chính. Áp dụng cho các tuyến đường đối ngoại và các tuyến đường có nhiều người nước ngoài đi lại."
+  },
+  {
+    "bien_so": "I.422a",
+    "noi_dung": "Di tích lịch sử. Dùng để chỉ dẫn những nơi có di tích lịch sử hoặc danh lam thắng cảnh. Áp dụng cho các tuyến đường thông thường."
+  },
+  {
+    "bien_so": "I.422b",
+    "noi_dung": "Di tích lịch sử trên tuyến đường đối ngoại. Dùng để chỉ dẫn những nơi có di tích lịch sử hoặc danh lam thắng cảnh. Áp dụng cho các tuyến đường đối ngoại và các tuyến đường có nhiều người nước ngoài đi lại."
+  },
+  {
+    "bien_so": "I.423a",
+    "noi_dung": "Vị trí người đi bộ sang ngang. Dùng để chỉ dẫn người đi bộ và người tham gia giao thông biết vị trí dành cho người đi bộ sang ngang."
+  },
+  {
+    "bien_so": "I.423b",
+    "noi_dung": "Vị trí người đi bộ sang ngang. Dùng để chỉ dẫn người đi bộ và người tham gia giao thông biết vị trí dành cho người đi bộ sang ngang."
+  },
+  {
+    "bien_so": "I.423c",
+    "noi_dung": "Điểm bắt đầu đường đi bộ. Biển dùng để chỉ dẫn cho người đi bộ và lái xe biết nơi bắt đầu đoạn đường dành cho người đi bộ."
+  },
+  {
+    "bien_so": "I.424a",
+    "noi_dung": "Cầu vượt qua đường cho người đi bộ. Biển dùng để chỉ dẫn cho người đi bộ sử dụng cầu vượt qua đường (theo hướng mũi tên)."
+  },
+  {
+    "bien_so": "I.424b",
+    "noi_dung": "Cầu vượt qua đường cho người đi bộ. Biển dùng để chỉ dẫn cho người đi bộ sử dụng cầu vượt qua đường (theo hướng mũi tên)."
+  },
+  {
+    "bien_so": "I.424c",
+    "noi_dung": "Hầm chui qua đường cho người đi bộ. Biển dùng để chỉ dẫn cho người đi bộ sử dụng hầm chui qua đường (theo hướng mũi tên)."
+  },
+  {
+    "bien_so": "I.424d",
+    "noi_dung": "Hầm chui qua đường cho người đi bộ. Biển dùng để chỉ dẫn cho người đi bộ sử dụng hầm chui qua đường (theo hướng mũi tên)."
+  },
+  {
+    "bien_so": "I.425",
+    "noi_dung": "Bệnh viện. Biển dùng để chỉ dẫn sắp đến cơ sở điều trị bệnh. Gặp biển này, người tham gia giao thông cần đi chậm, chú ý và không sử dụng còi."
+  },
+  {
+    "bien_so": "I.426",
+    "noi_dung": "Trạm cấp cứu. Biển dùng để chỉ dẫn nơi có trạm cấp cứu y tế ở gần đường."
+  },
+  {
+    "bien_so": "I.427a",
+    "noi_dung": "Trạm sửa chữa. Biển dùng để chỉ dẫn nơi đặt xưởng, trạm chuyên phục vụ sửa chữa ôtô, xe máy hỏng trên đường."
+  },
+  {
+    "bien_so": "I.427b",
+    "noi_dung": "Công trình kiểm soát tải trọng xe. Biển dùng để chỉ dẫn nơi đặt Công trình kiểm soát tải trọng xe."
+  },
+  {
+    "bien_so": "I.428a",
+    "noi_dung": "Cửa hàng xăng dầu. Biển dùng để chỉ dẫn những nơi có đặt cửa hàng xăng, dầu phục vụ cho phương tiện giao thông."
+  },
+  {
+    "bien_so": "I.428b",
+    "noi_dung": "Trạm nạp điện. Biển dùng để chỉ dẫn những nơi có trạm nạp điện phục vụ cho phương tiện giao thông."
+  },
+  {
+    "bien_so": "I.428c",
+    "noi_dung": "Cửa hàng xăng dầu và Trạm nạp điện. Biển dùng để chỉ dẫn những nơi có cửa hàng xăng, dầu và trạm nạp điện."
+  },
+  {
+    "bien_so": "I.429",
+    "noi_dung": "Nơi rửa xe. Biển dùng để chỉ dẫn những nơi có bố trí dịch vụ rửa xe."
+  },
+  {
+    "bien_so": "I.430",
+    "noi_dung": "Điện thoại. Biển dùng để chỉ dẫn những nơi có đặt trạm điện thoại công cộng chuyên phục vụ khách đi đường."
+  },
+  {
+    "bien_so": "I.431",
+    "noi_dung": "Trạm dừng nghỉ. Biển dùng để chỉ dẫn những nơi có các dịch vụ phục vụ khách đi đường như ăn uống, nghỉ ngơi, cung cấp nhiên liệu..."
+  },
+  {
+    "bien_so": "I.432",
+    "noi_dung": "Khách sạn. Biển dùng để chỉ dẫn nơi có khách sạn phục vụ khách đi đường."
+  },
+  {
+    "bien_so": "I.433a",
+    "noi_dung": "Nơi nghỉ mát. Biển dùng để chỉ dẫn nơi nghỉ mát."
+  },
+  {
+    "bien_so": "I.433b",
+    "noi_dung": "Nơi cắm trại. Biển dùng để chỉ dẫn sắp đến nơi có vị trí cắm trại."
+  },
+  {
+    "bien_so": "I.433c",
+    "noi_dung": "Nơi dành cho nhà lưu động. Biển dùng để chỉ dẫn sắp đến nơi tập kết nhà lưu động."
+  },
+  {
+    "bien_so": "I.433d",
+    "noi_dung": "Nơi cắm trại và nhà lưu động. Biển dùng để chỉ dẫn sắp đến nơi có vị trí cắm trại và nơi tập kết nhà lưu động."
+  },
+  {
+    "bien_so": "I.433e",
+    "noi_dung": "Nhà trọ (Youth Hostel). Biển dùng để chỉ dẫn sắp đến nơi có nhà trọ."
+  },
+  {
+    "bien_so": "I.434a",
+    "noi_dung": "Bến xe buýt. Biển dùng để chỉ dẫn chỗ dừng đỗ xe buýt cho khách lên xuống. Nếu không phải bến xe theo quy định, biển sẽ ghi 'Điểm dừng xe buýt'."
+  },
+  {
+    "bien_so": "I.434b",
+    "noi_dung": "Bến xe tải. Biển dùng để chỉ dẫn khu vực đỗ xe tải để nhận và trả hàng hoá. Nếu không phải bến xe theo quy định, biển sẽ ghi 'Điểm dừng xe tải'."
+  },
+  {
+    "bien_so": "I.435",
+    "noi_dung": "Bến xe điện. Biển dùng để chỉ dẫn chỗ dừng đỗ xe điện cho khách lên xuống."
+  },
+  {
+    "bien_so": "I.436",
+    "noi_dung": "Trạm cảnh sát giao thông. Biển dùng để chỉ dẫn nơi đặt trạm cảnh sát giao thông. Các phương tiện phải giảm tốc độ đến mức an toàn và không được vượt khi đi qua khu vực này."
+  },
+  {
+    "bien_so": "I.439",
+    "noi_dung": "Tên cầu. Biển dùng để chỉ dẫn tên cầu, thường đặt ở hai đầu cầu. Biển ghi tên cầu, lý trình và tên đường."
+  },
+  {
+    "bien_so": "I.440",
+    "noi_dung": "Đoạn đường thi công. Biển dùng để chỉ dẫn những đoạn đường đang thi công sửa chữa hoặc nâng cấp. Biển được đặt ở hai đầu đoạn đường thi công."
+  },
+  {
+    "bien_so": "I.441a",
+    "noi_dung": "Báo hiệu phía trước có công trường thi công. Biển dùng để báo cho người tham gia giao thông biết phía trước có công trường (thường đặt ở cự ly 500m trước công trường)."
+  },
+  {
+    "bien_so": "I.441b",
+    "noi_dung": "Báo hiệu phía trước có công trường thi công. Biển dùng để báo cho người tham gia giao thông biết phía trước có công trường (thường đặt ở cự ly 100m trước công trường)."
+  },
+  {
+    "bien_so": "I.441c",
+    "noi_dung": "Báo hiệu phía trước có công trường thi công. Biển dùng để báo cho người tham gia giao thông biết phía trước có công trường (thường đặt ở cự ly 50m trước công trường)."
+  },
+  {
+    "bien_so": "I.442",
+    "noi_dung": "Chợ. Biển dùng để báo sắp đến khu vực có chợ gần đường, yêu cầu xe cơ giới qua lại khu vực này phải chú ý quan sát và giảm tốc độ."
+  },
+  {
+    "bien_so": "I.443",
+    "noi_dung": "Xe kéo rơ-moóc. Biển dùng để báo hiệu xe có kéo moóc hoặc xe kéo xe, được đặt trên nóc cabin xe kéo."
+  },
+  {
+    "bien_so": "I.444a",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Ga tàu. Biển đặt ở trước nơi đường giao nhau chỉ hướng vào ga xe lửa."
+  },
+  {
+    "bien_so": "I.444b",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Sân bay. Biển đặt ở trước nơi đường giao nhau với đường vào sân bay."
+  },
+  {
+    "bien_so": "I.444c",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Bãi đậu xe. Biển đặt ở trước nơi đường giao nhau với đường vào bãi đậu xe."
+  },
+  {
+    "bien_so": "I.444d",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Bến xe khách đường dài. Biển đặt ở trước nơi đường giao nhau với đường vào bến xe khách đường dài."
+  },
+  {
+    "bien_so": "I.444e",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Trạm cấp cứu. Biển đặt ở nơi đường giao nhau với đường vào bệnh viện và trạm cấp cứu."
+  },
+  {
+    "bien_so": "I.444f",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Bến tàu khách. Biển đặt ở trước nơi đường giao nhau với đường vào bến tàu khách."
+  },
+  {
+    "bien_so": "I.444g",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Khu danh thắng và du lịch. Biển đặt ở trước nơi đường giao nhau với đường vào khu danh thắng và du lịch."
+  },
+  {
+    "bien_so": "I.444h",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Trạm xăng. Biển đặt ở trước nơi đường giao nhau với đường vào trạm bán xăng dầu."
+  },
+  {
+    "bien_so": "I.444i",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Trạm rửa xe. Biển đặt ở trước nơi đường giao nhau với đường vào trạm phục vụ rửa xe."
+  },
+  {
+    "bien_so": "I.444j",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Bến phà. Biển đặt ở trước nơi đường giao nhau với đường ra bến phà."
+  },
+  {
+    "bien_so": "I.444k",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Ga tàu điện ngầm. Biển đặt ở nơi đường giao nhau với đường vào ga tàu điện ngầm."
+  },
+  {
+    "bien_so": "I.444l",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Khu dịch vụ (Trạm dừng nghỉ). Biển đặt ở trước nơi đường giao nhau với đường vào trạm dừng nghỉ."
+  },
+  {
+    "bien_so": "I.444m",
+    "noi_dung": "Biển báo chỉ dẫn địa điểm - Trạm sửa chữa xe. Biển đặt ở trước nơi đường giao nhau với đường vào trạm sửa chữa xe."
+  },
+  {
+    "bien_so": "I.445a",
+    "noi_dung": "Biển báo kiểu mô tả tình trạng đường - Đường trơn. Biển báo đường trơn, yêu cầu phải chạy chậm."
+  },
+  {
+    "bien_so": "I.445b",
+    "noi_dung": "Biển báo kiểu mô tả tình trạng đường - Đường dốc. Biển báo đường dốc, yêu cầu đi chậm và lái xe cẩn thận."
+  },
+  {
+    "bien_so": "I.445c",
+    "noi_dung": "Biển báo kiểu mô tả tình trạng đường - Sương mù. Biển báo đoạn đường sương mù, tầm nhìn hạn chế, yêu cầu đi chậm và tập trung quan sát."
+  },
+  {
+    "bien_so": "I.445d",
+    "noi_dung": "Biển báo kiểu mô tả tình trạng đường - Nền đường yếu. Biển báo đoạn đường có nền đường yếu, sụt lún, không bằng phẳng, yêu cầu đi chậm."
+  },
+  {
+    "bien_so": "I.445e",
+    "noi_dung": "Biển báo kiểu mô tả tình trạng đường - Xe lớn đi bên phải. Biển hướng dẫn xe lớn hoặc quá khổ đi tốc độ thấp phải đi sát về bên phải."
+  },
+  {
+    "bien_so": "I.445f",
+    "noi_dung": "Biển báo kiểu mô tả tình trạng đường - Gió ngang mạnh. Biển báo khu vực thường có gió ngang cường độ mạnh (ví dụ: cầu lớn, cửa núi)."
+  },
+  {
+    "bien_so": "I.445g",
+    "noi_dung": "Biển báo kiểu mô tả tình trạng đường - Đoạn đường hay xảy ra tai nạn. Biển đặt trước đoạn đường hay xảy ra tai nạn."
+  },
+  {
+    "bien_so": "I.445h",
+    "noi_dung": "Biển báo kiểu mô tả tình trạng đường - Đường xuống dốc liên tục. Biển nhắc nhở lái xe đi chậm, đi sát bên phải."
+  },
+  {
+    "bien_so": "I.446",
+    "noi_dung": "Nơi đỗ xe dành cho người khuyết tật. Biển dùng để báo hiệu nơi đỗ xe dành cho người khuyết tật."
+  },
+  {
+    "bien_so": "I.447a",
+    "noi_dung": "Cầu vượt liên thông. Biển đặt tại vị trí trước khi vào cầu vượt có tổ chức giao thông liên thông giữa các tuyến (Mẫu a)."
+  },
+  {
+    "bien_so": "I.447b",
+    "noi_dung": "Cầu vượt liên thông. Biển đặt tại vị trí trước khi vào cầu vượt có tổ chức giao thông liên thông giữa các tuyến (Mẫu b)."
+  },
+  {
+    "bien_so": "I.447c",
+    "noi_dung": "Cầu vượt liên thông. Biển đặt tại vị trí trước khi vào cầu vượt có tổ chức giao thông liên thông giữa các tuyến (Mẫu c)."
+  },
+  {
+    "bien_so": "I.447d",
+    "noi_dung": "Cầu vượt liên thông. Biển đặt tại vị trí trước khi vào cầu vượt có tổ chức giao thông liên thông giữa các tuyến (Mẫu d)."
+  },
+  {
+    "bien_so": "I.448",
+    "noi_dung": "Làn đường cứu nạn hay làn dừng xe khẩn cấp. Biển dùng để chỉ dẫn cho người tham gia giao thông biết vị trí và khoảng cách có làn cứu nạn (hay làn thoát xe khẩn cấp)."
+  },
+  {
+    "bien_so": "I.449",
+    "noi_dung": "Biển tên đường. Biển dùng để báo tên đường cho các tuyến đường đối ngoại, có nền màu xanh đậm, chữ màu trắng."
+  },
+  {
+    "bien_so": "S.501",
+    "noi_dung": "Phạm vi tác dụng của biển. Biển S.501 dùng để thông báo chiều dài đoạn đường nguy hiểm, cấm, hiệu lệnh, hoặc hạn chế (đặt bên dưới biển báo chính). Chiều dài ghi trên biển tính bằng mét (m)."
+  },
+  {
+    "bien_so": "S.502",
+    "noi_dung": "Khoảng cách đến đối tượng báo hiệu. Biển S.502 dùng để thông báo khoảng cách thực tế từ vị trí đặt biển đến đối tượng báo hiệu ở phía trước (ví dụ: nơi cấm, nơi nguy hiểm...). Con số trên biển tính bằng mét (m)."
+  },
+  {
+    "bien_so": "S.503a",
+    "noi_dung": "Hướng tác dụng của biển. Biển S.503a (mũi tên sang phải) đặt dưới biển cấm hoặc hiệu lệnh, chỉ hướng tác dụng của biển là hướng vuông góc bên phải."
+  },
+  {
+    "bien_so": "S.503b",
+    "noi_dung": "Hướng tác dụng của biển. Biển S.503b (mũi tên hai bên) đặt dưới biển cấm hoặc hiệu lệnh, chỉ hướng tác dụng của biển là cả hai hướng vuông góc (trái và phải)."
+  },
+  {
+    "bien_so": "S.503c",
+    "noi_dung": "Hướng tác dụng của biển. Biển S.503c (mũi tên sang trái) đặt dưới biển cấm hoặc hiệu lệnh, chỉ hướng tác dụng của biển là hướng vuông góc bên trái."
+  },
+  {
+    "bien_so": "S.503d",
+    "noi_dung": "Hướng tác dụng của biển. Biển S.503d (mũi tên song song chỉ về phía trước) đặt dưới biển cấm dừng/đỗ (P.130, P.131), báo hiệu kết thúc phạm vi tác dụng của biển."
+  },
+  {
+    "bien_so": "S.503e",
+    "noi_dung": "Hướng tác dụng của biển. Biển S.503e (mũi tên song song hai chiều) đặt dưới biển cấm dừng/đỗ (P.130, P.131), báo hiệu phạm vi tác dụng của biển là cả phía trước và phía sau biển (dùng để nhắc lại)."
+  },
+  {
+    "bien_so": "S.503f",
+    "noi_dung": "Hướng tác dụng của biển. Biển S.503f (mũi tên song song chỉ về phía sau) đặt dưới biển cấm dừng/đỗ (P.130, P.131), báo hiệu bắt đầu phạm vi tác dụng của biển."
+  },
+  {
+    "bien_so": "S.504",
+    "noi_dung": "Làn đường. Biển S.504 được đặt bên trên làn đường và dưới các biển báo cấm, biển hiệu lệnh hay đèn tín hiệu để chỉ làn đường chịu hiệu lực của biển báo hay đèn tín hiệu."
+  },
+  {
+    "bien_so": "S.505a",
+    "noi_dung": "Loại xe. Biển S.505a được đặt bên dưới các biển báo cấm, biển hiệu lệnh hay biển chỉ dẫn để chỉ loại xe chịu hiệu lực của biển báo."
+  },
+  {
+    "bien_so": "S.505b",
+    "noi_dung": "Loại xe hạn chế qua cầu. Biển S.505b đặt bên dưới biển P.106a (Cấm xe ôtô tải) để chỉ các loại xe tải chịu hiệu lực và trọng tải toàn bộ xe cho phép tương ứng."
+  },
+  {
+    "bien_so": "S.505c",
+    "noi_dung": "Tải trọng trục hạn chế qua cầu. Biển S.505c đặt bên dưới biển P.106a (Cấm ôtô xe tải) để chỉ các loại xe tải có tải trọng trục lớn nhất cho phép tương ứng với mỗi loại trục (trục đơn, trục kép, trục ba)."
+  },
+  {
+    "bien_so": "S.506a",
+    "noi_dung": "Hướng đường ưu tiên. Biển S.506a đặt dưới biển I.401 (Bắt đầu đường ưu tiên) để chỉ dẫn cho người tham gia giao thông biết hướng đường ưu tiên ở ngã tư."
+  },
+  {
+    "bien_so": "S.506b",
+    "noi_dung": "Hướng đường ưu tiên. Biển S.506b đặt dưới biển W.208 (Giao nhau với đường ưu tiên) hoặc R.122 (Dừng lại) trên đường không ưu tiên để chỉ dẫn hướng đường ưu tiên ở ngã tư."
+  },
+  {
+    "bien_so": "S.507",
+    "noi_dung": "Hướng rẽ. Biển S.507 được sử dụng độc lập để báo trước chỗ rẽ nguy hiểm và để chỉ hướng rẽ, đặc biệt ở nơi khó nhận biết hướng đường."
+  },
+  {
+    "bien_so": "S.508a",
+    "noi_dung": "Biểu thị thời gian. Biển S.508a đặt dưới biển cấm hoặc hiệu lệnh để quy định phạm vi thời gian hiệu lực của biển (ví dụ: một khoảng thời gian trong ngày)."
+  },
+  {
+    "bien_so": "S.508b",
+    "noi_dung": "Biểu thị thời gian. Biển S.508b đặt dưới biển cấm hoặc hiệu lệnh để quy định phạm vi thời gian hiệu lực của biển (ví dụ: ngày chẵn/lẻ hoặc thứ trong tuần)."
+  },
+  {
+    "bien_so": "S.509a",
+    "noi_dung": "Thuyết minh biển chính - Chiều cao an toàn. Biển S.509a đặt bên dưới biển W.239 (Đường cáp điện ở phía trên) để chỉ rõ chiều cao an toàn cho phương tiện đi qua."
+  },
+  {
+    "bien_so": "S.509b",
+    "noi_dung": "Thuyết minh biển chính - Cấm đỗ xe. Biển S.509b đặt bên dưới biển P.130 hoặc P.131 (Cấm dừng/đỗ xe) để làm rõ thông tin cấm."
+  },
+  {
+    "bien_so": "S.510a",
+    "noi_dung": "Chú ý đường trơn có băng tuyết. Biển S.510a dùng để cảnh báo đường trơn, có tuyết trong những ngày trời có tuyết."
+  },
+  {
+    "bien_so": "S.510b",
+    "noi_dung": "Chú ý đường sắt. Biển S.510b dùng để cảnh báo khi rẽ vào đường nhánh sẽ có giao cắt với đường sắt (khoảng cách dưới 100 m)."
+  },
+  {
+    "bien_so": "S.G,7",
+    "noi_dung": "Địa điểm cắm trại. Biển S.G,7 dùng để chỉ dẫn tới địa điểm cắm trại."
+  },
+  {
+    "bien_so": "S.G,8",
+    "noi_dung": "Địa điểm nhà trọ. Biển S.G,8 dùng để chỉ dẫn tới địa điểm nhà trọ."
+  },
+  {
+    "bien_so": "S.G,9b",
+    "noi_dung": "Chỉ dẫn tới điểm đỗ xe dành cho lái xe muốn sử dụng phương tiện công cộng. Biển dùng để chỉ dẫn tới địa điểm đỗ xe dành cho xe có lái xe muốn sử dụng phương tiện công cộng."
+  },
+  {
+    "bien_so": "S.G,11a",
+    "noi_dung": "Chỉ dẫn số lượng làn và hướng đi cho từng làn. Biển S.G,11a dùng để thông báo cho lái xe biết số làn và hướng đi của từng làn xe."
+  },
+  {
+    "bien_so": "S.G,11c",
+    "noi_dung": "Chỉ dẫn số lượng làn và hướng đi cho từng làn. Biển S.G,11c dùng để thông báo cho lái xe biết số làn và hướng đi của từng làn xe."
+  },
+  {
+    "bien_so": "S.G,12a",
+    "noi_dung": "Chỉ dẫn làn đường không lưu thông. Biển S.G,12a dùng để chỉ dẫn cho lái xe biết làn đường không lưu thông."
+  },
+  {
+    "bien_so": "S.G,12b",
+    "noi_dung": "Chỉ dẫn làn đường không lưu thông. Biển S.G,12b dùng để chỉ dẫn cho lái xe biết làn đường không lưu thông."
+  },
+  {
+    "bien_so": "S.H,6",
+    "noi_dung": "Ngoại lệ. Biển S.H,6 dùng để chỉ các trường hợp mà biển cấm hoặc hạn chế không áp dụng cho một nhóm đối tượng tham gia giao thông nào đó."
+  },
+  {
+    "bien_so": "IE.450a",
+    "noi_dung": "Sơ đồ, khoảng cách đến nút giao. Biển IE.450a dùng để chỉ dẫn, báo trước khoảng cách sắp đến nút giao với đường dẫn vào đường cao tốc."
+  },
+  {
+    "bien_so": "IE.450b",
+    "noi_dung": "Sơ đồ đến đường dẫn vào đường cao tốc. Biển IE.450b dùng để chỉ dẫn sơ đồ đến đường dẫn vào đường cao tốc."
+  },
+  {
+    "bien_so": "IE.451a",
+    "noi_dung": "Khoảng cách đến lối vào đường cao tốc. Biển IE.451a dùng để báo trước khoảng cách đến lối vào đường cao tốc, được đặt trên đường dẫn vào đường cao tốc."
+  },
+  {
+    "bien_so": "IE.451b",
+    "noi_dung": "Lối vào đường cao tốc. Biển IE.451b dùng để chỉ dẫn lối vào đường cao tốc, đặt ở vị trí cuối đường dẫn vào đường cao tốc."
+  },
+  {
+    "bien_so": "IE.452",
+    "noi_dung": "Bắt đầu đường cao tốc. Biển IE.452 dùng để chỉ dẫn bắt đầu đường cao tốc, bao gồm thông tin về tên, ký hiệu đường cao tốc, tốc độ tối đa và tốc độ tối thiểu."
+  },
+  {
+    "bien_so": "IE.453a",
+    "noi_dung": "Khoảng cách đến điểm kết thúc đường cao tốc. Biển IE.453a dùng để chỉ dẫn khoảng cách đến điểm kết thúc đường cao tốc."
+  },
+  {
+    "bien_so": "IE.453b",
+    "noi_dung": "Điểm kết thúc đường cao tốc. Biển IE.453b dùng để chỉ dẫn điểm kết thúc đường cao tốc."
+  },
+  {
+    "bien_so": "IE.454",
+    "noi_dung": "Khoảng cách đến lối ra phía trước. Biển IE.454 dùng để chỉ dẫn khoảng cách đến lối ra phía trước, thường đặt cách nút giao 1km hoặc 2km."
+  },
+  {
+    "bien_so": "IE.455a",
+    "noi_dung": "Khoảng cách đến các lối ra tiếp theo (2 lối ra). Biển IE.455 dùng để báo trước khoảng cách đến các lối ra tiếp theo (ví dụ: 2 lối ra)."
+  },
+  {
+    "bien_so": "IE.455b",
+    "noi_dung": "Khoảng cách đến các lối ra tiếp theo (3 lối ra). Biển IE.455 dùng để báo trước khoảng cách đến các lối ra tiếp theo (ví dụ: 3 lối ra)."
+  },
+  {
+    "bien_so": "IE.456a",
+    "noi_dung": "Thông báo khoảng cách đến trạm dừng nghỉ. Biển IE.456a dùng để thông báo khoảng cách sắp đến trạm dừng nghỉ."
+  },
+  {
+    "bien_so": "IE.456b",
+    "noi_dung": "Chỉ dẫn hướng rẽ vào trạm dừng nghỉ. Biển IE.456b đặt cách nút giao vào trạm dừng nghỉ khoảng 150m."
+  },
+  {
+    "bien_so": "IE.456c",
+    "noi_dung": "Chỉ dẫn lối vào trạm dừng nghỉ. Biển IE.456c đặt ngay trước lối vào trạm dừng nghỉ."
+  },
+  {
+    "bien_so": "IE.457a",
+    "noi_dung": "Chỉ dẫn khoảng cách đến nơi đỗ xe. Biển IE.457a dùng để chỉ dẫn khoảng cách đến nơi đỗ xe trong trạm dừng nghỉ."
+  },
+  {
+    "bien_so": "IE.457b",
+    "noi_dung": "Chỉ dẫn hướng rẽ đến nơi đỗ xe. Biển IE.457b dùng để chỉ dẫn hướng rẽ đến vị trí bãi đỗ xe trong trạm dừng nghỉ."
+  },
+  {
+    "bien_so": "IE.458",
+    "noi_dung": "Khoảng cách đến các trạm dừng nghỉ tiếp theo. Biển IE.458 dùng để chỉ dẫn khoảng cách đến các trạm dừng nghỉ tiếp theo, đặt tại vị trí ngay sau khi ra khỏi trạm dừng nghỉ."
+  },
+  {
+    "bien_so": "IE.459a",
+    "noi_dung": "Thông báo khoảng cách đến khu tham quan, du lịch. Biển IE.459a dùng để chỉ dẫn khoảng cách sắp đến khu tham quan, du lịch."
+  },
+  {
+    "bien_so": "IE.459b",
+    "noi_dung": "Chỉ dẫn hướng rẽ vào khu tham quan, du lịch. Biển IE.459b đặt cách nút giao vào khu tham quan, du lịch khoảng 150m."
+  },
+  {
+    "bien_so": "IE.460",
+    "noi_dung": "Cột kilômét (cột lý trình). Biển IE.460 dùng để chỉ dẫn cột lý trình kilômét trên đường cao tốc, bao gồm chữ 'Km' và số lý trình."
+  },
+  {
+    "bien_so": "IE.461a",
+    "noi_dung": "Khu dịch vụ công cộng, giải trí. Biển IE.461a dùng để chỉ dẫn khoảng cách đến khu dịch vụ công cộng, giải trí."
+  },
+  {
+    "bien_so": "IE.461b",
+    "noi_dung": "Khu dịch vụ công cộng, giải trí. Biển IE.461b dùng để chỉ dẫn hướng rẽ đến khu dịch vụ công cộng, giải trí."
+  },
+  {
+    "bien_so": "IE.461c",
+    "noi_dung": "Khu dịch vụ công cộng, giải trí. Biển IE.461c dùng để chỉ dẫn hướng rẽ vào khu dịch vụ công cộng."
+  },
+  {
+    "bien_so": "IE.461d",
+    "noi_dung": "Khu dịch vụ công cộng, giải trí. Biển IE.461d dùng để chỉ dẫn hướng rẽ vào khu giải trí."
+  },
+  {
+    "bien_so": "IE.462",
+    "noi_dung": "Tần số trên sóng radio. Biển IE.462 dùng để chỉ dẫn tần số sóng radio để nghe thông tin về tình trạng giao thông, thời tiết trên đường cao tốc."
+  },
+  {
+    "bien_so": "IE.463a",
+    "noi_dung": "Công trình kiểm soát tải trọng xe. Biển IE.463a dùng để chỉ dẫn khoảng cách đến Công trình kiểm soát tải trọng xe."
+  },
+  {
+    "bien_so": "IE.463b",
+    "noi_dung": "Công trình kiểm soát tải trọng xe. Biển IE.463b dùng để chỉ dẫn hướng rẽ vào nơi đặt Công trình kiểm soát tải trọng xe."
+  },
+  {
+    "bien_so": "IE.463c",
+    "noi_dung": "Công trình kiểm soát tải trọng xe. Biển IE.463c dùng để chỉ dẫn lối vào Công trình kiểm soát tải trọng xe."
+  },
+  {
+    "bien_so": "IE.464a",
+    "noi_dung": "Địa điểm và phương hướng. Biển IE.464a dùng để chỉ dẫn địa danh nơi đến và mũi tên cho một làn xe chạy cụ thể, thường đặt trên giá long môn."
+  },
+  {
+    "bien_so": "IE.464b",
+    "noi_dung": "Địa điểm và phương hướng (Hướng ra). Biển IE.464b dùng để chỉ dẫn hướng ra, đặt tại dải phân ngã ba của nhánh rẽ."
+  },
+  {
+    "bien_so": "IE.465a",
+    "noi_dung": "Địa điểm và khoảng cách. Biển IE.465a dùng để chỉ dẫn địa điểm và khoảng cách (ví dụ: 2 địa điểm) đến đích. Biển đặt bên lề đường ngay khi vào đường cao tốc."
+  },
+  {
+    "bien_so": "IE.465b",
+    "noi_dung": "Địa điểm và khoảng cách. Biển IE.465b dùng để chỉ dẫn địa điểm và khoảng cách (ví dụ: 3 địa điểm) đến đích. Biển đặt bên lề đường ngay khi vào đường cao tốc."
+  },
+  {
+    "bien_so": "IE.466",
+    "noi_dung": "Sơ đồ lối ra một chiều. Biển IE.466 dùng để chỉ dẫn sơ đồ lối ra một chiều tại các nút giao trên đường cao tốc, thường bố trí trên giá long môn."
+  },
+  {
+    "bien_so": "IE.467a",
+    "noi_dung": "Vị trí nhập làn. Biển IE.467a dùng để chỉ dẫn vị trí nhập làn xe, đặc biệt tại các nút giao có lưu lượng xe lớn."
+  },
+  {
+    "bien_so": "IE.467b",
+    "noi_dung": "Khoảng cách đến vị trí nhập làn. Biển IE.467b dùng để báo trước cho lái xe sắp đến vị trí nhập làn xe."
+  },
+  {
+    "bien_so": "IE.468a",
+    "noi_dung": "Chướng ngại vật phía trước. Biển IE.468a dùng để cảnh báo có chướng ngại vật phía trước và chỉ dẫn đi theo hướng bên trái."
+  },
+  {
+    "bien_so": "IE.468b",
+    "noi_dung": "Chướng ngại vật phía trước. Biển IE.468b dùng để cảnh báo có chướng ngại vật phía trước và chỉ dẫn đi được cả hai hướng (trái và phải)."
+  },
+  {
+    "bien_so": "IE.468c",
+    "noi_dung": "Chướng ngại vật phía trước. Biển IE.468c dùng để cảnh báo có chướng ngại vật phía trước và chỉ dẫn đi theo hướng bên phải."
+  },
+  {
+    "bien_so": "IE.469",
+    "noi_dung": "Tiêu phản quang (chỉ dẫn hướng rẽ). Biển IE.469 dùng để chỉ dẫn hướng rẽ, nhắc người điều khiển phương tiện chuẩn bị đổi hướng đi khi sắp vào đường cong nguy hiểm, có bán kính cong nhỏ."
+  },
+  {
+    "bien_so": "IE.470",
+    "noi_dung": "Số điện thoại khẩn cấp. Biển IE.470 dùng để cung cấp số điện thoại khẩn cấp cho người điều khiển phương tiện trong trường hợp khẩn cấp, xảy ra sự cố, tai nạn trên đường cao tốc."
+  },
+  {
+    "bien_so": "IE.471",
+    "noi_dung": "Giữ khoảng cách lái xe an toàn. Biển IE.471 dùng để thông báo cho người điều khiển phương tiện biết để giữ khoảng cách lái xe an toàn khi lưu thông trên đường cao tốc."
+  },
+  {
+    "bien_so": "IE.472a",
+    "noi_dung": "Khoảng cách đến trạm thu phí. Biển IE.472a dùng để thông báo cho người điều khiển phương tiện biết trước khoảng cách sắp đến trạm thu phí."
+  },
+  {
+    "bien_so": "IE.472b",
+    "noi_dung": "Trạm thu phí. Biển IE.472b dùng để thông báo cho người điều khiển phương tiện biết vị trí trạm thu phí."
+  },
+  {
+    "bien_so": "IE.472c",
+    "noi_dung": "Thu phí không dừng. Biển IE.472c dùng để chỉ dẫn làn thu phí không dừng (ETC)."
+  },
+  {
+    "bien_so": "IE.472d",
+    "noi_dung": "Rút thẻ. Biển IE.472d dùng để chỉ dẫn làn rút thẻ (ví dụ: tại đầu vào trạm thu phí kín)."
+  },
+  {
+    "bien_so": "IE.472e",
+    "noi_dung": "Thu phí. Biển IE.472e dùng để chỉ dẫn làn thu phí (ví dụ: làn thu phí thủ công hoặc làn trả tiền)."
+  },
+  {
+    "bien_so": "IE.473",
+    "noi_dung": "Giảm tốc độ (SLOW DOWN). Biển IE.473 dùng để cảnh báo cho người điều khiển phương tiện chú ý lái xe và giảm tốc độ tại khu vực có nguy cơ mất an toàn giao thông, ví dụ như vào đường cong nguy hiểm, trạm thu phí, hoặc khu vực hay có sương mù."
+  },
+  {
+    "bien_so": "IE.474",
+    "noi_dung": "Lối ra (EXIT). Biển IE.474 dùng để chỉ dẫn lối ra khỏi đường cao tốc, được đặt bên lề đường hoặc trên giá kiểu khung tại vị trí trước lối ra."
+  }
+]

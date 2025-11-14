@@ -1,0 +1,50 @@
+# Bỏ qua tất cả file trong Vecto_Database
+/Vecto_Database/
+
+# Bỏ qua các file model nặng
+/model/*.bin
+/model/*.gguf
+/model/*.safetensors
+
+public_test/videos
+train/videos
+models
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# IDEs
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.Trashes
+Thumbs.db
+
+# Data and output directories
+Frames/
+output/
+public_test
+train
+download_videos.py
+>>>>>>> 6fccc19b9c6032dcb0ae1f2a98a47e3cc4f5dcbb
