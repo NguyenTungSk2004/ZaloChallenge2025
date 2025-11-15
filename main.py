@@ -53,12 +53,14 @@ while True:
         tracker.update_track(frame, track_id, bbox, confidence, cls_name)
 
 
-all_caption = []
+all_caption = ""
 # Sau khi tracking, chúng ta sẽ điền vào list frames toàn cục
 for track_id, frameData in tracker.best_frames.items():
     box = frameData.box_info
     vlm_instruction_prompt = f"Question: Describe the surrounding environment and context of the car. Furthermore, what is the location of the traffic sign associated with the bounding box {box.bbox}? Answer:"
     caption_from_vlm = describe_frame_with_prompt(frameData.frame, vlm_instruction_prompt, processor, model) # Sử dụng VLM model và processor toàn cục
-    all_caption.append(f"Caption Frame {track_id}: {caption_from_vlm} Information the traffic sign:[label: '{box.class_name}', score: '{frameData.score}']")
+    all_caption += f"\n Caption Frame {track_id}: {caption_from_vlm} Information the traffic sign:[label: '{box.class_name}', score: '{frameData.score}']"
     
-print(all_caption)
+from modules.qa import lm_generate
+
+lm_generate(all_caption)
