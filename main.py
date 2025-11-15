@@ -1,12 +1,11 @@
-import os
-from ultralytics import YOLO
-from modules.extract_frames import extract_frames_to_queue
-from modules.tracker import BestFrameTracker
-from utils.SaveFrame import save_track_frame
-from modules.vlm import describe_frame_with_prompt
-from transformers import AutoProcessor, AutoModelForImageTextToText
 import torch
+from ultralytics import YOLO
+from transformers import AutoProcessor, AutoModelForImageTextToText
 
+from modules.tracker import BestFrameTracker
+from modules.extract_frames import extract_frames_to_queue
+from modules.vlm import describe_frame_with_prompt
+from config import USE_GPU, USE_BLIP2_GPU
 # Đường dẫn đến thư mục chứa mô hình của bạn
 model_path = './models/blip2-opt-2.7b'
 
@@ -16,10 +15,8 @@ model = AutoModelForImageTextToText.from_pretrained(model_path)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
-model_path_yolo = "models/best.pt" # Đường dẫn cho mô hình YOLO
-video_path = r"train/videos/00b9d4a3_129_clip_002_0009_0015_N.mp4"
-output_dir = r"check_frame/00b9d4a3_129_clip_002_0009_0015_N_best"
-os.makedirs(output_dir, exist_ok=True)
+model_path_yolo = "models/yolo/best.pt" # Đường dẫn cho mô hình YOLO
+video_path = r"E:/Zalo Challenge 2025/traffic_buddy_train+public_test/train/videos/03cde2e3_322_clip_017_0123_0129_N.mp4"
 
 yolo_detector = YOLO(model_path_yolo) # Đổi tên biến mô hình YOLO
 frames_queue = extract_frames_to_queue(video_path)
@@ -55,13 +52,15 @@ while True:
         bbox = (x1, y1, x2, y2)
         tracker.update_track(frame, track_id, bbox, confidence, cls_name)
 
+
+all_caption = ""
 # Sau khi tracking, chúng ta sẽ điền vào list frames toàn cục
-prompt_for_logging = "Hãy mô tả bối cảnh của các frame sau:"
 for track_id, frameData in tracker.best_frames.items():
     box = frameData.box_info
-    
-    # Thay đổi prompt thành chuỗi rỗng để khuyến khích mô hình tự do mô tả hình ảnh
     vlm_instruction_prompt = f"Question: Describe the surrounding environment and context of the car. Furthermore, what is the location of the traffic sign associated with the bounding box {box.bbox}? Answer:"
     caption_from_vlm = describe_frame_with_prompt(frameData.frame, vlm_instruction_prompt, processor, model) # Sử dụng VLM model và processor toàn cục
+    all_caption += f"\n Caption Frame {track_id}: {caption_from_vlm} Information the traffic sign:[label: '{box.class_name}', score: '{frameData.score}']"
     
-    print(f"Caption {track_id}: {caption_from_vlm}")
+from modules.qa import lm_generate
+
+lm_generate(all_caption)
