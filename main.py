@@ -5,7 +5,7 @@ from transformers import AutoProcessor, AutoModelForImageTextToText
 from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
 from modules.vlm import describe_frame_with_prompt
-
+from config import USE_GPU, USE_BLIP2_GPU
 # Đường dẫn đến thư mục chứa mô hình của bạn
 model_path = './models/blip2-opt-2.7b'
 
@@ -15,8 +15,8 @@ model = AutoModelForImageTextToText.from_pretrained(model_path)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
-model_path_yolo = "models/best.pt" # Đường dẫn cho mô hình YOLO
-video_path = r"train/videos/03cde2e3_322_clip_017_0123_0129_N.mp4"
+model_path_yolo = "models/yolo/best.pt" # Đường dẫn cho mô hình YOLO
+video_path = r"E:/Zalo Challenge 2025/traffic_buddy_train+public_test/train/videos/03cde2e3_322_clip_017_0123_0129_N.mp4"
 
 yolo_detector = YOLO(model_path_yolo) # Đổi tên biến mô hình YOLO
 frames_queue = extract_frames_to_queue(video_path)
