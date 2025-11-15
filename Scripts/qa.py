@@ -6,9 +6,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.prompts import PromptTemplate
 from sentence_transformers import CrossEncoder
 
-# =========================================================
-# 1. LOAD EMBEDDING ONCE
-# =========================================================
+# 1. LOAD EMBEDDING
 EMB_PATH = "E:/Zalo Challenge 2025/Build_RAG/model/bkai_vn_bi_encoder"
 embeddings = HuggingFaceEmbeddings(
     model_name=EMB_PATH,
@@ -16,9 +14,7 @@ embeddings = HuggingFaceEmbeddings(
     encode_kwargs={'normalize_embeddings': False}
 )
 
-# =========================================================
 # 2. LOAD CHROMA VECTOR DB (BIỂN BÁO)
-# =========================================================
 DB_PATH = "E:/Zalo Challenge 2025/module_rag/Vecto_Database/db_bienbao_2"
 vectordb = Chroma(
     persist_directory=DB_PATH,
@@ -26,10 +22,7 @@ vectordb = Chroma(
 )
 retriever = vectordb.as_retriever(search_kwargs={"k": 8})
 
-
-# =========================================================
 # 3. RERANKER
-# =========================================================
 RERANK_PATH = "E:/Zalo Challenge 2025/Build_RAG/model/ViRanker"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 reranker = CrossEncoder(RERANK_PATH, device=device)
@@ -43,9 +36,7 @@ def rerank(query, docs, k=3):
     return [d for d, _ in ranked[:k]]
 
 
-# =========================================================
 # 4. LOAD PHI-3 MINI GGUF – SAFE LOADING
-# =========================================================
 LLM_PATH = "E:/Zalo Challenge 2025/Build_RAG/model/Phi-3-gguf/Phi-3-mini-4k-instruct-q4.gguf"
 
 llm = LlamaCpp(
@@ -59,9 +50,7 @@ llm = LlamaCpp(
     verbose=False
 )
 
-# =========================================================
 # 5. PROMPT
-# =========================================================
 def format_docs(docs):
     out = ""
     for d in docs:
@@ -88,9 +77,7 @@ Không suy diễn. Không thêm kiến thức ngoài context.
 
 prompt = PromptTemplate.from_template(TEMPLATE)
 
-# =========================================================
 # 6. PUBLIC FUNCTION: lm_generate()
-# =========================================================
 def lm_generate(question: str) -> str:
     """Hàm public để team gọi từ pipeline chính"""
 
