@@ -6,6 +6,10 @@ class BestFrameTracker:
     def __init__(self):
         self.best_frames: dict[int, FrameData] = {}  # track_id: FrameData
     
+
+    def clear_frames(self):
+        self.best_frames = {}
+        
     def update_track(self, frame, track_id, bbox, confidence, cls_name):
         """Cập nhật track với frame mới nếu chất lượng tốt hơn"""
             # Trích xuất vùng đối tượng

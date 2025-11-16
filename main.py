@@ -1,28 +1,80 @@
+from langchain_chroma import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
 import torch
 from ultralytics import YOLO
-from transformers import AutoProcessor, AutoModelForImageTextToText
+from transformers import AutoModelForCausalLM, AutoProcessor, AutoModelForImageTextToText
+from sentence_transformers import CrossEncoder
+from langchain_community.llms import LlamaCpp
 
 from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
 from modules.vlm import describe_frame_with_prompt
 from config import USE_GPU, USE_BLIP2_GPU
-# Đường dẫn đến thư mục chứa mô hình của bạn
-model_path = './models/blip2-opt-2.7b'
+from modules.qa import lm_generate
 
-# Tải bộ xử lý và mô hình
-processor = AutoProcessor.from_pretrained(model_path)
-model = AutoModelForImageTextToText.from_pretrained(model_path)
-device = "cuda" if torch.cuda.is_available() else "cpu"
-model.to(device)
+model_path = "models/blip2-opt-2.7b"
+device_blip = "cuda" if (torch.cuda.is_available() and USE_BLIP2_GPU) else "cpu"
+processor = AutoProcessor.from_pretrained(model_path, use_fast=True)
+model = AutoModelForImageTextToText.from_pretrained(
+    model_path,
+    dtype=torch.float16 if device_blip == "cuda" else torch.float32,
+    low_cpu_mem_usage=True
+).to(device_blip)
 
-model_path_yolo = "models/yolo/best.pt" # Đường dẫn cho mô hình YOLO
-video_path = r"E:/Zalo Challenge 2025/traffic_buddy_train+public_test/train/videos/03cde2e3_322_clip_017_0123_0129_N.mp4"
+model_path_yolo = "models/yolo/best.pt"
+yolo_detector = YOLO(model_path_yolo)
 
-yolo_detector = YOLO(model_path_yolo) # Đổi tên biến mô hình YOLO
-frames_queue = extract_frames_to_queue(video_path)
 tracker = BestFrameTracker()
 
+# LOAD EMBEDDING
+EMB_PATH = "models/bkai_vn_bi_encoder"
+embeddings = HuggingFaceEmbeddings(
+    model_name=EMB_PATH,
+    model_kwargs={'device': 'cuda'},
+    encode_kwargs={'normalize_embeddings': False}
+)
+
+# LOAD CHROMA VECTOR DB (BIỂN BÁO)
+DB_PATH = "Vecto_Database/db_bienbao_2"
+vectordb = Chroma(
+    persist_directory=DB_PATH,
+    embedding_function=embeddings
+)
+retriever = vectordb.as_retriever(search_kwargs={"k": 3})
+
+# RERANKER
+RERANK_PATH = "models/ViRanker"
+device = "cuda" if (torch.cuda.is_available() and USE_BLIP2_GPU) else "cpu"
+reranker = CrossEncoder(RERANK_PATH, device=device)
+
+# 4. LOAD PHI-3 MINI GGUF – SAFE LOADING
+LLM_PATH = "models/Phi-3-gguf/Phi-3-mini-4k-instruct-q4.gguf"
+
+# 1. Load model
+print("Đang load model...")
+llm = AutoModelForCausalLM.from_pretrained(
+    LLM_PATH,
+    model_type="phi3",       # Chỉ định model type là 'phi3'
+    gpu_layers=50,           # Số layer offload lên GPU (thử nghiệm số này, 
+    context_length=4096      # Tương tự n_ctx
+)
+print("Model đã được load xong!")
+
+test_case =         {
+            "id": "testa_0001",
+            "question": "Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường nào?",
+            "choices": [
+                "A. Không có thông tin",
+                "B. Dầu Giây Long Thành",
+                "C. Đường Đỗ Xuân Hợp",
+                "D. Xa Lộ Hà Nội"
+            ],
+            "video_path": "public_test/videos/efc9909e_908_clip_001_0000_0009_Y.mp4"
+        },
+
+frames_queue = extract_frames_to_queue(test_case['video_path'])
 frame_count = 0
+
 while True:
     frame = frames_queue.get()
     if frame is None:
@@ -30,37 +82,48 @@ while True:
 
     frame_count += 1
 
-    # Object detection và tracking
     results = yolo_detector.track(frame, tracker="bytetrack.yaml", verbose=False)
-
     if not results or len(results) == 0:
         continue
 
-    # Xử lý từng object được detect
     for box in results[0].boxes:
-        if box.id is None:  # Bỏ qua nếu không có track ID
+        if box.id is None:
             continue
 
-        # Lấy thông tin box
         x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
         track_id = int(box.id)
-        confidence = float(box.conf)
+        conf = float(box.conf)
         cls_id = int(box.cls)
-        cls_name = results[0].names[cls_id] if hasattr(results[0], "names") else str(cls_id)
+        cls_name = results[0].names[cls_id]
 
-        # Cập nhật tracker
-        bbox = (x1, y1, x2, y2)
-        tracker.update_track(frame, track_id, bbox, confidence, cls_name)
-
+        tracker.update_track(frame, track_id, (x1, y1, x2, y2), conf, cls_name)
 
 all_caption = ""
-# Sau khi tracking, chúng ta sẽ điền vào list frames toàn cục
+
 for track_id, frameData in tracker.best_frames.items():
     box = frameData.box_info
-    vlm_instruction_prompt = f"Question: Describe the surrounding environment and context of the car. Furthermore, what is the location of the traffic sign associated with the bounding box {box.bbox}? Answer:"
-    caption_from_vlm = describe_frame_with_prompt(frameData.frame, vlm_instruction_prompt, processor, model) # Sử dụng VLM model và processor toàn cục
-    all_caption += f"\n Caption Frame {track_id}: {caption_from_vlm} Information the traffic sign:[label: '{box.class_name}', score: '{frameData.score}']"
-    
-from modules.qa import lm_generate
 
-lm_generate(all_caption)
+    prompt = (
+        f"Question: Describe the surrounding environment and context of the car. "
+        f"Furthermore, what is the location of the traffic sign associated with the bounding box {box.bbox}? Answer:"
+    )
+
+    caption = describe_frame_with_prompt(frameData.frame, prompt, processor, model)
+
+    all_caption += (
+        f"\n Caption Frame {track_id}: {caption} "
+        f"Information the traffic sign:[label: '{box.class_name}', score: '{frameData.score}']"
+    )
+# Lấy thông tin từ test_case (đã định nghĩa ở đầu file)
+vlm_description = all_caption  # BẰNG CHỨNG VLM (từ Bước 5)
+question = test_case["question"]
+choices = test_case["choices"]
+
+# Gọi hàm tổng hợp
+final_answer = lm_generate(
+    llm=llm,
+    retriever=retriever,
+    reranker=reranker,
+    vlm_description=vlm_description,
+    question=question + choices,
+)
