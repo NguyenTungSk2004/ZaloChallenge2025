@@ -2,9 +2,19 @@ from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 import torch
 from ultralytics import YOLO
-from transformers import AutoModelForCausalLM, AutoProcessor, AutoModelForImageTextToText
+# NEW IMPORTS FOR 4BIT NF4
+from transformers import (
+    AutoModelForCausalLM,
+    AutoProcessor,
+    AutoModelForImageTextToText,
+    AutoTokenizer,
+    BitsAndBytesConfig
+)
+
 from sentence_transformers import CrossEncoder
-from langchain_community.llms import LlamaCpp
+
+# ❌ COMMENT Llamacpp – no longer used
+# from langchain_community.llms import LlamaCpp
 
 from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
@@ -12,21 +22,49 @@ from modules.vlm import describe_frame_with_prompt
 from config import USE_GPU, USE_BLIP2_GPU
 from modules.qa import lm_generate
 
+# ------------------------------------------------------------
+# 1. NF4 QUANTIZATION CONFIG
+# ------------------------------------------------------------
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",        # NF4 quantization
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_compute_dtype=torch.float16
+)
+
+# ------------------------------------------------------------
+# 2. LOAD BLIP2 VLM (4-BIT NF4)
+# ------------------------------------------------------------
 model_path = "models/blip2-opt-2.7b"
-device_blip = "cuda" if (torch.cuda.is_available() and USE_BLIP2_GPU) else "cpu"
+device_blip = "cuda" if torch.cuda.is_available() and USE_BLIP2_GPU else "cpu"
+
 processor = AutoProcessor.from_pretrained(model_path, use_fast=True)
+
+# OLD (FP16 FLOAT)
+# model = AutoModelForImageTextToText.from_pretrained(
+#     model_path,
+#     dtype=torch.float16 if device_blip == "cuda" else torch.float32,
+#     low_cpu_mem_usage=True
+# ).to(device_blip)
+
+#  NEW – QUANTIZED NF4
 model = AutoModelForImageTextToText.from_pretrained(
     model_path,
-    dtype=torch.float16 if device_blip == "cuda" else torch.float32,
+    quantization_config=bnb_config,
+    device_map="auto",
     low_cpu_mem_usage=True
-).to(device_blip)
+)
 
+# ------------------------------------------------------------
+# YOLO
+# ------------------------------------------------------------
 model_path_yolo = "models/yolo/best.pt"
 yolo_detector = YOLO(model_path_yolo)
-
 tracker = BestFrameTracker()
 
-# LOAD EMBEDDING
+# ------------------------------------------------------------
+# EMBEDDING + CHROMA
+# ------------------------------------------------------------
 EMB_PATH = "models/bkai_vn_bi_encoder"
 embeddings = HuggingFaceEmbeddings(
     model_name=EMB_PATH,
@@ -34,7 +72,6 @@ embeddings = HuggingFaceEmbeddings(
     encode_kwargs={'normalize_embeddings': False}
 )
 
-# LOAD CHROMA VECTOR DB (BIỂN BÁO)
 DB_PATH = "Vecto_Database/db_bienbao_2"
 vectordb = Chroma(
     persist_directory=DB_PATH,
@@ -42,36 +79,57 @@ vectordb = Chroma(
 )
 retriever = vectordb.as_retriever(search_kwargs={"k": 3})
 
+# ------------------------------------------------------------
 # RERANKER
+# ------------------------------------------------------------
 RERANK_PATH = "models/ViRanker"
-device = "cuda" if (torch.cuda.is_available() and USE_BLIP2_GPU) else "cpu"
+device = "cuda" if torch.cuda.is_available() and USE_BLIP2_GPU else "cpu"
 reranker = CrossEncoder(RERANK_PATH, device=device)
 
-# 4. LOAD PHI-3 MINI GGUF – SAFE LOADING
-LLM_PATH = "models/Phi-3-gguf/Phi-3-mini-4k-instruct-q4.gguf"
+# ------------------------------------------------------------
+# 3. LOAD PHI-3 MINI (TRANSFORMERS, 4BIT NF4)
+# ------------------------------------------------------------
 
-# 1. Load model
-print("Đang load model...")
+# OLD LlamaCpp (COMMENT)
+# LLM_PATH = "models/Phi-3-gguf/Phi-3-mini-4k-instruct-q4.gguf"
+# llm = AutoModelForCausalLM.from_pretrained(... llamacpp ...)
+
+#  NEW:
+LLM_PATH = "microsoft/phi-3-mini-4k-instruct"
+
+print("Đang load Phi-3-mini NF4 bằng transformers...")
+
+tokenizer = AutoTokenizer.from_pretrained(LLM_PATH)
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
+
 llm = AutoModelForCausalLM.from_pretrained(
     LLM_PATH,
-    model_type="phi3",       # Chỉ định model type là 'phi3'
-    gpu_layers=50,           # Số layer offload lên GPU (thử nghiệm số này, 
-    context_length=4096      # Tương tự n_ctx
+    quantization_config=bnb_config,   # QUANTIZED 4BIT NF4
+    device_map="auto",
+    low_cpu_mem_usage=True
 )
-print("Model đã được load xong!")
 
-test_case =         {
-            "id": "testa_0001",
-            "question": "Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường nào?",
+print("Phi-3 đã load xong!")
+
+# ------------------------------------------------------------
+# TEST CASE
+# ------------------------------------------------------------
+test_case = {
+            "id": "train_0002",
+            "question": "Phần đường trong video cho phép các phương tiện đi theo hướng nào khi đến nút giao?",
             "choices": [
-                "A. Không có thông tin",
-                "B. Dầu Giây Long Thành",
-                "C. Đường Đỗ Xuân Hợp",
-                "D. Xa Lộ Hà Nội"
+                "A. Đi thẳng",
+                "B. Đi thẳng và rẽ phải",
+                "C. Đi thẳng, rẽ trái và rẽ phải",
+                "D. Rẽ trái và rẽ phải"
             ],
-            "video_path": "public_test/videos/efc9909e_908_clip_001_0000_0009_Y.mp4"
-        },
+            "video_path": "train/videos/2b840c67_386_clip_002_0008_0018_Y.mp4",
+}
 
+# ------------------------------------------------------------
+# EXTRACT FRAMES
+# ------------------------------------------------------------
 frames_queue = extract_frames_to_queue(test_case['video_path'])
 frame_count = 0
 
@@ -98,14 +156,19 @@ while True:
 
         tracker.update_track(frame, track_id, (x1, y1, x2, y2), conf, cls_name)
 
+# ------------------------------------------------------------
+# VLM CAPTIONING
+# ------------------------------------------------------------
 all_caption = ""
 
+# SỬA PROMPT TRONG VÒNG LẶP CAPTIONING
 for track_id, frameData in tracker.best_frames.items():
     box = frameData.box_info
 
+    # Yêu cầu VLM mô tả CẢ HÌNH ẢNH và ĐỌC NỘI DUNG BIỂN BÁO
     prompt = (
-        f"Question: Describe the surrounding environment and context of the car. "
-        f"Furthermore, what is the location of the traffic sign associated with the bounding box {box.bbox}? Answer:"
+        f"Question: Describe the environment and context of the car. "
+        f"Also, what is the **exact text or symbol** visible on the traffic sign associated with the bounding box {box.bbox}? Answer:"
     )
 
     caption = describe_frame_with_prompt(frameData.frame, prompt, processor, model)
@@ -114,16 +177,21 @@ for track_id, frameData in tracker.best_frames.items():
         f"\n Caption Frame {track_id}: {caption} "
         f"Information the traffic sign:[label: '{box.class_name}', score: '{frameData.score}']"
     )
-# Lấy thông tin từ test_case (đã định nghĩa ở đầu file)
-vlm_description = all_caption  # BẰNG CHỨNG VLM (từ Bước 5)
+
+vlm_description = all_caption
 question = test_case["question"]
 choices = test_case["choices"]
 
-# Gọi hàm tổng hợp
+# ------------------------------------------------------------
+# LLM FINAL ANSWER
+# ------------------------------------------------------------
 final_answer = lm_generate(
     llm=llm,
+    tokenizer=tokenizer,          # REQUIRED khi chuyển từ LlamaCPP sang transformers
     retriever=retriever,
     reranker=reranker,
     vlm_description=vlm_description,
-    question=question + choices,
+    question=question + "\n" + "\n".join(choices),
 )
+
+print("Final Answer:", final_answer)
