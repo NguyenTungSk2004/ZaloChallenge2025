@@ -77,7 +77,15 @@ vectordb = Chroma(
     persist_directory=DB_PATH,
     embedding_function=embeddings
 )
-retriever = vectordb.as_retriever(search_kwargs={"k": 3})
+retriever = vectordb.as_retriever(search_kwargs={"k": 2})
+
+DB_PATH_LUAT = "Vecto_Database/db_luat_2"
+vectordb_luat = Chroma(
+    persist_directory=DB_PATH_LUAT,
+    embedding_function=embeddings
+)
+
+retriever_luat = vectordb_luat.as_retriever(search_kwargs={"k": 2})
 
 # ------------------------------------------------------------
 # RERANKER
@@ -106,7 +114,7 @@ if tokenizer.pad_token is None:
 llm = AutoModelForCausalLM.from_pretrained(
     LLM_PATH,
     quantization_config=bnb_config,   # QUANTIZED 4BIT NF4
-    device_map="auto",
+    device_map="cuda",
     low_cpu_mem_usage=True
 )
 
@@ -188,7 +196,9 @@ choices = test_case["choices"]
 final_answer = lm_generate(
     llm=llm,
     tokenizer=tokenizer,          # REQUIRED khi chuyển từ LlamaCPP sang transformers
+    # Gửi 2 retriever của 2 db vào hàm
     retriever=retriever,
+    retriever_luat=retriever_luat,
     reranker=reranker,
     vlm_description=vlm_description,
     question=question + "\n" + "\n".join(choices),

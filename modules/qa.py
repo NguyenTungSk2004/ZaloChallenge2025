@@ -78,14 +78,16 @@ Hãy chọn đáp án đúng.
 prompt = PromptTemplate.from_template(TEMPLATE)
 
 # 6. PUBLIC FUNCTION: lm_generate()
-def lm_generate(*,llm, tokenizer,retriever, reranker, vlm_description: str, question: str) -> str:
+def lm_generate(*,llm, tokenizer,retriever, retriever_luat, reranker, vlm_description: str, question: str) -> str:
     """Hàm public để team gọi từ pipeline chính"""
 
     # 1. Retrieve
-    docs = retriever.invoke(vlm_description)
+    docs = retriever.invoke(vlm_description) # bien bao
+    docs_luat = retriever_luat.invoke(vlm_description) # Luat
 
+    all_docs = docs+docs_luat
     # 2. Rerank
-    top_docs = rerank(reranker, vlm_description, docs, k=3)
+    top_docs = rerank(reranker, vlm_description, all_docs, k=3)
 
     # 3. Kiểm tra context rỗng
     if len(top_docs) == 0:
