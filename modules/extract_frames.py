@@ -33,14 +33,12 @@ def extract_frames_to_queue(
 
     def worker():
         if not os.path.exists(video_path):
-            print(f"❌ Video không tồn tại: {video_path}")
             q.put(None)
             return
 
         cap = cv2.VideoCapture(video_path)
         fps = cap.get(cv2.CAP_PROP_FPS)
         if not cap.isOpened() or fps == 0:
-            print(f"❌ Không thể mở video hoặc lấy FPS: {video_path}")
             q.put(None)
             return
 
@@ -51,8 +49,6 @@ def extract_frames_to_queue(
         frame_id = 0
         motion_mode = False
         motion_countdown = 0
-
-        print(f"🎞️ Xử lý video {os.path.basename(video_path)} | FPS gốc: {fps:.1f}")
 
         while True:
             ret, frame = cap.read()
@@ -78,16 +74,12 @@ def extract_frames_to_queue(
 
                 if frame_id % interval == 0:
                     if not q.full():
-                        # print("✅ Đưa vào queue:", frame_id)
                         q.put(frame.copy())  # copy để tránh lỗi bộ nhớ
-                    else:
-                        print("⚠️ Queue đầy, bỏ qua frame")
 
             prev_gray = gray
 
         cap.release()
         q.put(None)  # báo hiệu kết thúc video
-        print(f"✅ Trích xuất frame hoàn tất: {os.path.basename(video_path)}")
 
     # chạy trong thread riêng để queue nhận frame bất đồng bộ
     threading.Thread(target=worker, daemon=True).start()
