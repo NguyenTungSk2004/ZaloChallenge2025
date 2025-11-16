@@ -40,13 +40,6 @@ device_blip = "cuda" if torch.cuda.is_available() and USE_BLIP2_GPU else "cpu"
 
 processor = AutoProcessor.from_pretrained(model_path, use_fast=True)
 
-# OLD (FP16 FLOAT)
-# model = AutoModelForImageTextToText.from_pretrained(
-#     model_path,
-#     dtype=torch.float16 if device_blip == "cuda" else torch.float32,
-#     low_cpu_mem_usage=True
-# ).to(device_blip)
-
 #  NEW – QUANTIZED NF4
 model = AutoModelForImageTextToText.from_pretrained(
     model_path,
@@ -65,7 +58,7 @@ tracker = BestFrameTracker()
 # ------------------------------------------------------------
 # EMBEDDING + CHROMA
 # ------------------------------------------------------------
-EMB_PATH = "models/bkai_vn_bi_encoder"
+EMB_PATH = "models/bkai-foundation-models/vietnamese-bi-encoder"
 embeddings = HuggingFaceEmbeddings(
     model_name=EMB_PATH,
     model_kwargs={'device': 'cuda'},
@@ -82,7 +75,7 @@ retriever = vectordb.as_retriever(search_kwargs={"k": 3})
 # ------------------------------------------------------------
 # RERANKER
 # ------------------------------------------------------------
-RERANK_PATH = "models/ViRanker"
+RERANK_PATH = "models/namdp-ptit/ViRanker"
 device = "cuda" if torch.cuda.is_available() and USE_BLIP2_GPU else "cpu"
 reranker = CrossEncoder(RERANK_PATH, device=device)
 
@@ -90,12 +83,8 @@ reranker = CrossEncoder(RERANK_PATH, device=device)
 # 3. LOAD PHI-3 MINI (TRANSFORMERS, 4BIT NF4)
 # ------------------------------------------------------------
 
-# OLD LlamaCpp (COMMENT)
-# LLM_PATH = "models/Phi-3-gguf/Phi-3-mini-4k-instruct-q4.gguf"
-# llm = AutoModelForCausalLM.from_pretrained(... llamacpp ...)
-
 #  NEW:
-LLM_PATH = "microsoft/phi-3-mini-4k-instruct"
+LLM_PATH = "./models/microsoft/Phi-3-mini-4k-instruct"
 
 print("Đang load Phi-3-mini NF4 bằng transformers...")
 
