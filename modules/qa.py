@@ -20,35 +20,38 @@ def format_docs(docs):
 TEMPLATE = """<|system|>
 Bạn là trợ lý giao thông. Trả lời dựa trên CONTEXT và VIDEO.
 RULES:
-1. Chỉ trả lời: A hoặc B hoặc C hoặc D
-2. Không giải thích, không thêm text
+1. Chọn câu trả lời đúng nhất
+2. Chỉ trả lời: A hoặc B hoặc C hoặc D
+3. Nếu không tìm thấy thông tin phù hợp trong CONTEXT để đưa ra câu trả lời chắc chắn, hãy chọn đáp án phù hợp nhất dựa trên bối cảnh chung của video, nhưng vẫn phải trả lời bằng MỘT CHỮ CÁI DUY NHẤT.
+4. Không giải thích, không thêm text
 <|end|>
 
 <|user|>
 VIDEO: {video_description}
 
-CONTEXT: {context}
+--- CONTEXT HỖ TRỢ ---
+{context}
+----------------------
 
 {question}
 
-Trả lời chỉ 1 chữ cái:
+Đáp án:
 <|assistant|>
 """
 
 prompt = PromptTemplate.from_template(TEMPLATE)
 
 
-def lm_generate(*, llm, tokenizer, retriever, retriever_luat, reranker, vlm_description: str, question: str) -> str:
+def lm_generate(*, llm, tokenizer, retriever, reranker, vlm_description: str, question: str) -> str:
     """
     Generate answer - TỐI ƯU CHO 6GB VRAM
     """
     try:
         # 1. Retrieve documents
         docs = retriever.invoke(vlm_description) # Bien bao
-        docs_luat = retriever_luat.invoke(vlm_description) # Luat
-        all_docs = docs+docs_luat
+        all_docs = docs
         # 2. Rerank
-        top_docs = rerank(reranker, vlm_description, all_docs, k=2)  # Giảm từ 3->2 để tiết kiệm
+        top_docs = rerank(reranker, vlm_description, all_docs, k=3)
         
         # 3. Format context
         context = format_docs(top_docs) if top_docs else "Không có thông tin."
@@ -84,7 +87,7 @@ def lm_generate(*, llm, tokenizer, retriever, retriever_luat, reranker, vlm_desc
             
             outputs = llm.generate(
                 **inputs,
-                max_new_tokens=5,  # Chỉ cần 1-2 tokens cho A/B/C/D
+                max_new_tokens=3,  # Chỉ cần 1-2 tokens cho A/B/C/D
                 do_sample=False,  # Greedy decoding
                 num_beams=1,  # Không dùng beam search để tiết kiệm memory
                 pad_token_id=tokenizer.pad_token_id,

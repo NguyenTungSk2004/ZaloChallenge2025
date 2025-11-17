@@ -56,7 +56,7 @@ model = AutoModelForImageTextToText.from_pretrained(
 # ------------------------------------------------------------
 # YOLO, EMBEDDING, RERANKER
 # ------------------------------------------------------------
-model_path_yolo = "models/yolo/best.pt"
+model_path_yolo = "models/yolo/yolo12s_finetune.pt"
 yolo_detector = YOLO(model_path_yolo)
 EMB_PATH = "models/bkai_vn_bi_encoder"
 embeddings = HuggingFaceEmbeddings(
@@ -65,20 +65,12 @@ embeddings = HuggingFaceEmbeddings(
     encode_kwargs={'normalize_embeddings': False}
 )
 
-DB_PATH = "Vecto_Database/db_bienbao_2"
+DB_PATH = "Vecto_Database/db_luat_bienbao"
 vectordb = Chroma(
     persist_directory=DB_PATH,
     embedding_function=embeddings
 )
-retriever = vectordb.as_retriever(search_kwargs={"k": 2})
-
-DB_PATH_LUAT = "Vecto_Database/db_luat_2"
-vectordb_luat = Chroma(
-    persist_directory=DB_PATH_LUAT,
-    embedding_function=embeddings
-)
-
-retriever_luat = vectordb_luat.as_retriever(search_kwargs={"k": 2})
+retriever = vectordb.as_retriever(search_kwargs={"k": 3})
 
 RERANK_PATH = "models/ViRanker"
 device = "cuda" if torch.cuda.is_available() and USE_BLIP2_GPU else "cpu"
@@ -143,9 +135,6 @@ try:
     data_list = full_data_object.get('data', [])
 except Exception as e:
     exit(1)
-
-# GIỚI HẠN CHỈ TEST 5 CÂU ĐẦU TIÊN
-data_list = data_list[:5]
 
 submission_results = []
 total_cases = len(data_list)
@@ -227,7 +216,6 @@ for index, test_case in enumerate(data_list):
             llm=llm,
             tokenizer=tokenizer,
             retriever=retriever,
-            retriever_luat = retriever_luat,
             reranker=reranker,
             vlm_description=vlm_description,
             question=llm_question_with_choices,
@@ -280,7 +268,6 @@ for index, test_case in enumerate(data_list):
     # 4. Cleanup memory sau mỗi case
     cleanup_memory()
     
-
 
 # 5. Viết kết quả ra CSV
 
