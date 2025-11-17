@@ -6,6 +6,7 @@ import hashlib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import torch
 from load_models import load_models
+from modules.ocr_helper import TrafficSignOCR
 from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
 from modules.vlm import describe_frame_with_prompt
@@ -14,6 +15,12 @@ from modules.qa import lm_generate
 # Thread-safe lock
 file_lock = threading.Lock()
 print_lock = threading.Lock()
+
+ocr_reader = None
+try:
+    ocr_reader = TrafficSignOCR(backend='easy', use_gpu=True)
+except Exception as e:
+    print(f"  Warning: OCR failed({e})")
 
 # Cache VLM vào disk
 def get_vlm_cache(video_path):
@@ -116,8 +123,24 @@ def process_single_question_fast(args):
                         models['processor'], 
                         models['model']
                     )
+                            # 2.2. OCR Text (NEW!)
+                    ocr_text = ""
+                    if ocr_reader is not None:
+                        try:
+                            ocr_text = ocr_reader.read_text_from_roi(
+                                frame=frameData.frame,
+                                bbox=box.bbox,
+                                conf_threshold=0.5,  # Confidence threshold
+                                enhance=True,        # Tăng cường ảnh
+                                padding=5            # Padding xung quanh bbox
+                            )
+                            if ocr_text:
+                                ocr_text = ocr_reader.clean_traffic_text(ocr_text)
+                        except Exception as e:
+                            print(f"    [OCR Warning] Track {track_id}: {e}")
+                            ocr_text = ""
 
-                all_caption += f" {caption} [{box.class_name}]"
+                all_caption += f" {caption} [The traffic sign class is {box.class_name}, OCR text: '{ocr_text}']."
 
             vlm_description = all_caption
             # Lưu cache
