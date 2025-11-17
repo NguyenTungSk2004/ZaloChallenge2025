@@ -24,7 +24,7 @@ class BestFrameTracker:
         quality_score = self.calculate_quality_score(bbox_area, confidence, sharpness)
         
         # Cập nhật frame tốt nhất cho track này
-        if (track_id not in self.best_frames or quality_score > self.best_frames[track_id].score) and quality_score > 0.5:
+        if (track_id not in self.best_frames or quality_score > self.best_frames[track_id].score) and quality_score >= 0.4:
             self.best_frames[track_id] = FrameData(
                 frame=frame.copy(),
                 score=quality_score,
