@@ -41,7 +41,7 @@ choices:
 
 Hãy chọn đáp án đúng.
 <|assistant|>
-B. Sai
+B
 
 <|user|>
 video_description: The road section contains three lanes. A traffic sign R.411 ahead shows arrows indicating allowed directions: straight, left turn, and right turn.
@@ -56,7 +56,7 @@ choices:
 
 Hãy chọn đáp án đúng.
 <|assistant|>
-C. Đi thẳng, rẽ trái và rẽ phải
+C
 
 ### END FEW-SHOT EXAMPLES ###
 
