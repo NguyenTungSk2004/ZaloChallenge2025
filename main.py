@@ -1,3 +1,4 @@
+from datetime import time
 import json
 import csv
 import threading
@@ -242,4 +243,10 @@ def main():
         writer.writerows(csv_data)
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    end_time = time.time() - start_time
+    hours = int(end_time // 3600)
+    minutes = int((end_time % 3600) // 60)
+    seconds = int(end_time % 60)
+    print(f"Execution time: {hours:02d}:{minutes:02d}:{seconds:02d}")
