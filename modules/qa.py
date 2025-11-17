@@ -19,7 +19,11 @@ def format_docs(docs):
 TEMPLATE = """
 <|system|>
 Bạn là trợ lý giao thông. Chỉ trả lời dựa trên CONTEXT và VIDEO DESCRIPTION.
-Nếu không có thông tin → trả lời đúng câu:
+STRICT RULE :
+1. Chỉ chọn đáp án đúng.
+2. Không giải thích gì thêm.
+3. Không suy diễn.
+4.Nếu không có thông tin → trả lời đúng câu:
 "Tôi không tìm thấy biển báo phù hợp trong cơ sở dữ liệu."
 Không suy diễn. Không thêm kiến thức ngoài context.
 <|end|>
@@ -37,7 +41,7 @@ choices:
 
 Hãy chọn đáp án đúng.
 <|assistant|>
-B. Sai
+B
 
 <|user|>
 video_description: The road section contains three lanes. A traffic sign R.411 ahead shows arrows indicating allowed directions: straight, left turn, and right turn.
@@ -52,7 +56,7 @@ choices:
 
 Hãy chọn đáp án đúng.
 <|assistant|>
-C. Đi thẳng, rẽ trái và rẽ phải
+C
 
 ### END FEW-SHOT EXAMPLES ###
 
@@ -61,7 +65,7 @@ C. Đi thẳng, rẽ trái và rẽ phải
 
 <|user|>
 video_description: {video_description}
-{query}
+{question}
 
 <context>
 {context}
@@ -74,7 +78,7 @@ Hãy chọn đáp án đúng.
 prompt = PromptTemplate.from_template(TEMPLATE)
 
 # 6. PUBLIC FUNCTION: lm_generate()
-def lm_generate(*,llm, retriever, reranker, vlm_description: str, question: str) -> str:
+def lm_generate(*,llm, tokenizer,retriever, reranker, vlm_description: str, question: str) -> str:
     """Hàm public để team gọi từ pipeline chính"""
 
     # 1. Retrieve
@@ -92,6 +96,25 @@ def lm_generate(*,llm, retriever, reranker, vlm_description: str, question: str)
 
     # 5. Run LLM
     final_prompt = prompt.format(context=context, video_description=vlm_description, question=question)
-    answer = llm.invoke(final_prompt)
+    # 5.1. Tokenize prompt
+    inputs = tokenizer(final_prompt, return_tensors="pt", return_attention_mask=False).to(llm.device)
+    
+    # 5.2. Generate answer
+    # Lưu ý: Cần thêm max_new_tokens để giới hạn độ dài câu trả lời của LLM
+    outputs = llm.generate(
+        **inputs,
+        max_new_tokens=256, # Giới hạn 256 token mới cho câu trả lời
+        pad_token_id=tokenizer.pad_token_id, # Cần thiết cho mô hình Phi-3
+        eos_token_id=tokenizer.eos_token_id
+    )
+
+    # 5.3. Decode (Chỉ giải mã phần câu trả lời)
+    # outputs[0].shape[0] là batch size, outputs[0].shape[1] là chiều dài token
+    # Do mô hình sinh ra cả prompt, chúng ta cần loại bỏ độ dài của prompt gốc.
+    prompt_length = inputs['input_ids'].shape[1]
+    
+    # Giải mã phần token được sinh ra (sau prompt)
+    generated_tokens = outputs[0][prompt_length:]
+    answer = tokenizer.decode(generated_tokens, skip_special_tokens=True)
 
     return answer.strip()

@@ -1,2 +1,0 @@
-USE_GPU = False
-USE_BLIP2_GPU = False
