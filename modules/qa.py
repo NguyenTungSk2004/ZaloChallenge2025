@@ -38,7 +38,7 @@ Trả lời chỉ 1 chữ cái:
 prompt = PromptTemplate.from_template(TEMPLATE)
 
 
-def lm_generate(*, llm, tokenizer, retriever, retriever_luat, reranker, vlm_description: str, question: str) -> str:
+def lm_generate(*, llm, tokenizer, retriever, reranker, vlm_description: str, question: str) -> str:
     """
     Generate answer - TỐI ƯU CHO 6GB VRAM
     """

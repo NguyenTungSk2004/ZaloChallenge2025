@@ -43,8 +43,8 @@ bnb_config = BitsAndBytesConfig(
 # ------------------------------------------------------------
 # 2. LOAD BLIP2 VLM (4-BIT NF4)
 # ------------------------------------------------------------
-model_path = "models/blip2-opt-2.7b"
-device_blip = "cuda" if torch.cuda.is_available() and USE_BLIP2_GPU else "cpu"
+model_path = "E:/Zalo Challenge 2025/Build_RAG_Real/ZaloChallenge2025/models/blip2-opt-2.7b"
+device_blip = "cuda" if torch.cuda.is_available() else "cpu"
 processor = AutoProcessor.from_pretrained(model_path, use_fast=True)
 model = AutoModelForImageTextToText.from_pretrained(
     model_path,
@@ -56,7 +56,7 @@ model = AutoModelForImageTextToText.from_pretrained(
 # ------------------------------------------------------------
 # YOLO, EMBEDDING, RERANKER
 # ------------------------------------------------------------
-model_path_yolo = "models/yolo/best.pt"
+model_path_yolo = "E:/Zalo Challenge 2025/Build_RAG_Real/ZaloChallenge2025/models/yolo/best.pt"
 yolo_detector = YOLO(model_path_yolo)
 EMB_PATH = "models/bkai_vn_bi_encoder"
 embeddings = HuggingFaceEmbeddings(
@@ -65,28 +65,21 @@ embeddings = HuggingFaceEmbeddings(
     encode_kwargs={'normalize_embeddings': False}
 )
 
-DB_PATH = "Vecto_Database/db_bienbao_2"
+DB_PATH = "Vecto_Database/db_luat_bienbao"
 vectordb = Chroma(
     persist_directory=DB_PATH,
     embedding_function=embeddings
 )
 retriever = vectordb.as_retriever(search_kwargs={"k": 2})
 
-DB_PATH_LUAT = "Vecto_Database/db_luat_2"
-vectordb_luat = Chroma(
-    persist_directory=DB_PATH_LUAT,
-    embedding_function=embeddings
-)
 
-retriever_luat = vectordb_luat.as_retriever(search_kwargs={"k": 2})
-
-RERANK_PATH = "models/ViRanker"
+RERANK_PATH = "E:/Zalo Challenge 2025/Build_RAG_Real/ZaloChallenge2025/models/ViRanker"
 device = "cuda" if torch.cuda.is_available() and USE_BLIP2_GPU else "cpu"
 reranker = CrossEncoder(RERANK_PATH, device=device)
 # ------------------------------------------------------------
 # 3. LOAD PHI-3 MINI (4BIT NF4)
 # ------------------------------------------------------------
-LLM_PATH = "microsoft/phi-3-mini-4k-instruct"
+LLM_PATH = "E:/Zalo Challenge 2025/Build_RAG_Real/ZaloChallenge2025/models/Phi3-mini-4k"
 
 llm = None
 tokenizer = None
@@ -100,7 +93,7 @@ try:
     llm = AutoModelForCausalLM.from_pretrained(
         LLM_PATH,
         quantization_config=bnb_config,
-        device_map="auto",
+        device_map="cuda",
         low_cpu_mem_usage=True,
         torch_dtype=torch.float16  # Thêm để tiết kiệm memory
     )
@@ -129,7 +122,7 @@ def print_memory_usage():
 # ------------------------------------------------------------
 # LOGIC XỬ LÝ CHÍNH
 # ------------------------------------------------------------
-INPUT_JSON_FILE = 'public_test/public_test.json'
+INPUT_JSON_FILE = 'E:/Zalo Challenge 2025/Build_RAG_Real/ZaloChallenge2025/public_test/public_test.json'
 OUTPUT_CSV_FILE = 'submission.csv'
 VLM_PROMPT_TEMPLATE = (
     "Question: Describe the environment and context of the car. "
@@ -227,7 +220,6 @@ for index, test_case in enumerate(data_list):
             llm=llm,
             tokenizer=tokenizer,
             retriever=retriever,
-            retriever_luat = retriever_luat,
             reranker=reranker,
             vlm_description=vlm_description,
             question=llm_question_with_choices,
