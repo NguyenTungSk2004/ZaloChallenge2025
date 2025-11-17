@@ -44,7 +44,8 @@ def load_models():
     yolo_detector.model.eval()
 
     # 4. EMBEDDING + CHROMA
-    EMB_PATH = "models/bkai-foundation-models/vietnamese-bi-encoder"
+    # EMB_PATH = "models/bkai-foundation-models/vietnamese-bi-encoder"
+    EMB_PATH = "models/bkai-foundation-models/bkai_vn_bi_encoder" # máy thầy
     embeddings = HuggingFaceEmbeddings(
         model_name=EMB_PATH,
         model_kwargs={'device': 'cuda' if torch.cuda.is_available() else 'cpu'},
@@ -74,7 +75,8 @@ def load_models():
         quantization_config=bnb_config,
         device_map="auto",
         low_cpu_mem_usage=True,
-        torch_dtype=torch.float16
+        torch_dtype=torch.float16,
+        pad_token_id=tokenizer.eos_token_id  # Fix attention mask warning
     )
     llm.eval()  # Chỉ eval, không .half() cho quantized model
     

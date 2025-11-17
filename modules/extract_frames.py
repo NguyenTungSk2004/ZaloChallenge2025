@@ -30,7 +30,7 @@ def extract_frames_to_queue(
         def load_cache_worker():
             cap = cv2.VideoCapture(cached_video_path)
             if not cap.isOpened():
-                print("❌ Không mở được cached video!")
+                print(f"❌ Không mở được cached video: {cached_video_path}!")
                 q.put(None)
                 return
 
