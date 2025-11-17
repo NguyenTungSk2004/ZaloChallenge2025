@@ -44,7 +44,8 @@ def load_models():
     yolo_detector.model.eval()
 
     # 4. EMBEDDING + CHROMA
-    EMB_PATH = "models/bkai-foundation-models/vietnamese-bi-encoder"
+    # EMB_PATH = "models/bkai-foundation-models/vietnamese-bi-encoder"
+    EMB_PATH = "models/bkai-foundation-models/bkai_vn_bi_encoder" # máy thầy
     embeddings = HuggingFaceEmbeddings(
         model_name=EMB_PATH,
         model_kwargs={'device': 'cuda' if torch.cuda.is_available() else 'cpu'},
