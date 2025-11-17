@@ -73,10 +73,19 @@ def process_single_question_fast(args):
         vlm_description = get_vlm_cache(video_path)
         
         if not vlm_description:
+            # Kiểm tra video có mở được không
+            try:
+                frames_queue = extract_frames_to_queue(video_path)
+            except Exception as video_error:
+                # Trả về default answer nếu video lỗi
+                return {
+                    'id': question_data['id'],
+                    'answer': "A",
+                    'index': question_index
+                }
+            
             # Khởi tạo tracker
             tracker = BestFrameTracker()
-            frames_queue = extract_frames_to_queue(video_path)
-            
             frame_count = 0
             
             while True:
@@ -86,11 +95,15 @@ def process_single_question_fast(args):
                     
                 frame_count += 1
 
-                # YOLO detection với tối ưu
-                with torch.no_grad():
-                    results = models['yolo_detector'].track(frame, tracker="bytetrack.yaml", verbose=False)
-                    
-                if not results or len(results) == 0:
+                # YOLO detection với error handling
+                try:
+                    with torch.no_grad():
+                        results = models['yolo_detector'].track(frame, tracker="bytetrack.yaml", verbose=False)
+                        
+                    if not results or len(results) == 0:
+                        continue
+                except Exception as yolo_error:
+                    # Skip frame nếu YOLO lỗi
                     continue
 
                 # Cập nhật tracker
