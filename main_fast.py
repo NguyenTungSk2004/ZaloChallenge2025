@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 import torch
+import pandas as pd
 from ultralytics import YOLO
 from transformers import (
     AutoModelForCausalLM,
@@ -250,13 +251,21 @@ def main():
     max_workers = 3  # Số luồng song song
     thread_safe_print(f"🔧 Cấu hình: {max_workers} luồng song song, skip frames x2")
     
-    # Chuẩn bị arguments
+    # Đọc file backup mới nhất
+    backup_file = 'public_test/backup_140.csv'
+    backup_df = pd.read_csv(backup_file)
+
+    # Giả sử backup_df đọc từ backup CSV
+    results = backup_df.to_dict(orient='records')
+
+    # Lọc câu chưa xử lý
+    answered_ids = set(r['id'] for r in results)
     args_list = []
     for i, question in enumerate(questions, 1):
+        if question['id'] in answered_ids:
+            continue
         args_list.append((question, models, i, len(questions)))
-    
-    # Xử lý song song
-    results = []
+
     total_time = 0
     start_total = time.time()
     
