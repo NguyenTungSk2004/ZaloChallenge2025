@@ -1,3 +1,4 @@
+import shutil
 import time
 import json
 import csv
@@ -66,7 +67,7 @@ def choise_answer(models, vlm_description, question_data):
     return clean_answer
 
 
-def process_single_question_fast(question_data, models, question_index, total_questions):
+def process_single_question(question_data, models, question_index, total_questions):
     """Xử lý một câu hỏi với cache VLM"""
     video_path = question_data['video_path']
     
@@ -117,7 +118,7 @@ def process_single_question_fast(question_data, models, question_index, total_qu
                     print(f"[OCR Warning] Track {track_id}: {e}")
                     ocr_text = ""
 
-            all_caption += f" {caption} [The traffic sign class is {box.class_name}"
+            all_caption += f" {caption} [The traffic sign class is {box.class_name}, score: {frameData.score:.3f}.]"
             if ocr_text != "":
                 all_caption += f" The sign contains the text '{ocr_text}'."
 
@@ -142,7 +143,7 @@ def process_single_question_fast(question_data, models, question_index, total_qu
 def main():
     """Hàm chính xử lý tuần tự từng câu hỏi"""
     os.makedirs('Results', exist_ok=True)
-
+        
     # Load data
     with open('public_test/public_test.json', 'r', encoding='utf-8') as f:
         test_data = json.load(f)
@@ -156,7 +157,7 @@ def main():
     results = []
     
     for i, question in enumerate(questions, 1):
-        result = process_single_question_fast(question, models, i, len(questions))
+        result = process_single_question(question, models, i, len(questions))
         results.append(result)
         
         # Backup mỗi 20 câu hỏi

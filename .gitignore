@@ -43,5 +43,5 @@ download_videos.py
 cached_frames/
 cached_vlm/
 
-extract_frames/
-track_frames/
+frames_track/
+frames_extract/

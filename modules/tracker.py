@@ -6,21 +6,23 @@ import random
 
 class BestFrameTracker:
     def __init__(self):
-        self.best_frames: dict[int, FrameData] = {}  # track_id: FrameData
+        self.best_frames: dict[int, FrameData] = {}
         
     def update_track(self, frame, track_id, bbox, confidence, cls_name):
-        """Cập nhật track với frame mới nếu chất lượng tốt hơn"""
-            # Trích xuất vùng đối tượng
         x1, y1, x2, y2 = bbox
         object_region = frame[y1:y2, x1:x2]
         if object_region.size == 0:
             return None
         
-        # Tính toán các metrics
         sharpness = self.calculate_sharpness(object_region)
-        quality_score = self.calculate_quality_score(confidence, sharpness)
         
-        frame = FrameData(
+        # Áp dụng Lọc Cứng: Loại bỏ nếu Confidence quá thấp HOẶC Sharpness quá mờ (Tối ưu cho VLM/OCR)
+        if confidence < 0.5 or sharpness < 50.0:
+            return False
+            
+        quality_score = self.calculate_quality_score(confidence, sharpness, max_sharpness=5000)
+        
+        frame_data = FrameData(
             id=random.randint(100000, 999999),
             frame=frame.copy(),
             score=quality_score,
@@ -31,42 +33,28 @@ class BestFrameTracker:
                 sharpness=sharpness
             )
         )
-        save_frame(frameData=frame, track_id=track_id, output_path=f"extract_frames/{track_id}_{frame.id}.jpg")
-        # Cập nhật frame tốt nhất cho track này
-        if (track_id not in self.best_frames or quality_score > self.best_frames[track_id].score):
-            self.best_frames[track_id] = frame
+        
+        save_frame(frameData=frame_data, track_id=track_id, output_path=f"frames_extract/{track_id}_{frame_data.id}.jpg")
+
+        # Cập nhật frame tốt nhất nếu có điểm chất lượng cao hơn
+        if track_id not in self.best_frames or quality_score > self.best_frames[track_id].score:
+            self.best_frames[track_id] = frame_data
             return True
         
         return False
     
     def calculate_sharpness(self, image_region):
-        """
-        Tính độ rõ nét (sharpness) của vùng ảnh bằng Laplacian variance.
-
-        Args:
-            image_region: numpy array (BGR) - vùng bounding box của đối tượng.
-
-        Returns:
-            sharpness: float, giá trị variance của Laplacian. Giá trị càng cao -> vùng ảnh càng nét.
-        """
-        
         gray = cv2.cvtColor(image_region, cv2.COLOR_BGR2GRAY)
         laplacian = cv2.Laplacian(gray, cv2.CV_64F)
         sharpness = laplacian.var()
-        
         return sharpness
 
-    def calculate_quality_score(self, confidence, sharpness, max_sharpness=2000):
-        """
-        Tính điểm chất lượng tổng hợp cho một object/frame.
-        Phổ dụng, dễ hiểu và áp dụng trong YOLO + tracking pipelines.
-        """
+    def calculate_quality_score(self, confidence, sharpness, max_sharpness=5000):
+        # max_sharpness được đặt là 5000 trực tiếp trong định nghĩa hàm, không cần hằng số toàn cục
+        sharp_norm = min(sharpness / max_sharpness, 1.0)
+        conf_norm = min(max(confidence, 0.0), 1.0)
         
-        # Chuẩn hóa các yếu tố về 0-1
-        sharp_norm = min(sharpness / max_sharpness, 1.0)   # 0-1
-        conf_norm = min(max(confidence, 0.0), 1.0)         # 0-1
-
-        # Weighted sum: confidence 60%, sharpness 40%
-        quality_score = 0.6*conf_norm + 0.4*sharp_norm
+        # Ưu tiên Sharpness 60% > Confidence 40% cho đầu vào VLM/OCR
+        quality_score = 0.4 * conf_norm + 0.6 * sharp_norm
         
         return quality_score
