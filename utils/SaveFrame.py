@@ -22,7 +22,7 @@ def save_frame(*, frameData: FrameData, track_id, output_path, font_path="C:/Win
         output_path: đường dẫn lưu file .jpg
         font_path: font hỗ trợ Unicode (ví dụ Arial, Roboto, NotoSans, ...)
     """
-    frame = frameData.frame
+    frame = frameData.frame.copy()
     frame_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(frame_pil)
     font = ImageFont.truetype(font_path, 22)

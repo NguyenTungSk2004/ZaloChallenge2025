@@ -4,7 +4,6 @@ import json
 import csv
 import torch
 from load_models import load_models
-from modules.ocr_helper import TrafficSignOCR
 from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
 from modules.vlm import describe_frame_with_prompt
@@ -12,13 +11,6 @@ from modules.qa import lm_generate
 from utils.cached_helper import *
 from ultralytics import YOLO
 import os
-
-ocr_reader = None
-try:
-    ocr_reader = TrafficSignOCR(backend='easy', use_gpu=True)
-except Exception as e:
-    print(f"  Warning: OCR failed({e})")
-
 
 def process_yolo_tracker(frames_queue, model: YOLO) -> BestFrameTracker:
     tracker = BestFrameTracker()
@@ -82,7 +74,7 @@ def process_single_question(question_data, models, question_index, total_questio
             }
         
         frames_queue = extract_frames_to_queue(video_path)
-        tracker = process_yolo_tracker(frames_queue, models['yolo_detector'])
+        tracker = process_yolo_tracker(frames_queue, models['yolo'])
 
         all_caption = ""
         for track_id, frameData in tracker.best_frames.items():
@@ -101,26 +93,7 @@ def process_single_question(question_data, models, question_index, total_questio
                     models['model']
                 )
                 
-            # OCR Text
-            ocr_text = ""
-            if ocr_reader is not None:
-                try:
-                    ocr_text = ocr_reader.read_text_from_roi(
-                        frame=frameData.frame,
-                        bbox=box.bbox,
-                        conf_threshold=0.5,  # Confidence threshold
-                        enhance=True,        # Tăng cường ảnh
-                        padding=5            # Padding xung quanh bbox
-                    )
-                    if ocr_text:
-                        ocr_text = ocr_reader.clean_traffic_text(ocr_text)
-                except Exception as e:
-                    print(f"[OCR Warning] Track {track_id}: {e}")
-                    ocr_text = ""
-
             all_caption += f" {caption} [The traffic sign class is {box.class_name}, score: {frameData.score:.3f}.]"
-            if ocr_text != "":
-                all_caption += f" The sign contains the text '{ocr_text}'."
 
         vlm_description = all_caption
         # Lưu cache

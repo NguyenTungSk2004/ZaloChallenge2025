@@ -109,7 +109,7 @@ def load_models(models_to_load = ['yolo', 'vlm', 'retriever', 'reranker', 'llm']
     models = {}
     
     if 'yolo' in models_to_load:
-        models['yolo_detector'] = load_model_yolo()
+        models['yolo'] = load_model_yolo()
     
     if 'vlm' in models_to_load:
         processor, model = load_model_vlm()

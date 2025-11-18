@@ -21,24 +21,20 @@ class BestFrameTracker:
             return False
             
         quality_score = self.calculate_quality_score(confidence, sharpness, max_sharpness=5000)
-        
-        frame_data = FrameData(
-            id=random.randint(100000, 999999),
-            frame=frame.copy(),
-            score=quality_score,
-            box_info=BoxInfo(
-                bbox=bbox,
-                confidence=confidence,
-                class_name=cls_name,
-                sharpness=sharpness
-            )
-        )
-        
-        save_frame(frameData=frame_data, track_id=track_id, output_path=f"frames_extract/{track_id}_{frame_data.id}.jpg")
 
         # Cập nhật frame tốt nhất nếu có điểm chất lượng cao hơn
         if track_id not in self.best_frames or quality_score > self.best_frames[track_id].score:
-            self.best_frames[track_id] = frame_data
+            self.best_frames[track_id] = FrameData(
+                id=random.randint(100000, 999999),
+                frame=frame.copy(),
+                score=quality_score,
+                box_info=BoxInfo(
+                    bbox=bbox,
+                    confidence=confidence,
+                    class_name=cls_name,
+                    sharpness=sharpness
+                )
+            )
             return True
         
         return False
