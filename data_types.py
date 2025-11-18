@@ -6,10 +6,10 @@ class BoxInfo:
     confidence: float
     class_name: str
     sharpness: float
-    area: float
 
 @dataclass
 class FrameData:
+    id: int
     frame: any
     score: float
     box_info: BoxInfo

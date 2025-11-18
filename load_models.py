@@ -11,23 +11,28 @@ from transformers import (
 )
 from sentence_transformers import CrossEncoder
 
-def load_models():
-    """Load models với tối ưu hóa tốc độ"""
-    
-    # Clear GPU cache trước khi load
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-    
-    # 1. NF4 QUANTIZATION CONFIG
-    bnb_config = BitsAndBytesConfig(
+def get_quantization_config():
+    """Tạo config quantization NF4"""
+    return BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=False,  # Tắt để tăng tốc
+        bnb_4bit_use_double_quant=False,
         bnb_4bit_compute_dtype=torch.float16
     )
 
-    # 2. LOAD BLIP2 VLM
-    model_path = "models/blip2-opt-2.7b"
+def load_model_yolo(model_path="models/yolo/best.pt"):
+    """Load YOLO model"""
+    print("🔄 Đang load YOLO model...")
+    yolo_detector = YOLO(model_path)
+    yolo_detector.model.eval()
+    print("✅ YOLO model đã load thành công")
+    return yolo_detector
+
+def load_model_vlm(model_path="models/blip2-opt-2.7b"):
+    """Load VLM (Vision Language Model) - BLIP2"""
+    print("🔄 Đang load VLM model...")
+    bnb_config = get_quantization_config()
+    
     processor = AutoProcessor.from_pretrained(model_path, use_fast=True)
     model = AutoModelForImageTextToText.from_pretrained(
         model_path,
@@ -36,55 +41,90 @@ def load_models():
         low_cpu_mem_usage=True,
         torch_dtype=torch.float16
     )
-    model.eval()  # Chỉ eval, không .half() cho quantized model
+    model.eval()
+    print("✅ VLM model đã load thành công")
+    return processor, model
 
-    # 3. YOLO
-    model_path_yolo = "models/yolo/best.pt"
-    yolo_detector = YOLO(model_path_yolo)
-    yolo_detector.model.eval()
-
-    # 4. EMBEDDING + CHROMA
-    # EMB_PATH = "models/bkai-foundation-models/vietnamese-bi-encoder"
-    EMB_PATH = "models/bkai-foundation-models/bkai_vn_bi_encoder" # máy thầy
+def load_model_embeddings_and_retriever(
+    emb_path="models/bkai-foundation-models/bkai_vn_bi_encoder",
+    db_path="Vecto_Database/db_bienbao_2"
+):
+    """Load Embeddings và Retriever"""
+    print("🔄 Đang load Embeddings và Retriever...")
+    
     embeddings = HuggingFaceEmbeddings(
-        model_name=EMB_PATH,
+        model_name=emb_path,
         model_kwargs={'device': 'cuda' if torch.cuda.is_available() else 'cpu'},
         encode_kwargs={'normalize_embeddings': False}
     )
 
-    DB_PATH = "Vecto_Database/db_bienbao_2"
     vectordb = Chroma(
-        persist_directory=DB_PATH,
+        persist_directory=db_path,
         embedding_function=embeddings
     )
     retriever = vectordb.as_retriever(search_kwargs={"k": 3})
+    print("✅ Embeddings và Retriever đã load thành công")
+    return retriever
 
-    # 5. RERANKER
-    RERANK_PATH = "models/namdp-ptit/ViRanker"
+def load_model_reranker(model_path="models/namdp-ptit/ViRanker"):
+    """Load Reranker model"""
+    print("🔄 Đang load Reranker...")
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    reranker = CrossEncoder(RERANK_PATH, device=device)
+    reranker = CrossEncoder(model_path, device=device)
+    print("✅ Reranker đã load thành công")
+    return reranker
 
-    # 6. LOAD PHI-3 MINI
-    LLM_PATH = "models/microsoft/Phi-3-mini-4k-instruct"
-    tokenizer = AutoTokenizer.from_pretrained(LLM_PATH)
+def load_model_llm(model_path="models/microsoft/Phi-3-mini-4k-instruct"):
+    """Load LLM (Language Model) - Phi-3 Mini"""
+    print("🔄 Đang load LLM model...")
+    bnb_config = get_quantization_config()
+    
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
     llm = AutoModelForCausalLM.from_pretrained(
-        LLM_PATH,
+        model_path,
         quantization_config=bnb_config,
         device_map="auto",
         low_cpu_mem_usage=True,
         torch_dtype=torch.float16,
     )
-    llm.eval()  # Chỉ eval, không .half() cho quantized model
+    llm.eval()
+    print("✅ LLM model đã load thành công")
+    return llm, tokenizer
+
+def load_models(models_to_load = ['yolo', 'vlm', 'retriever', 'reranker', 'llm']):
+    """
+    Load chỉ những models cần thiết
     
-    return {
-        'processor': processor,
-        'model': model,
-        'yolo_detector': yolo_detector,
-        'retriever': retriever,
-        'reranker': reranker,
-        'llm': llm,
-        'tokenizer': tokenizer
-    }
+    Args:
+        models_to_load (list): Danh sách models cần load
+                              ['yolo', 'vlm', 'retriever', 'reranker', 'llm']
+    """
+    
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    
+    models = {}
+    
+    if 'yolo' in models_to_load:
+        models['yolo'] = load_model_yolo()
+    
+    if 'vlm' in models_to_load:
+        processor, model = load_model_vlm()
+        models['processor'] = processor
+        models['model'] = model
+    
+    if 'retriever' in models_to_load:
+        models['retriever'] = load_model_embeddings_and_retriever()
+    
+    if 'reranker' in models_to_load:
+        models['reranker'] = load_model_reranker()
+    
+    if 'llm' in models_to_load:
+        llm, tokenizer = load_model_llm()
+        models['llm'] = llm
+        models['tokenizer'] = tokenizer
+    
+    return models
