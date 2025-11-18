@@ -1,9 +1,10 @@
+import os
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import cv2
 from data_types import FrameData
 
-def save_track_frame(frame, *, frameData: FrameData, track_id, output_path, font_path="C:/Windows/Fonts/arial.ttf"):
+def save_frame(*, frameData: FrameData, track_id, output_path, font_path="C:/Windows/Fonts/arial.ttf"):
     """
     Vẽ bbox + nhãn UTF-8 và lưu frame ra file.
     
@@ -21,7 +22,7 @@ def save_track_frame(frame, *, frameData: FrameData, track_id, output_path, font
         output_path: đường dẫn lưu file .jpg
         font_path: font hỗ trợ Unicode (ví dụ Arial, Roboto, NotoSans, ...)
     """
-
+    frame = frameData.frame
     frame_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(frame_pil)
     font = ImageFont.truetype(font_path, 22)
@@ -46,7 +47,7 @@ def save_track_frame(frame, *, frameData: FrameData, track_id, output_path, font
     draw.text((x1 + 4, y1 - text_h - 6), label, font=font, fill=(0, 0, 0))
 
     # ====== Chi tiết nhỏ (conf, sharpness, score) ======
-    detail = f"Conf: {conf:.3f} | Sharp: {sharp:.1f} | Score: {score:.3f}"
+    detail = f"Score: {score:.3f} | Conf: {conf:.3f} | Sharp: {sharp:.1f}"
     bbox2 = draw.textbbox((0, 0), detail, font=font)
     detail_w = bbox2[2] - bbox2[0]
     detail_h = bbox2[3] - bbox2[1]
@@ -62,4 +63,5 @@ def save_track_frame(frame, *, frameData: FrameData, track_id, output_path, font
 
     # Chuyển lại sang BGR và lưu
     frame_final = cv2.cvtColor(np.array(frame_pil), cv2.COLOR_RGB2BGR)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
     cv2.imwrite(output_path, frame_final)
