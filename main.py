@@ -81,8 +81,9 @@ def process_single_question(question_data, models, question_index, total_questio
             box = frameData.box_info
 
             prompt = (
-                f"Question: Describe the environment and context of the car. "
-                f"Also, what is the **exact text or symbol** visible on the traffic sign associated with the bounding box {box.bbox}? Answer:"
+                f"Hãy mô tả chi tiết môi trường xung quanh và bối cảnh giao thông của chiếc xe. "
+                f"Đồng thời, hãy cho biết **chính xác văn bản hoặc ký hiệu** nào có thể nhìn thấy trên biển báo giao thông "
+                f"trong vùng bounding box {box.bbox}? Bao gồm cả các phương tiện giao thông khác và tình hình đường xá xung quanh."
             )
 
             with torch.no_grad():
@@ -90,10 +91,10 @@ def process_single_question(question_data, models, question_index, total_questio
                     frameData.frame, 
                     prompt, 
                     models['processor'], 
-                    models['model']
+                    models['vlm']
                 )
                 
-            all_caption += f" {caption} [The traffic sign class is {box.class_name}, score: {frameData.score:.3f}.]"
+            all_caption += f"Frame {track_id}: {caption} [The traffic sign class is {box.class_name}, score: {frameData.score:.3f}.]"
 
         vlm_description = all_caption
         # Lưu cache
@@ -132,7 +133,7 @@ def main():
     for i, question in enumerate(questions, 1):
         result = process_single_question(question, models, i, len(questions))
         results.append(result)
-        
+        print(f"✅ [{i:3d}/{len(questions)}] {result['id']}: {result['answer']}")
         # Backup mỗi 20 câu hỏi
         if i % 20 == 0:
             temp_file = f'Results/submission_{i}.csv'

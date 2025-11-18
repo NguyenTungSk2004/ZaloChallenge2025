@@ -109,12 +109,49 @@ def lm_generate(*,llm, tokenizer,retriever, reranker, vlm_description: str, ques
     )
 
     # 5.3. Decode (Chỉ giải mã phần câu trả lời)
-    # outputs[0].shape[0] là batch size, outputs[0].shape[1] là chiều dài token
     # Do mô hình sinh ra cả prompt, chúng ta cần loại bỏ độ dài của prompt gốc.
     prompt_length = inputs['input_ids'].shape[1]
     
+    # Debug: in ra thông tin generation
+    print(f"🔍 Prompt length: {prompt_length}")
+    print(f"🔍 Output length: {outputs[0].shape}")
+    
     # Giải mã phần token được sinh ra (sau prompt)
-    generated_tokens = outputs[0][prompt_length:]
-    answer = tokenizer.decode(generated_tokens, skip_special_tokens=True)
+    if outputs[0].shape[0] > prompt_length:
+        generated_tokens = outputs[0][prompt_length:]
+        answer = tokenizer.decode(generated_tokens, skip_special_tokens=True)
+        print(f"🔍 Generated tokens: {generated_tokens[:10]}")  # In 10 token đầu
+        print(f"🔍 Raw answer: '{answer}'")
+    else:
+        # Fallback: decode toàn bộ rồi loại bỏ prompt
+        full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        prompt_text = tokenizer.decode(inputs['input_ids'][0], skip_special_tokens=True)
+        
+        print(f"🔍 Full output: {full_output[:300]}...")
+        print(f"🔍 Prompt text: {prompt_text[-200:]}")  # In 200 ký tự cuối của prompt
+        
+        if prompt_text in full_output:
+            answer = full_output.replace(prompt_text, "", 1).strip()
+        else:
+            answer = full_output.strip()
+        
+        print(f"🔍 Final answer after cleanup: '{answer}'")
 
-    return answer.strip()
+    # Làm sạch answer - chỉ lấy ký tự đầu tiên nếu đó là A, B, C, D
+    answer_clean = answer.strip()
+    if answer_clean and answer_clean[0] in ['A', 'B', 'C', 'D']:
+        answer_clean = answer_clean[0]
+    elif 'A' in answer_clean:
+        answer_clean = 'A'
+    elif 'B' in answer_clean:
+        answer_clean = 'B' 
+    elif 'C' in answer_clean:
+        answer_clean = 'C'
+    elif 'D' in answer_clean:
+        answer_clean = 'D'
+    else:
+        print(f"⚠️ No valid answer found, defaulting to A. Raw: '{answer_clean}'")
+        answer_clean = 'A'
+    
+    print(f"🔍 Final cleaned answer: '{answer_clean}'")
+    return answer_clean

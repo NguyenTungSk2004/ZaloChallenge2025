@@ -5,10 +5,10 @@ from ultralytics import YOLO
 from transformers import (
     AutoModelForCausalLM,
     AutoProcessor,
-    AutoModelForImageTextToText,
     AutoTokenizer,
     BitsAndBytesConfig
 )
+from transformers import Qwen2VLForConditionalGeneration
 from sentence_transformers import CrossEncoder
 
 def get_quantization_config():
@@ -29,12 +29,12 @@ def load_model_yolo(model_path="models/yolo/best.pt"):
     return yolo_detector
 
 def load_model_vlm(model_path="models/blip2-opt-2.7b"):
-    """Load VLM (Vision Language Model) - BLIP2"""
+    """Load VLM (Vision Language Model) - Qwen2-VL"""
     print("🔄 Đang load VLM model...")
     bnb_config = get_quantization_config()
     
-    processor = AutoProcessor.from_pretrained(model_path, use_fast=True)
-    model = AutoModelForImageTextToText.from_pretrained(
+    processor = AutoProcessor.from_pretrained(model_path)
+    model = Qwen2VLForConditionalGeneration.from_pretrained(
         model_path,
         quantization_config=bnb_config,
         device_map="auto",
@@ -112,18 +112,18 @@ def load_models(models_to_load = ['yolo', 'vlm', 'retriever', 'reranker', 'llm']
         models['yolo'] = load_model_yolo()
     
     if 'vlm' in models_to_load:
-        processor, model = load_model_vlm()
+        processor, model = load_model_vlm('models/Qwen/Qwen2-VL-2B-Instruct')
         models['processor'] = processor
-        models['model'] = model
+        models['vlm'] = model
     
     if 'retriever' in models_to_load:
-        models['retriever'] = load_model_embeddings_and_retriever()
+        models['retriever'] = load_model_embeddings_and_retriever(emb_path='models/bkai-foundation-models/vietnamese-bi-encoder')
     
     if 'reranker' in models_to_load:
         models['reranker'] = load_model_reranker()
     
     if 'llm' in models_to_load:
-        llm, tokenizer = load_model_llm()
+        llm, tokenizer = load_model_llm('models/Qwen/Qwen3-4B')
         models['llm'] = llm
         models['tokenizer'] = tokenizer
     

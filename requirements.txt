@@ -8,7 +8,6 @@ langchain-chroma
 langchain-huggingface
 langchain-core
 sentence-transformers
-easyocr
 torch
 torchvision
 torchaudio
@@ -17,3 +16,4 @@ opencv-python-headless
 datasets
 scipy
 tqdm
+qwen_vl_utils
