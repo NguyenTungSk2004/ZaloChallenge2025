@@ -1,9 +1,8 @@
+import time
 import json
 import csv
-import threading
 import os
 import hashlib
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import torch
 from load_models import load_models
 from modules.ocr_helper import TrafficSignOCR
@@ -11,10 +10,6 @@ from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
 from modules.vlm import describe_frame_with_prompt
 from modules.qa import lm_generate
-
-# Thread-safe lock
-file_lock = threading.Lock()
-print_lock = threading.Lock()
 
 ocr_reader = None
 try:
@@ -45,27 +40,20 @@ def save_vlm_cache(video_path, vlm_description):
     with open(cache_file, 'w', encoding='utf-8') as f:
         json.dump({'vlm_description': vlm_description}, f, ensure_ascii=False)
 
-def thread_safe_print(*args, **kwargs):
-    """In an toàn với đa luồng"""
-    with print_lock:
-        print(*args, **kwargs)
-
 def save_temp_results(results, temp_file_path):
     """Lưu kết quả tạm thời"""
-    with file_lock:
-        sorted_results = sorted(results, key=lambda x: x['index'])
-        csv_data = [{'id': r['id'], 'answer': r['answer']} for r in sorted_results]
-        
-        with open(temp_file_path, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=['id', 'answer'])
-            writer.writeheader()
-            writer.writerows(csv_data)
-        
-        thread_safe_print(f"💾 Backup: {len(results)} kết quả -> {temp_file_path}")
+    sorted_results = sorted(results, key=lambda x: x['index'])
+    csv_data = [{'id': r['id'], 'answer': r['answer']} for r in sorted_results]
+    
+    with open(temp_file_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=['id', 'answer'])
+        writer.writeheader()
+        writer.writerows(csv_data)
+    
+    print(f"💾 Backup: {len(results)} kết quả -> {temp_file_path}")
 
-def process_single_question_fast(args):
+def process_single_question_fast(question_data, models, question_index, total_questions):
     """Xử lý một câu hỏi với cache VLM"""
-    question_data, models, question_index, total_questions = args
     video_path = question_data['video_path']
     
     try:
@@ -136,24 +124,27 @@ def process_single_question_fast(args):
                         models['processor'], 
                         models['model']
                     )
-                            # 2.2. OCR Text (NEW!)
-                    ocr_text = ""
-                    if ocr_reader is not None:
-                        try:
-                            ocr_text = ocr_reader.read_text_from_roi(
-                                frame=frameData.frame,
-                                bbox=box.bbox,
-                                conf_threshold=0.5,  # Confidence threshold
-                                enhance=True,        # Tăng cường ảnh
-                                padding=5            # Padding xung quanh bbox
-                            )
-                            if ocr_text:
-                                ocr_text = ocr_reader.clean_traffic_text(ocr_text)
-                        except Exception as e:
-                            print(f"    [OCR Warning] Track {track_id}: {e}")
-                            ocr_text = ""
+                    
+                # OCR Text
+                ocr_text = ""
+                if ocr_reader is not None:
+                    try:
+                        ocr_text = ocr_reader.read_text_from_roi(
+                            frame=frameData.frame,
+                            bbox=box.bbox,
+                            conf_threshold=0.5,  # Confidence threshold
+                            enhance=True,        # Tăng cường ảnh
+                            padding=5            # Padding xung quanh bbox
+                        )
+                        if ocr_text:
+                            ocr_text = ocr_reader.clean_traffic_text(ocr_text)
+                    except Exception as e:
+                        print(f"    [OCR Warning] Track {track_id}: {e}")
+                        ocr_text = ""
 
-                all_caption += f" {caption} [The traffic sign class is {box.class_name}, OCR text: '{ocr_text}']."
+                all_caption += f" {caption} [The traffic sign class is {box.class_name}"
+                if ocr_text != "":
+                    all_caption += f" The sign contains the text '{ocr_text}'."
 
             vlm_description = all_caption
             # Lưu cache
@@ -175,7 +166,7 @@ def process_single_question_fast(args):
         
         clean_answer = final_answer.strip()[0] if final_answer.strip() else "A"
         
-        thread_safe_print(f"✅ [{question_index:3d}/{total_questions}] {question_data['id']}: {clean_answer}")
+        print(f"✅ [{question_index:3d}/{total_questions}] {question_data['id']}: {clean_answer}")
         
         return {
             'id': question_data['id'],
@@ -184,7 +175,7 @@ def process_single_question_fast(args):
         }
         
     except Exception as e:
-        thread_safe_print(f"❌ [{question_index:3d}/{total_questions}] {question_data['id']}: {str(e)[:50]}...")
+        print(f"❌ [{question_index:3d}/{total_questions}] {question_data['id']}: {str(e)[:50]}...")
         
         return {
             'id': question_data['id'],
@@ -193,7 +184,7 @@ def process_single_question_fast(args):
         }
 
 def main():
-    """Hàm chính tối ưu tốc độ cho 405 câu hỏi"""
+    """Hàm chính xử lý tuần tự từng câu hỏi"""
     # Load data
     with open('public_test/public_test.json', 'r', encoding='utf-8') as f:
         test_data = json.load(f)
@@ -203,35 +194,21 @@ def main():
     # Load models
     models = load_models()
     
-    # Cấu hình tối ưu cho 405 câu hỏi
-    max_workers = 5  # Số luồng song song
+    # Xử lý tuần tự từng câu hỏi
     results = []
-    args_list = []
-    for i, question in enumerate(questions, 1):
-        args_list.append((question, models, i, len(questions)))
     
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_args = {executor.submit(process_single_question_fast, args): args for args in args_list}
+    for i, question in enumerate(questions, 1):
+        result = process_single_question_fast(question, models, i, len(questions))
+        results.append(result)
         
-        completed_count = 0
-        
-        for future in as_completed(future_to_args):
-            try:
-                result = future.result()
-                results.append(result)
-                completed_count += 1
-                
-                # Backup mỗi 20 câu hỏi
-                if completed_count % 20 == 0:
-                    temp_file = f'public_test/backup_{completed_count}.csv'
-                    save_temp_results(results, temp_file)
-                    
-            except Exception as exc:
-                thread_safe_print(f'❌ Lỗi: {exc}')
+        # Backup mỗi 20 câu hỏi
+        if i % 20 == 0:
+            temp_file = f'public_test/backup_{i}.csv'
+            save_temp_results(results, temp_file)
     
     # Lưu kết quả cuối cùng
     output_path = 'public_test/submission.csv'
-    thread_safe_print(f"\n💾 Lưu kết quả cuối cùng: {output_path}")
+    print(f"\n💾 Lưu kết quả cuối cùng: {output_path}")
     
     sorted_results = sorted(results, key=lambda x: x['index'])
     csv_data = [{'id': r['id'], 'answer': r['answer']} for r in sorted_results]
@@ -242,4 +219,10 @@ def main():
         writer.writerows(csv_data)
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    end_time = time.time() - start_time
+    hours = int(end_time // 3600)
+    minutes = int((end_time % 3600) // 60)
+    seconds = int(end_time % 60)
+    print(f"Execution time: {hours:02d}:{minutes:02d}:{seconds:02d}")

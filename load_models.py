@@ -76,7 +76,6 @@ def load_models():
         device_map="auto",
         low_cpu_mem_usage=True,
         torch_dtype=torch.float16,
-        pad_token_id=tokenizer.eos_token_id  # Fix attention mask warning
     )
     llm.eval()  # Chỉ eval, không .half() cho quantized model
     
