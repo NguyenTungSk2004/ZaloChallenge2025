@@ -1,4 +1,3 @@
-import shutil
 import time
 import json
 import csv
@@ -46,10 +45,7 @@ def choise_answer(models, vlm_description, question_data):
 
     with torch.no_grad():
         final_answer = lm_generate(
-            llm=models['llm'],
-            tokenizer=models['tokenizer'],
-            retriever=models['retriever'],
-            reranker=models['reranker'],
+            models=models,
             vlm_description=vlm_description,
             question=question,
             choices=choices
