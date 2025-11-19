@@ -6,7 +6,7 @@ import torch
 from load_models import load_models
 from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
-from modules.vlm import describe_frame_with_prompt, generate_description, generate_video_description, predict_answer
+from modules.vlm import generate_video_description
 from modules.qa import lm_generate
 from utils.cached_helper import *
 from ultralytics import YOLO
@@ -109,23 +109,23 @@ def main():
     """Hàm chính xử lý tuần tự từng câu hỏi"""
     os.makedirs('Results', exist_ok=True)
         
-    # Load data
     with open('public_test/public_test.json', 'r', encoding='utf-8') as f:
         test_data = json.load(f)
     
     questions = test_data['data']
     
-    # Load models
     models = load_models()
     
-    # Xử lý tuần tự từng câu hỏi
     results = []
     
     for i, question in enumerate(questions, 1):
+        print(f"\n🔍 Đang xử lý câu hỏi {i}/{len(questions)}: {question['id']}")
+        start_time = time.time()
         result = process_single_question(question, models, i, len(questions))
         results.append(result)
+        end_time = time.time() - start_time
+        print(f"⏱️ Thời gian xử lý: {end_time:.2f} giây")
         print(f"✅ [{i:3d}/{len(questions)}] {result['id']}: {result['answer']}")
-        # Backup mỗi 20 câu hỏi
         if i % 20 == 0:
             temp_file = f'Results/submission_{i}.csv'
             save_temp_results(results, temp_file)
