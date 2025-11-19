@@ -20,28 +20,61 @@ def generate_video_description(frames, models, box_info, question):
         if len(frames) == 0:
             return "Không có frames hợp lệ để xử lý trong video."
 
-        prompt_text = (
-            f"Tôi cung cấp cho bạn một video giao thông và thông tin từ cảm biến YOLO: [{box_info}].\n"
-            f"Nhiệm vụ: Hãy đóng vai trò là camera thông minh, quan sát và mô tả chi tiết khung cảnh trong video để làm bằng chứng trả lời cho câu hỏi: \"{question}\".\n\n"
-            f"Hãy tập trung mô tả thật kỹ 3 yếu tố sau:\n"
-            f"- Nội dung chữ và số trên các biển báo giao thông (đặc biệt là biển treo trên cao hoặc bên phải).\n"
-            f"- Số lượng làn đường và loại vạch kẻ đường (nét đứt hay liền, vạch vàng hay trắng).\n"
-            f"- Hành vi của các phương tiện xung quanh.\n\n"
-            f"Lưu ý quan trọng: Chỉ mô tả khách quan những gì nhìn thấy. Tuyệt đối KHÔNG trả lời câu hỏi, KHÔNG chọn đáp án A/B/C/D."
-        )
         messages = [
+            {
+                "role": "system",
+                "content": (
+                    "Bạn là tài xế đang trực tiếp điều khiển chiếc xe này từ góc nhìn camera hành trình. "
+                    "Nhiệm vụ duy nhất của bạn: mô tả CHÍNH XÁC những gì đang xuất hiện trong video, "
+                    "không suy luận, không dự đoán, không trả lời thay cho người dùng."
+                ),
+            },
             {
                 "role": "user",
                 "content": [
                     {
                         "type": "video",
-                        "video": frames, 
+                        "video": frames
                     },
                     {
-                        "type": "text", 
-                        "text": prompt_text
-                    },
-                ],
+                        "type": "text",
+                        "text": (
+                            "BỐI CẢNH (CONTEXT):\n"
+                            f"- Tình huống tôi đang cần quan sát: \"{question}\".\n"
+                            f"- Hệ thống YOLO phát hiện các đối tượng: [{box_info}].\n\n"
+
+                            "NHIỆM VỤ MÔ TẢ (TASK):\n"
+                            "Hãy mô tả lại KHUNG CẢNH GIAO THÔNG y như một biên bản hiện trường, theo 3 mục sau:\n"
+                            "1) TRƯỚC MŨI XE & HƯỚNG DI CHUYỂN:\n"
+                            "- Xe tôi đang ở làn nào?\n"
+                            "- Vạch kẻ đường dưới bánh xe là nét liền hay nét đứt?\n"
+                            "- Có mũi tên chỉ hướng nào trên mặt đường (nếu thấy)?\n\n"
+
+                            "2) BIỂN BÁO, KÝ HIỆU & CHỮ/SỐ:\n"
+                            "- Liệt kê TẤT CẢ biển báo nhìn thấy.\n"
+                            "- Đọc to và chính xác chữ/số trên biển báo.\n"
+                            "- Ưu tiên biển trên giá long môn, bên phải đường, hoặc biển giới hạn tốc độ.\n\n"
+
+                            "3) CÁC PHƯƠNG TIỆN KHÁC:\n"
+                            "- Xe phía trước/2 bên đang đi thế nào?\n"
+                            "- Có xe tạt đầu, xi nhan, sang làn, phanh gấp, hoặc cản trở không?\n\n"
+
+                            "QUY TẮC BẮT BUỘC (NEGATIVE CONSTRAINTS):\n"
+                            "- Chỉ mô tả những gì nhìn thấy. KHÔNG được tự suy luận.\n"
+                            "- KHÔNG được trả lời câu hỏi trắc nghiệm.\n"
+                            "- KHÔNG đưa ra nhận xét đúng/sai, nên/không nên, dự đoán tương lai.\n"
+                            "- KHÔNG mô tả các hình phản chiếu trên kính lái.\n"
+                            "- KHÔNG thêm thông tin không nhìn thấy rõ.\n\n"
+
+                            "MẪU MÔ TẢ CHUẨN (EXAMPLE):\n"
+                            "“Trời tối. Trên giá long môn có 2 biển xanh: biển trái ghi ĐẦU GIÂY LONG THÀNH (đi thẳng), "
+                            "biển phải ghi ĐƯỜNG ĐỖ XUÂN HỢP (rẽ phải). Mặt đường có vạch giảm tốc màu vàng và "
+                            "vạch phân làn nét đứt. Bên phải có xe 16 chỗ đang vượt.”\n\n"
+
+                            "BÁO CÁO QUAN SÁT THỰC TẾ CỦA BẠN:"
+                        )
+                    }
+                ]
             }
         ]
 
@@ -60,7 +93,7 @@ def generate_video_description(frames, models, box_info, question):
         inputs = inputs.to("cuda")
 
         # Inference: Generation of the output
-        generated_ids = model.generate(**inputs, max_new_tokens=512, do_sample=True, temperature=0.7)
+        generated_ids = model.generate(**inputs, max_new_tokens=1024, do_sample=True, temperature=0.7)
         generated_ids_trimmed = [
             out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
         ]

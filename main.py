@@ -3,18 +3,22 @@ import json
 import csv
 import torch
 from load_models import load_models
-from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
 from modules.vlm import generate_video_description
-from modules.llm import llm_choise_answer, lm_generate
+from modules.llm import llm_choise_answer
 from utils.cached_helper import *
 from ultralytics import YOLO
 import os
 
-def process_yolo_tracker(frames_queue, model: YOLO) -> BestFrameTracker:
-    tracker = BestFrameTracker()
+def process_yolo_tracker(frames_queue, model: YOLO):
+    frames = []
+    video_info_list = []
+
     while True:
         frame = frames_queue.get()
+        frames.append(frame)
+        
+        box_info_list = []
         if frame is None:
             break
         try:
@@ -29,42 +33,40 @@ def process_yolo_tracker(frames_queue, model: YOLO) -> BestFrameTracker:
         # Cập nhật tracker
         for box in results[0].boxes:
             if box.id is None: continue
-
-            x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
+    
+            bbox = box.xyxy[0].cpu().numpy().astype(int)
             track_id = int(box.id)
             conf = float(box.conf)
             cls_id = int(box.cls)
             cls_name = results[0].names[cls_id]
 
-            tracker.update_track(frame, track_id, (x1, y1, x2, y2), conf, cls_name)
-    return tracker
+            info_str = f"Đối tượng {track_id} [Loại đối tượng là {cls_name}, vị trí: {bbox}, điểm đánh giá với 40% độ tin cậy và 60% độ nét: {conf:.3f}.]"
+            box_info_list.append(info_str)
+
+        if box_info_list:
+            box_info_str = " ".join(box_info_list)
+        else:
+            box_info_str = "Không phát hiện đối tượng nào quan trọng trong frame."
+        video_info_list.append(box_info_str)
+
+    if video_info_list:
+        video_info = " ".join(video_info_list)
+    else:
+        video_info = "Không phát hiện đối tượng nào quan trọng trong video."
+    return frames, video_info
 
 def process_single_question(question_data, models, question_index, total_questions):
     video_path = question_data['video_path']
     
     try:
         frames_queue = extract_frames_to_queue(video_path)
-        tracker = process_yolo_tracker(frames_queue, models['yolo'])
-
-        frames = []
-        box_info_list = [] # Dùng list để chứa các đoạn text, nhanh hơn cộng chuỗi
-
-        for track_id, frameData in tracker.best_frames.items():
-            box = frameData.box_info
-            frames.append(frameData.frame)
-            info_str = f"Frame {track_id} [Loại đối tượng là {box.class_name}, vị trí: {box.bbox}, điểm đánh giá với 40% độ tin cậy và 60% độ nét: {frameData.score:.3f}.]"
-            box_info_list.append(info_str)
-
-        if box_info_list:
-            box_info = "".join(box_info_list) # Python tối ưu hóa memory cực tốt cho hàm join
-        else:
-            box_info = "Không phát hiện đối tượng nào quan trọng trong video."
+        frames, video_info = process_yolo_tracker(frames_queue, models['yolo'])
 
         # 4. Gọi VLM
-        vlm_description = generate_video_description(frames, models, box_info, question_data['question'] + "\n".join(question_data['choices']))
+        vlm_description = generate_video_description(frames, models, video_info, question_data['question'] + "\n".join(question_data['choices']))
         return {
             'id': question_data['id'],
-            'answer': llm_choise_answer(models, vlm_description, question_data, box_info),
+            'answer': llm_choise_answer(models, vlm_description, question_data, video_info),
             'index': question_index
         }
         
