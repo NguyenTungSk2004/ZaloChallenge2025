@@ -21,14 +21,20 @@ def generate_video_description(frames, models, box_info, question):
             return "Không có frames hợp lệ để xử lý trong video."
 
         prompt_text = (
-            f"Đóng vai trò là 'Mắt thần' hỗ trợ lái xe an toàn. Nhiệm vụ của bạn là trích xuất thông tin thị giác từ video để trả lời câu hỏi: \"{question}\"\n\n"
-            f"THÔNG TIN THAM KHẢO TỪ YOLO:\n"
-            f"- Các vật thể đã phát hiện: {box_info if box_info else 'Không có đối tượng đặc biệt'}\n\n"
-            f"YÊU CẦU MÔ TẢ CHI TIẾT (Ưu tiên độ chính xác thực tế):\n"
-            f"1. BIỂN BÁO GIAO THÔNG: Tìm và đọc CHÍNH XÁC nội dung chữ/số trên biển báo liên quan đến câu hỏi. Mô tả hình dáng (tròn/vuông/tam giác) và màu sắc (xanh/đỏ/vàng).\n"
-            f"2. LÀN ĐƯỜNG & VẠCH KẺ: Xác định số lượng làn, loại vạch (nét đứt/liền/vạch vàng/vạch trắng) và hướng mũi tên trên đường (nếu có).\n"
-            f"3. NGỮ CẢNH: Vị trí xe đang đi (làn trái/phải/giữa) và hành vi các xe xung quanh.\n\n"
-            f"LƯU Ý QUAN TRỌNG: Nếu thông tin YOLO mâu thuẫn với những gì bạn nhìn thấy rõ trong video, hãy tin vào video."
+            f"Bạn là hệ thống thị giác máy tính (Computer Vision). Nhiệm vụ của bạn là trích xuất thông tin thị giác thô (Raw Visual Data).\n\n"
+            f"CONTEXT:\n"
+            f"- Người dùng sắp hỏi câu hỏi: \"{question}\"\n"
+            f"- Gợi ý từ YOLO: [{box_info}]\n\n"
+            f"NHIỆM VỤ BẮT BUỘC:\n"
+            f"1. QUAN SÁT video thật kỹ.\n"
+            f"2. LIỆT KÊ các bằng chứng thị giác liên quan đến câu hỏi trên.\n"
+            f"3. MÔ TẢ CHI TIẾT các biển báo (nội dung chữ, số, hình vẽ), vạch kẻ đường và tình huống xe.\n\n"
+            f"QUY TẮC CẤM (NEGATIVE CONSTRAINTS):\n"
+            f"- TUYỆT ĐỐI KHÔNG trả lời câu hỏi (Không chọn A, B, C, D).\n"
+            f"- TUYỆT ĐỐI KHÔNG trả lời Có/Không.\n"
+            f"- Chỉ đưa ra mô tả khách quan về hình ảnh.\n\n"
+            f"Ví dụ output đúng: 'Trong video có biển báo tròn viền đỏ, nền trắng, con số 60 màu đen. Xe đang đi làn giữa, vạch kẻ đứt.'\n"
+            f"Bắt đầu mô tả:"
         )
         messages = [
             {
