@@ -21,20 +21,25 @@ def generate_video_description(frames, models, box_info, question):
             return "Không có frames hợp lệ để xử lý trong video."
 
         prompt_text = (
-            f"Bạn là hệ thống thị giác máy tính (Computer Vision). Nhiệm vụ của bạn là trích xuất thông tin thị giác thô (Raw Visual Data).\n\n"
-            f"CONTEXT:\n"
-            f"- Người dùng sắp hỏi câu hỏi: \"{question}\"\n"
-            f"- Gợi ý từ YOLO: [{box_info}]\n\n"
-            f"NHIỆM VỤ BẮT BUỘC:\n"
-            f"1. QUAN SÁT video thật kỹ.\n"
-            f"2. LIỆT KÊ các bằng chứng thị giác liên quan đến câu hỏi trên.\n"
-            f"3. MÔ TẢ CHI TIẾT các biển báo (nội dung chữ, số, hình vẽ), vạch kẻ đường và tình huống xe.\n\n"
-            f"QUY TẮC CẤM (NEGATIVE CONSTRAINTS):\n"
-            f"- TUYỆT ĐỐI KHÔNG trả lời câu hỏi (Không chọn A, B, C, D).\n"
-            f"- TUYỆT ĐỐI KHÔNG trả lời Có/Không.\n"
-            f"- Chỉ đưa ra mô tả khách quan về hình ảnh.\n\n"
-            f"Ví dụ output đúng: 'Trong video có biển báo tròn viền đỏ, nền trắng, con số 60 màu đen. Xe đang đi làn giữa, vạch kẻ đứt.'\n"
-            f"Bắt đầu mô tả:"
+            f"Bạn là tài xế đang trực tiếp điều khiển chiếc xe này (góc nhìn thứ nhất từ camera hành trình).\n\n"
+            
+            f"BỐI CẢNH (CONTEXT):\n"
+            f"- Tôi đang cần bạn quan sát để giải quyết tình huống: \"{question}\"\n"
+            f"- Hệ thống cảnh báo (YOLO) đang báo hiệu có: [{box_info}]\n\n"
+            
+            f"NHIỆM VỤ CỦA BẠN:\n"
+            f"Hãy nhìn qua kính lái và mô tả lại thật chi tiết khung cảnh giao thông hiện tại như một biên bản hiện trường:\n"
+            f"1. TRƯỚC MŨI XE & HƯỚNG DI CHUYỂN: Bạn đang đi ở làn nào? Vạch kẻ đường dưới bánh xe là nét liền hay đứt? Hướng mũi tên trên mặt đường chỉ đi đâu?\n"
+            f"2. QUAN SÁT BIỂN BÁO: Đọc to và chính xác nội dung chữ/số trên các biển báo xuất hiện (đặc biệt là bên phải đường hoặc giá long môn phía trên).\n"
+            f"3. CÁC PHƯƠNG TIỆN KHÁC: Có xe nào đang tạt đầu, xi nhan hay cản trở không?\n\n"
+            
+            f"⛔ QUY TẮC TUYỆT ĐỐI (NEGATIVE CONSTRAINTS):\n"
+            f"- Chỉ mô tả những gì mắt thấy. KHÔNG được tự ý trả lời câu hỏi trắc nghiệm.\n"
+            f"- KHÔNG đưa ra kết luận Đúng/Sai hay Có/Không.\n"
+            f"- Bỏ qua các hình ảnh phản chiếu trên kính lái (nếu có).\n\n"
+            
+            f"Ví dụ mô tả chuẩn (Mẫu): 'Góc nhìn đêm. Trên giá long môn có 02 biển xanh: Biển trái ghi ĐẦU GIÂY LONG THÀNH (đi thẳng), biển phải ghi ĐƯỜNG ĐỖ XUÂN HỢP (rẽ phải). Mặt đường có vạch giảm tốc màu vàng và vạch phân làn nét đứt. Bên phải có xe 16 chỗ đang vượt.'\n"
+            f"Báo cáo quan sát thực tế của bạn:"
         )
         messages = [
             {
