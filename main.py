@@ -16,7 +16,6 @@ def process_yolo_tracker(frames_queue, model: YOLO):
 
     while True:
         frame = frames_queue.get()
-        frames.append(frame)
         box_info_list = []
         if frame is None:
             break
@@ -44,6 +43,7 @@ def process_yolo_tracker(frames_queue, model: YOLO):
 
         if box_info_list:
             box_info_str = " ".join(box_info_list)
+            frames.append(frame)
             video_info_list.append(box_info_str)
         else:
             box_info_str = "Không phát hiện đối tượng nào quan trọng trong frame."
