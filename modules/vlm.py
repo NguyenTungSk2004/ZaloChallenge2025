@@ -2,7 +2,7 @@ from qwen_vl_utils import process_vision_info
 
 def generate_video_description(frames, models, box_info, question):
     """
-    Predict answer using Qwen3-VL-2B model - Fixed repetition issue
+    Mô tả chi tiết từng yếu tố giao thông theo frame cụ thể
     """
     try:
         model = models['vlm']
@@ -26,7 +26,8 @@ def generate_video_description(frames, models, box_info, question):
         
         if len(frames) == 0:
             return "Không có frames hợp lệ để xử lý trong video."
-            
+        
+        # ✅ PROMPT CHI TIẾT - Yêu cầu mô tả cụ thể từng yếu tố
         messages = [
             {
                 "role": "user",
@@ -35,12 +36,18 @@ def generate_video_description(frames, models, box_info, question):
                     {
                         "type": "text",
                         "text": (
-                            "Bạn là tài xê lái xe thông minh chuyên mô tả các tình huống giao thông từ video ở Việt Nam. "
-                            f"YOLO phát hiện: {box_info}\n"
-                            "Tập trung: biển báo (đọc chữ/số), vạch đường, làn xe, đèn giao thông, "
-                            "xe máy, ô tô, xe tải, xe buýt, người đi bộ, cảnh sát giao thông, "
-                            "vật cản, công trình, tình trạng thời tiết và tầm nhìn.\n"
-                            "Chỉ mô tả thấy gì trong video, không suy đoán thêm.\n"
+                            "Bạn là tài xế đang lái xe ở việt nam, hãy mô tả video theo hướng dẫn: "
+                            f"Phát hiện từ YOLO: {box_info}\n\n"
+                            "Hãy mô tả chi tiết theo danh sách:\n"
+                            "1. Đèn giao thông: Màu gì (đỏ/vàng/xanh), vị trí, thời điểm xuất hiện\n"
+                            "2. Biển báo: Loại biển, nội dung (số km/h, hướng đi), frame nào thấy rõ\n"
+                            "3. Vạch kẻ đường: Vạch liền/đứt, số làn, màu sắc\n"
+                            "4. Biển trên giá long môn: Nội dung, hướng chỉ dẫn\n"
+                            "5. Biển bên lề đường phải: Tên đường, địa danh, cảnh báo\n"
+                            "6. Phương tiện: Loại xe, vị trí (trước/sau/bên), khoảng cách ước tính\n"
+                            "7. Tầm nhìn: Thông thoáng/bị che, điều kiện thời tiết\n"
+                            "8. Chướng ngại vật: Công trình, người đi bộ, vật cản\n\n"
+                            "Chỉ nói những gì thấy rõ trong video, sử dụng tiếng việt, không suy diễn thêm."
                         )
                     }
                 ]
@@ -61,16 +68,16 @@ def generate_video_description(frames, models, box_info, question):
         )
         inputs = inputs.to("cuda")
         
-        # ✅ FIXED: Inference với anti-repetition parameters
+        # ✅ Inference với parameters chống lặp + chi tiết hơn
         generated_ids = model.generate(
             **inputs, 
-            max_new_tokens=256,  # Giảm xuống để tránh lặp dài
-            do_sample=True,      # Bật sampling
-            temperature=0.3,     # Giảm temperature cho stable hơn
-            top_p=0.9,
-            repetition_penalty=1.3,  # Tăng cao để tránh lặp
-            no_repeat_ngram_size=4,  # Không lặp cụm 4 từ
-            eos_token_id=processor.tokenizer.eos_token_id,  # Dừng sớm nếu có EOS
+            max_new_tokens=384,      # Tăng lên để đủ chi tiết
+            do_sample=True,
+            temperature=0.4,         # Cân bằng giữa chi tiết và ổn định
+            top_p=0.85,
+            repetition_penalty=1.4,  # Chống lặp mạnh
+            no_repeat_ngram_size=5,
+            eos_token_id=processor.tokenizer.eos_token_id,
             pad_token_id=processor.tokenizer.pad_token_id
         )
         
@@ -89,16 +96,27 @@ def generate_video_description(frames, models, box_info, question):
         
         result = output_text[0].strip() if isinstance(output_text, list) else str(output_text).strip()
         
-        # ✅ Post-processing: Loại bỏ đoạn lặp nếu còn sót
-        sentences = result.split('. ')
+        # ✅ Post-processing: Loại bỏ văn vẻ không cần thiết
+        result = result.replace("Ví dụ về", "").replace("Để đảm bảo an toàn", "")
+        result = result.replace("hãy nhớ rằng", "").replace("Ngoài ra", "")
+        
+        # Loại bỏ câu lặp
+        sentences = [s.strip() for s in result.split('.') if s.strip()]
         unique_sentences = []
         seen = set()
-        for sent in sentences:
-            if sent.lower() not in seen and len(sent) > 10:
-                unique_sentences.append(sent)
-                seen.add(sent.lower())
         
-        return '. '.join(unique_sentences) if unique_sentences else result
+        for sent in sentences:
+            normalized = sent.lower().strip()
+            # Chỉ giữ câu > 15 ký tự và chưa thấy
+            if len(normalized) > 15 and normalized not in seen:
+                unique_sentences.append(sent)
+                seen.add(normalized)
+        
+        final_result = '. '.join(unique_sentences)
+        if final_result and not final_result.endswith('.'):
+            final_result += '.'
+            
+        return final_result
         
     except Exception as e:
         print(f"❌ Error in generate_video_description: {str(e)}")
