@@ -38,10 +38,13 @@ def generate_video_description(frames, models, box_info, question):
                     {
                         "type": "text",
                         "text": (
-                            "Bạn là tài xế lái xe.\n"
-                            f"Dữ liệu từ cảm biến YOLO cho biết:\n{box_info}\n\n"
-                            f"Nhiệm vụ: Mô tả bối cảnh xe, tình huống hiện tại của xe, các biển báo, vạch kẻ đường và phương tiện xung quanh để cho luật sư trả lời câu hỏi: {question}\n"
-                            "Lưu ý: Bạn không trả lời câu hỏi, chỉ mô tả bối cảnh và tình huống hiện tại của xe một cách chi tiết và chính xác nhất có thể."
+                            f"Câu hỏi cần giải quyết: {question}\n\n"
+                            "Hãy mô tả video từ góc nhìn tài xế:\n"
+                            "- Biển báo giao thông (đọc chính xác chữ/số)\n"
+                            "- Vạch kẻ đường và làn xe hiện tại\n"
+                            "- Phương tiện và tình huống xung quanh\n\n"
+                            f"YOLO phát hiện: {box_info}\n\n"
+                            "Chỉ mô tả thực tế, không trả lời câu hỏi."
                         )
                     }
                 ]
@@ -62,8 +65,8 @@ def generate_video_description(frames, models, box_info, question):
         )
         inputs = inputs.to("cuda")
 
-        # Inference: Generation of the output
-        generated_ids = model.generate(**inputs, max_new_tokens=512, do_sample=False, temperature=0.7)
+        # Inference: Generation of the output - Tối ưu tốc độ
+        generated_ids = model.generate(**inputs, max_new_tokens=256, do_sample=False)
         generated_ids_trimmed = [
             out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
         ]
