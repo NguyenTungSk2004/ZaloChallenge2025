@@ -78,6 +78,11 @@ def generate_video_description(frames, models, box_info):
         model = models['vlm']
         processor = models['vlm_processor']
 
+        # Chuyển đổi frames nếu cần thiết
+        if frames and hasattr(frames[0], 'shape'):  # numpy array
+            from PIL import Image
+            frames = [Image.fromarray(frame.astype("uint8")).convert("RGB") for frame in frames]
+
         prompt_text = (
             f"Bạn là một chuyên gia phân tích giao thông phục vụ cho việc thi bằng lái xe.\n"
             f"Hệ thống nhận diện (YOLO) đã phát hiện các đối tượng sau trong video: [{box_info}].\n"
