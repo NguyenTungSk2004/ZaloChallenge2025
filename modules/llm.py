@@ -1,4 +1,4 @@
-from langchain_core.prompts import PromptTemplate
+from utils.cached_helper import save_json
 
 def rerank(reranker, query, docs, k=3):
     if not docs:
@@ -88,15 +88,26 @@ Hãy chọn đáp án đúng."""
     return messages
 
 # Sửa đổi hàm lm_generate để tối ưu hóa cho Qwen và trích xuất đáp án
-def lm_generate(*, models, vlm_description: str, question: str, choices: str = "") -> str:
-    """Hàm public để team gọi từ pipeline chính, sử dụng messages format với enable_thinking=False."""
+def llm_choise_answer(models, vlm_description: str, question_data, box_info: str = "") -> str:
     llm = models['llm']
     tokenizer = models['llm_tokenizer']
     retriever = models['retriever']
     reranker = models['reranker']
 
+    question = question_data["question"]
+    choices = question_data["choices"]
+
+    # Chuyển đổi choices từ list thành string
+    if isinstance(choices, list):
+        choices = "\n".join(choices)
+
     docs = retriever.invoke(vlm_description)
-    top_docs = rerank(reranker, vlm_description, docs, k=3)
+
+    rank_prompt = f"""
+        Dựa trên mô tả video: "{vlm_description}", hãy tìm các thông tin liên quan trong các tài liệu sau để trả lời câu hỏi: "{question}" 
+        Thông tin từ cảm biến YOLO: [{box_info}]
+    """
+    top_docs = rerank(reranker, rank_prompt, docs, k=3)
     context = format_docs(top_docs)
     
     # Tạo messages format
@@ -123,24 +134,17 @@ def lm_generate(*, models, vlm_description: str, question: str, choices: str = "
     generated_ids_trimmed = [
         out_ids[len(in_ids):] for in_ids, out_ids in zip(model_inputs.input_ids, generated_ids)
     ]
-    full_output = tokenizer.batch_decode(generated_ids_trimmed, skip_special_tokens=True)[0]
     
-    print("LLM Output:", repr(full_output))
+    answer = tokenizer.batch_decode(generated_ids_trimmed, skip_special_tokens=True)[0]
     
-    # Tìm đáp án A, B, C hoặc D trong output
-    import re
-    matches = re.findall(r'\b([A-D])\b', full_output)
-    if matches:
-        final_answer = matches[0]  # Lấy đáp án đầu tiên
-        print("Final Answer:", final_answer)
-        return final_answer
-    
-    # Fallback: lấy ký tự đầu tiên nếu là A-D
-    first_char = full_output.strip()[0] if full_output.strip() else ""
-    if first_char in "ABCD":
-        print("Fallback Answer:", first_char)
-        return first_char
-    
-    # Default fallback
-    print("Default Answer: A")
-    return "A"
+
+    data_cache = {
+        "vlm_description": vlm_description,
+        "context": context,
+        "question": question,
+        "choices": choices,
+        "output": answer
+    }
+    save_json(data_cache, f"{question_data['id']}.json")
+    print("LLM Output:", repr(answer))
+    return answer

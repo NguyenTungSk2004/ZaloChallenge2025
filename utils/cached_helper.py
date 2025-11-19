@@ -37,3 +37,9 @@ def save_vlm_cache(video_path, vlm_description):
     
     with open(cache_file, 'w', encoding='utf-8') as f:
         json.dump({'vlm_description': vlm_description}, f, ensure_ascii=False)
+
+def save_json(data, filename):
+    cached_dir = "cached_helper"    
+    os.makedirs(cached_dir, exist_ok=True)
+    with open(os.path.join(cached_dir, filename), 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)

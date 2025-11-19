@@ -21,23 +21,13 @@ def generate_video_description(frames, models, box_info, question):
             return "Không có frames hợp lệ để xử lý trong video."
 
         prompt_text = (
-            f"Bạn là 'Mắt Thần' của xe tự lái. Nhiệm vụ là quan sát VIDEO THỰC TẾ ngay trước mắt để trích xuất dữ liệu.\n\n"
-            
-            f"BỐI CẢNH:\n"
-            f"- Cần tìm thông tin cho câu hỏi: \"{question}\"\n"
-            f"- Gợi ý từ cảm biến (YOLO): [{box_info}]\n\n"
-            
-            f"YÊU CẦU MÔ TẢ (Hãy điền thông tin video hiện tại vào các mục sau):\n"
-            f"1. [BIỂN BÁO]: Quét toàn bộ khung hình. Đọc to nội dung chữ/số trên biển báo (nếu có). Chú ý biển trên giá long môn và bên phải đường.\n"
-            f"2. [MẶT ĐƯỜNG]: Xe đang đi làn nào? Vạch kẻ là nét liền hay đứt? Có mũi tên chỉ hướng không?\n"
-            f"3. [TÌNH HUỐNG]: Thời gian (Ngày/Đêm)? Có xe nào đang cản trở không?\n\n"
-            
-            f"LUẬT CẤM:\n"
-            f"- KHÔNG ĐƯỢC TRẢ LỜI CÂU HỎI (Không chọn A,B,C,D).\n"
-            f"- KHÔNG mô tả lại các ví dụ cũ. Hãy nhìn vào video hiện tại.\n"
-            f"- Nếu không nhìn rõ biển báo, hãy nói 'Biển báo bị mờ'.\n\n"
-            
-            f"KẾT QUẢ QUAN SÁT THỰC TẾ:"
+            f"Tôi cung cấp cho bạn một video giao thông và thông tin từ cảm biến YOLO: [{box_info}].\n"
+            f"Nhiệm vụ: Hãy đóng vai trò là camera thông minh, quan sát và mô tả chi tiết khung cảnh trong video để làm bằng chứng trả lời cho câu hỏi: \"{question}\".\n\n"
+            f"Hãy tập trung mô tả thật kỹ 3 yếu tố sau:\n"
+            f"- Nội dung chữ và số trên các biển báo giao thông (đặc biệt là biển treo trên cao hoặc bên phải).\n"
+            f"- Số lượng làn đường và loại vạch kẻ đường (nét đứt hay liền, vạch vàng hay trắng).\n"
+            f"- Hành vi của các phương tiện xung quanh.\n\n"
+            f"Lưu ý quan trọng: Chỉ mô tả khách quan những gì nhìn thấy. Tuyệt đối KHÔNG trả lời câu hỏi, KHÔNG chọn đáp án A/B/C/D."
         )
         messages = [
             {

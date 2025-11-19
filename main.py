@@ -6,7 +6,7 @@ from load_models import load_models
 from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
 from modules.vlm import generate_video_description
-from modules.qa import lm_generate
+from modules.llm import llm_choise_answer, lm_generate
 from utils.cached_helper import *
 from ultralytics import YOLO
 import os
@@ -39,25 +39,6 @@ def process_yolo_tracker(frames_queue, model: YOLO) -> BestFrameTracker:
             tracker.update_track(frame, track_id, (x1, y1, x2, y2), conf, cls_name)
     return tracker
 
-def choise_answer(models, vlm_description, question_data):
-    question = question_data["question"]
-    choices = question_data["choices"]
-    
-    # Chuyển đổi choices từ list thành string
-    if isinstance(choices, list):
-        choices = "\n".join(choices)
-
-    with torch.no_grad():
-        final_answer = lm_generate(
-            models=models,
-            vlm_description=vlm_description,
-            question=question,
-            choices=choices
-        )
-    
-    return final_answer
-
-
 def process_single_question(question_data, models, question_index, total_questions):
     video_path = question_data['video_path']
     
@@ -83,7 +64,7 @@ def process_single_question(question_data, models, question_index, total_questio
         vlm_description = generate_video_description(frames, models, box_info, question_data['question'] + "\n".join(question_data['choices']))
         return {
             'id': question_data['id'],
-            'answer': choise_answer(models, vlm_description, question_data),
+            'answer': llm_choise_answer(models, vlm_description, question_data, box_info),
             'index': question_index
         }
         
