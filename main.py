@@ -45,9 +45,9 @@ def process_yolo_tracker(frames_queue, model: YOLO):
 
         if box_info_list:
             box_info_str = " ".join(box_info_list)
+            video_info_list.append(box_info_str)
         else:
             box_info_str = "Không phát hiện đối tượng nào quan trọng trong frame."
-        video_info_list.append(box_info_str)
 
     if video_info_list:
         video_info = " ".join(video_info_list)
