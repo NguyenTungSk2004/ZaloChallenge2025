@@ -21,25 +21,23 @@ def generate_video_description(frames, models, box_info, question):
             return "Không có frames hợp lệ để xử lý trong video."
 
         prompt_text = (
-            f"Bạn là tài xế đang trực tiếp điều khiển chiếc xe này (góc nhìn thứ nhất từ camera hành trình).\n\n"
+            f"Bạn là 'Mắt Thần' của xe tự lái. Nhiệm vụ là quan sát VIDEO THỰC TẾ ngay trước mắt để trích xuất dữ liệu.\n\n"
             
-            f"BỐI CẢNH (CONTEXT):\n"
-            f"- Tôi đang cần bạn quan sát để giải quyết tình huống: \"{question}\"\n"
-            f"- Hệ thống cảnh báo (YOLO) đang báo hiệu có: [{box_info}]\n\n"
+            f"BỐI CẢNH:\n"
+            f"- Cần tìm thông tin cho câu hỏi: \"{question}\"\n"
+            f"- Gợi ý từ cảm biến (YOLO): [{box_info}]\n\n"
             
-            f"NHIỆM VỤ CỦA BẠN:\n"
-            f"Hãy nhìn qua kính lái và mô tả lại thật chi tiết khung cảnh giao thông hiện tại như một biên bản hiện trường:\n"
-            f"1. TRƯỚC MŨI XE & HƯỚNG DI CHUYỂN: Bạn đang đi ở làn nào? Vạch kẻ đường dưới bánh xe là nét liền hay đứt? Hướng mũi tên trên mặt đường chỉ đi đâu?\n"
-            f"2. QUAN SÁT BIỂN BÁO: Đọc to và chính xác nội dung chữ/số trên các biển báo xuất hiện (đặc biệt là bên phải đường hoặc giá long môn phía trên).\n"
-            f"3. CÁC PHƯƠNG TIỆN KHÁC: Có xe nào đang tạt đầu, xi nhan hay cản trở không?\n\n"
+            f"YÊU CẦU MÔ TẢ (Hãy điền thông tin video hiện tại vào các mục sau):\n"
+            f"1. [BIỂN BÁO]: Quét toàn bộ khung hình. Đọc to nội dung chữ/số trên biển báo (nếu có). Chú ý biển trên giá long môn và bên phải đường.\n"
+            f"2. [MẶT ĐƯỜNG]: Xe đang đi làn nào? Vạch kẻ là nét liền hay đứt? Có mũi tên chỉ hướng không?\n"
+            f"3. [TÌNH HUỐNG]: Thời gian (Ngày/Đêm)? Có xe nào đang cản trở không?\n\n"
             
-            f"⛔ QUY TẮC TUYỆT ĐỐI (NEGATIVE CONSTRAINTS):\n"
-            f"- Chỉ mô tả những gì mắt thấy. KHÔNG được tự ý trả lời câu hỏi trắc nghiệm.\n"
-            f"- KHÔNG đưa ra kết luận Đúng/Sai hay Có/Không.\n"
-            f"- Bỏ qua các hình ảnh phản chiếu trên kính lái (nếu có).\n\n"
+            f"LUẬT CẤM:\n"
+            f"- KHÔNG ĐƯỢC TRẢ LỜI CÂU HỎI (Không chọn A,B,C,D).\n"
+            f"- KHÔNG mô tả lại các ví dụ cũ. Hãy nhìn vào video hiện tại.\n"
+            f"- Nếu không nhìn rõ biển báo, hãy nói 'Biển báo bị mờ'.\n\n"
             
-            f"Ví dụ mô tả chuẩn (Mẫu): 'Góc nhìn đêm. Trên giá long môn có 02 biển xanh: Biển trái ghi ĐẦU GIÂY LONG THÀNH (đi thẳng), biển phải ghi ĐƯỜNG ĐỖ XUÂN HỢP (rẽ phải). Mặt đường có vạch giảm tốc màu vàng và vạch phân làn nét đứt. Bên phải có xe 16 chỗ đang vượt.'\n"
-            f"Báo cáo quan sát thực tế của bạn:"
+            f"KẾT QUẢ QUAN SÁT THỰC TẾ:"
         )
         messages = [
             {
