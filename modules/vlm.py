@@ -1,6 +1,6 @@
 from qwen_vl_utils import process_vision_info
 
-def generate_video_description(frames, models, box_info):
+def generate_video_description(frames, models, box_info, question):
     """
     Predict answer using Qwen3-VL-2B model - Updated với official API
     """
@@ -8,19 +8,27 @@ def generate_video_description(frames, models, box_info):
         model = models['vlm']
         processor = models['vlm_processor']
 
-        # Chuyển đổi frames nếu cần thiết
-        if frames and hasattr(frames[0], 'shape'):  # numpy array
+        # Chuyển đổi frames nếu cần thiết và validate
+        if not frames or len(frames) == 0:
+            return "Không có frames để xử lý trong video."
+            
+        if hasattr(frames[0], 'shape'):  # numpy array
             from PIL import Image
             frames = [Image.fromarray(frame.astype("uint8")).convert("RGB") for frame in frames]
+        
+        # Đảm bảo có ít nhất 1 frame hợp lệ
+        if len(frames) == 0:
+            return "Không có frames hợp lệ để xử lý trong video."
 
         prompt_text = (
-            f"Bạn là một chuyên gia phân tích giao thông phục vụ cho việc thi bằng lái xe.\n"
-            f"Hệ thống nhận diện (YOLO) đã phát hiện các đối tượng sau trong video: [{box_info}].\n"
-            f"Hãy quan sát video và mô tả thật chi tiết để trả lời câu hỏi trắc nghiệm:\n"
-            f"- Mô tả chính xác các biển báo giao thông xuất hiện (hình dáng, màu sắc, nội dung chữ/số trên biển).\n"
-            f"- Xác định số làn đường, loại vạch kẻ đường (nét đứt, nét liền) và vị trí xe đang đi.\n"
-            f"- Quan sát các phương tiện xung quanh và tình huống giao thông.\n"
-            f"Lưu ý: Kết hợp thông tin YOLO gợi ý với những gì bạn nhìn thấy để đảm bảo độ chính xác cao nhất."
+            f"Đóng vai trò là 'Mắt thần' hỗ trợ lái xe an toàn. Nhiệm vụ của bạn là trích xuất thông tin thị giác từ video để trả lời câu hỏi: \"{question}\"\n\n"
+            f"THÔNG TIN THAM KHẢO TỪ YOLO:\n"
+            f"- Các vật thể đã phát hiện: {box_info if box_info else 'Không có đối tượng đặc biệt'}\n\n"
+            f"YÊU CẦU MÔ TẢ CHI TIẾT (Ưu tiên độ chính xác thực tế):\n"
+            f"1. BIỂN BÁO GIAO THÔNG: Tìm và đọc CHÍNH XÁC nội dung chữ/số trên biển báo liên quan đến câu hỏi. Mô tả hình dáng (tròn/vuông/tam giác) và màu sắc (xanh/đỏ/vàng).\n"
+            f"2. LÀN ĐƯỜNG & VẠCH KẺ: Xác định số lượng làn, loại vạch (nét đứt/liền/vạch vàng/vạch trắng) và hướng mũi tên trên đường (nếu có).\n"
+            f"3. NGỮ CẢNH: Vị trí xe đang đi (làn trái/phải/giữa) và hành vi các xe xung quanh.\n\n"
+            f"LƯU Ý QUAN TRỌNG: Nếu thông tin YOLO mâu thuẫn với những gì bạn nhìn thấy rõ trong video, hãy tin vào video."
         )
         messages = [
             {
@@ -53,7 +61,7 @@ def generate_video_description(frames, models, box_info):
         inputs = inputs.to("cuda")
 
         # Inference: Generation of the output
-        generated_ids = model.generate(**inputs)
+        generated_ids = model.generate(**inputs, max_new_tokens=512, do_sample=True, temperature=0.7)
         generated_ids_trimmed = [
             out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
         ]

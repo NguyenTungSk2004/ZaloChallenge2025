@@ -88,7 +88,7 @@ def process_single_question(question_data, models, question_index, total_questio
             box_info = "Không phát hiện đối tượng nào quan trọng trong video."
 
         # 4. Gọi VLM
-        vlm_description = generate_video_description(frames, models, box_info)
+        vlm_description = generate_video_description(frames, models, box_info, question_data['question'] + "\n".join(question_data['choices']))
         save_vlm_cache(video_path, vlm_description)
 
         return {
