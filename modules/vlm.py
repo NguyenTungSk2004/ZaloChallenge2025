@@ -41,6 +41,7 @@ def generate_video_description(frames, models, box_info, question):
                             "Bạn là tài xế lái xe.\n"
                             f"Dữ liệu từ cảm biến YOLO cho biết:\n{box_info}\n\n"
                             f"Nhiệm vụ: Mô tả bối cảnh xe, tình huống hiện tại của xe, các biển báo, vạch kẻ đường và phương tiện xung quanh để cho luật sư trả lời câu hỏi: {question}\n"
+                            "Lưu ý: Bạn không trả lời câu hỏi, chỉ mô tả bối cảnh và tình huống hiện tại của xe một cách chi tiết và chính xác nhất có thể."
                         )
                     }
                 ]
