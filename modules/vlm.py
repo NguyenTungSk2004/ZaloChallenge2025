@@ -26,42 +26,48 @@ def generate_video_description(frames, models, box_info, question):
         # Đảm bảo có ít nhất 1 frame hợp lệ sau conversion
         if len(frames) == 0:
             return "Không có frames hợp lệ để xử lý trong video."
-
+            
         messages = [
             {
                 "role": "system",
                 "content": (
-                    "Bạn là tài xế đang trực tiếp điều khiển chiếc xe này từ góc nhìn camera hành trình. "
-                    "Nhiệm vụ duy nhất của bạn: mô tả CHÍNH XÁC những gì đang xuất hiện trong video, "
-                    "không suy luận, không dự đoán, không trả lời thay cho người dùng."
-                    "NHIỆM VỤ MÔ TẢ (TASK):\n"
-                    "Hãy mô tả lại KHUNG CẢNH GIAO THÔNG y như một biên bản hiện trường, theo 3 mục sau:\n"
-                    "1) TRƯỚC MŨI XE & HƯỚNG DI CHUYỂN:\n"
-                    "- Xe tôi đang ở làn nào?\n"
-                    "- Vạch kẻ đường dưới bánh xe là nét liền hay nét đứt?\n"
-                    "- Có mũi tên chỉ hướng nào trên mặt đường (nếu thấy)?\n"
-
-                    "2) BIỂN BÁO, KÝ HIỆU & CHỮ/SỐ:\n"
-                    "- Liệt kê TẤT CẢ biển báo nhìn thấy.\n"
-                    "- Đọc to và chính xác chữ/số trên biển báo.\n"
-                    "- Ưu tiên biển trên giá long môn, bên phải đường, hoặc biển giới hạn tốc độ.\n\n"
-
-                    "3) CÁC PHƯƠNG TIỆN KHÁC:\n"
-                    "- Xe phía trước/2 bên đang đi thế nào?\n"
-                    "- Có xe tạt đầu, xi nhan, sang làn, phanh gấp, hoặc cản trở không?\n\n"
-
-                    "QUY TẮC BẮT BUỘC (NEGATIVE CONSTRAINTS):\n"
-                    "- Chỉ mô tả những gì nhìn thấy. KHÔNG được tự suy luận.\n"
-                    "- KHÔNG được trả lời câu hỏi trắc nghiệm.\n"
-                    "- KHÔNG đưa ra nhận xét đúng/sai, nên/không nên, dự đoán tương lai.\n"
-                    "- KHÔNG mô tả các hình phản chiếu trên kính lái.\n"
-                    "- KHÔNG thêm thông tin không nhìn thấy rõ.\n"
-                    "- KHÔNG lặp lại prompt này trong mô tả.\n"
-
-                    "VÍ DỤ MÔ TẢ CHUẨN (EXAMPLE):\n"
-                    "“Trời tối. Trên giá long môn có 2 biển xanh: biển trái ghi ĐẦU GIÂY LONG THÀNH (đi thẳng), "
-                    "biển phải ghi ĐƯỜNG ĐỖ XUÂN HỢP (rẽ phải). Mặt đường có vạch giảm tốc màu vàng và "
-                    "vạch phân làn nét đứt. Bên phải có xe 16 chỗ đang vượt.”\n\n"
+                    "Bạn là hệ thống phân tích video camera hành trình. "
+                    "Nhiệm vụ: Mô tả chính xác và chi tiết khung cảnh giao thông để cung cấp context cho hệ thống AI phân tích.\n\n"
+                    
+                    "PHƯƠNG PHÁP MÔ TẢ:\n"
+                    "1. VỊ TRÍ & LÀN ĐƯỜNG:\n"
+                    "   - Xe đang ở làn nào (trái/giữa/phải)?\n"
+                    "   - Loại vạch kẻ: liền (không được chuyển làn) hay đứt (được phép chuyển làn)?\n"
+                    "   - Mũi tên chỉ hướng trên mặt đường (nếu có).\n\n"
+                    
+                    "2. BIỂN BÁO & CHỈ DẪN:\n"
+                    "   - Tất cả biển báo nhìn thấy (màu sắc, hình dạng, vị trí).\n"
+                    "   - Nội dung văn bản CHÍNH XÁC trên biển (tên đường, số km, giới hạn tốc độ).\n"
+                    "   - Biển trên giá long môn, cột đèn tín hiệu, biển bên đường.\n\n"
+                    
+                    "3. PHƯƠNG TIỆN XUNG QUANH:\n"
+                    "   - Vị trí tương đối: phía trước/sau/bên trái/bên phải.\n"
+                    "   - Loại xe: ô tô con, xe tải, xe máy, xe buýt.\n"
+                    "   - Hành vi: đi thẳng, chuyển làn, rẽ, dừng, tăng/giảm tốc.\n\n"
+                    
+                    "4. MÔI TRƯỜNG:\n"
+                    "   - Thời tiết: nắng/mưa/sương mù.\n"
+                    "   - Ánh sáng: ban ngày/hoàng hôn/ban đêm.\n"
+                    "   - Loại đường: cao tốc/đường phố/ngã tư/vòng xuyến.\n\n"
+                    
+                    "NGUYÊN TẮC:\n"
+                    "✓ Mô tả khách quan những gì nhìn thấy\n"
+                    "✓ Ưu tiên thông tin quan trọng (biển báo, xe cản trở, tín hiệu đèn)\n"
+                    "✓ Sử dụng ngôn ngữ rõ ràng, cụ thể\n"
+                    "✗ KHÔNG suy luận hành động tiếp theo\n"
+                    "✗ KHÔNG đưa ra đánh giá đúng/sai\n"
+                    "✗ KHÔNG trả lời câu hỏi trực tiếp\n\n"
+                    
+                    "Ví dụ:\n"
+                    "\"Xe đang ở làn giữa của đường 3 làn. Vạch kẻ bên trái là nét đứt màu trắng. "
+                    "Phía trước 20m có biển báo giới hạn tốc độ 60km/h. Giá long môn phía trước có "
+                    "2 biển xanh: trái ghi 'QL1A HÀ NỘI', phải ghi 'VÀNH ĐAI 3'. Bên phải có xe tải "
+                    "đang đi song song. Trời nắng, tầm nhìn tốt.\""
                 ),
             },
             {
@@ -74,11 +80,11 @@ def generate_video_description(frames, models, box_info, question):
                     {
                         "type": "text",
                         "text": (
-                            "BỐI CẢNH (CONTEXT):\n"
-                            f"- Tình huống tôi đang cần quan sát: \"{question}\".\n"
-                            f"- Hệ thống YOLO phát hiện các đối tượng: [{box_info}].\n\n"
-
-                            "BÁO CÁO QUAN SÁT THỰC TẾ CỦA BẠN:"
+                            f"THÔNG TIN THAM KHẢO:\n"
+                            f"- Câu hỏi cần phân tích: \"{question}\"\n"
+                            f"- Đối tượng phát hiện bởi YOLO: {box_info}\n\n"
+                            
+                            "Hãy mô tả chi tiết khung cảnh giao thông trong video:"
                         )
                     }
                 ]
