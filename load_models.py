@@ -68,7 +68,6 @@ def load_model_vlm(model_path):
         model_path,
         quantization_config=bnb_config,
         low_cpu_mem_usage=True,
-        attn_implementation="flash_attention_2",
         torch_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
         device_map="auto"
     )
@@ -79,19 +78,11 @@ def load_model_vlm(model_path):
 def load_model_llm(base_model_id, adapter_path):
     bnb_config = get_quantization_config() 
 
-    attn_impl = "sdpa" # Mặc định an toàn
-    if torch.cuda.get_device_capability()[0] >= 8:
-        try:
-            attn_impl = "flash_attention_2"
-        except ImportError:
-            pass
-
     llm = AutoModelForCausalLM.from_pretrained(
         base_model_id,
         quantization_config=bnb_config,
         device_map="auto",
         low_cpu_mem_usage=True,
-        attn_implementation=attn_impl,
         torch_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
     )
     llm = PeftModel.from_pretrained(llm, adapter_path)
