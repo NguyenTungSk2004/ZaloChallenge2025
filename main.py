@@ -58,11 +58,14 @@ def process_single_question(question_data, models, question_index, total_questio
     video_path = question_data['video_path']
     
     try:
-        frames_queue = extract_frames_to_queue(video_path)
-        frames, video_info = process_yolo_tracker(frames_queue, models['yolo'])
+        vlm_description = get_vlm_cache(video_path)
+        if vlm_description is not None:
+            frames_queue = extract_frames_to_queue(video_path)
+            frames, video_info = process_yolo_tracker(frames_queue, models['yolo'])
 
-        # 4. Gọi VLM
-        vlm_description = generate_video_description(frames, models, video_info, question_data['question'] + "\n".join(question_data['choices']))
+            # 4. Gọi VLM
+            vlm_description = generate_video_description(frames, models, video_info, question_data['question'] + "\n".join(question_data['choices']))
+            save_vlm_cache(video_path, vlm_description)
         return {
             'id': question_data['id'],
             'answer': llm_choise_answer(models, vlm_description, question_data, video_info),

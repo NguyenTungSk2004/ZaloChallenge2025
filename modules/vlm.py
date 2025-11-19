@@ -35,12 +35,11 @@ def generate_video_description(frames, models, box_info, question):
                     {
                         "type": "text",
                         "text": (
-                            f"Mô tả ngắn gọn video này cho câu hỏi: {question}\n"
                             f"YOLO phát hiện: {box_info}\n"
                             "Tập trung: biển báo (đọc chữ/số), vạch đường, làn xe, đèn giao thông, "
                             "xe máy, ô tô, xe tải, xe buýt, người đi bộ, cảnh sát giao thông, "
                             "vật cản, công trình, tình trạng thời tiết và tầm nhìn.\n"
-                            "Chỉ mô tả thấy gì, không trả lời. Tối đa 2-3 câu."
+                            "Chỉ mô tả thấy gì trong video, không suy đoán thêm.\n"
                         )
                     }
                 ]
