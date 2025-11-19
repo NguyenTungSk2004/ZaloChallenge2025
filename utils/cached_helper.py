@@ -17,26 +17,32 @@ def save_temp_results(results, temp_file_path):
     print(f"💾 Backup: {len(results)} kết quả -> {temp_file_path}")
 
 def get_vlm_cache(video_path):
-    """Load VLM description từ cache"""
+    """Load VLM description và video_info từ cache"""
     cache_dir = "cached_vlm"
     os.makedirs(cache_dir, exist_ok=True)
-    cache_key = hashlib.md5(video_path.encode()).hexdigest()[:8]
-    cache_file = os.path.join(cache_dir, f"{cache_key}.json")
+    # Sử dụng tên file trực tiếp thay vì hash
+    video_name = os.path.basename(video_path).replace('.mp4', '')
+    cache_file = os.path.join(cache_dir, f"{video_name}.json")
     
     if os.path.exists(cache_file):
         with open(cache_file, 'r', encoding='utf-8') as f:
-            return json.load(f)['vlm_description']
-    return None
+            data = json.load(f)
+            return data.get('vlm_description'), data.get('video_info', '')
+    return None, None
 
-def save_vlm_cache(video_path, vlm_description):
-    """Lưu VLM description vào cache"""
+def save_vlm_cache(video_path, vlm_description, video_info):
+    """Lưu VLM description và video_info vào cache"""
     cache_dir = "cached_vlm"
     os.makedirs(cache_dir, exist_ok=True)
-    cache_key = hashlib.md5(video_path.encode()).hexdigest()[:8]
-    cache_file = os.path.join(cache_dir, f"{cache_key}.json")
+    # Sử dụng tên file trực tiếp thay vì hash
+    video_name = os.path.basename(video_path).replace('.mp4', '')
+    cache_file = os.path.join(cache_dir, f"{video_name}.json")
     
     with open(cache_file, 'w', encoding='utf-8') as f:
-        json.dump({'vlm_description': vlm_description}, f, ensure_ascii=False)
+        json.dump({
+            'vlm_description': vlm_description,
+            'video_info': video_info
+        }, f, ensure_ascii=False)
 
 def save_json(data, filename):
     cached_dir = "cached_helper"    
