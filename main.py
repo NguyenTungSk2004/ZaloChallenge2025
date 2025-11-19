@@ -42,6 +42,10 @@ def process_yolo_tracker(frames_queue, model: YOLO) -> BestFrameTracker:
 def choise_answer(models, vlm_description, question_data):
     question = question_data["question"]
     choices = question_data["choices"]
+    
+    # Chuyển đổi choices từ list thành string
+    if isinstance(choices, list):
+        choices = "\n".join(choices)
 
     with torch.no_grad():
         final_answer = lm_generate(

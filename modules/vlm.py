@@ -130,4 +130,5 @@ def generate_video_description(frames, models, box_info):
 
         return output_text[0].strip()
     except Exception as e:
-        return None, str(e)
+        print(f"❌ Error in generate_video_description: {str(e)}")
+        return f"Lỗi khi xử lý video: {str(e)}"
