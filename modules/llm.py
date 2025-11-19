@@ -21,7 +21,7 @@ def create_messages(context, video_description, question, choices):
     Tạo messages cho Qwen format chuẩn ChatML, sử dụng tiếng Anh để tối ưu hóa khả năng reasoning.
     """
     
-    # 1. SYSTEM PROMPT (ENGLISH - Đã sửa Quy tắc 3)
+    # 1. SYSTEM PROMPT (ENGLISH - Đã thêm Quy tắc ưu tiên Context)
     system_prompt = """You are a professional traffic assistant. Your task is to answer traffic law questions.
 
 STRICT RULES:
@@ -30,34 +30,27 @@ STRICT RULES:
 3. Single Source: Must answer based on the CONTEXT and VIDEO DESCRIPTION. **IMPORTANT: If specific information (like street names or sign details) in the VIDEO DESCRIPTION contradicts or is not supported by the CONTEXT, you must prioritize the accurate information from the CONTEXT.**
 4. Format: Return only 1 capitalized character. Example: "A"."""
 
-    # 2. FEW-SHOT EXAMPLES (ENGLISH - Giả lập lỗi VLM và sửa bằng Context)
-    
+    # 2. FEW-SHOT EXAMPLES (ENGLISH - Giả lập lỗi VLM)
     # --- Example 1 (Simulating VLM Hallucination) ---
-    # VLM sends wrong name ('GUONG DO XUAN KEP'), but Context implies the correct one ('Đường Đỗ Xuân Hợp').
-    ex1_context = """
-[Biển số: Cấm rẽ phải]
-Đây là quy định về Đường Đỗ Xuân Hợp thuộc khu vực thành phố Thủ Đức. Biển báo xanh là biển chỉ dẫn.
-"""
+    # Giả định VLM đọc sai 'GƯƠNG ĐỖ XUÂN KẾP', nhưng Context chứa 'Đường Đỗ Xuân Hợp'
     ex1_content = f"""video_description: Night view. On the overhead gantry, there are 02 blue signs: The left sign reads DAU GIAY LONG THANH (straight), the right sign reads DUONG **GUONG DO XUAN KEP** (turn right). The road has yellow speed reduction strips and dashed lane dividers. A 16-seater vehicle is overtaking on the right.
-question: According to the video, if the car turns slightly right, which road does it enter?
+question: Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường nào?
 choices:
-"A. No information available",
+"A. Không có thông tin",
 "B. Dầu Giây Long Thành",
 "C. Đường Đỗ Xuân Hợp",
 "D. Xa Lộ Hà Nội"
 
-<context>
-{ex1_context}
-</context>
+<context>FAKE_CONTEXT</context>
 
 Please select the correct answer."""
     
-    # --- Example 2 (General rule) ---
+    # --- Example 2 ---
     ex2_content = """video_description: The red traffic light ahead is lit.
-question: Is there a traffic light ahead?
+question: Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường Xa Lộ Hà Nội. Đúng hay sai??
 choices:
-"A. Yes",
-"B. No"
+"A. Đúng",
+"B. Sai"
 
 <context>FAKE_CONTEXT</context>
 
@@ -92,7 +85,7 @@ Please select the correct answer."""
     
     return messages
 
-# Hàm llm_choise_answer (GIỮ NGUYÊN)
+# Hàm llm_choise_answer (Đã sửa prompt reranker sang tiếng Anh)
 def llm_choise_answer(models, vlm_description: str, question_data, box_info: str = "") -> str:
     llm = models['llm']
     tokenizer = models['llm_tokenizer']
@@ -108,7 +101,7 @@ def llm_choise_answer(models, vlm_description: str, question_data, box_info: str
 
     docs = retriever.invoke(vlm_description)
 
-    # Prompt Reranker cũng nên chuyển sang tiếng Anh để nhất quán
+    # Prompt Reranker (Đã chuyển sang tiếng Anh)
     rank_prompt = f"""
         Based on the video description: "{vlm_description}", find the relevant information in the following documents to answer the question: "{question}" 
         Information from YOLO sensor: [{box_info}]

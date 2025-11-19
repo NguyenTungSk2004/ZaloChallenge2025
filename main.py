@@ -38,7 +38,7 @@ def process_yolo_tracker(frames_queue, model: YOLO):
             cls_id = int(box.cls)
             cls_name = results[0].names[cls_id]
 
-            info_str = f"Đối tượng {track_id} [Loại đối tượng là {cls_name}, vị trí: {bbox}, độ tin cậy: {conf:.3f}.]"
+            info_str = f"Object {track_id} [Object type is {cls_name}, position: {bbox}, confidence: {conf:.3f}.]"
             box_info_list.append(info_str)
 
         if box_info_list:
