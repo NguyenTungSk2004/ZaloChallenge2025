@@ -17,141 +17,105 @@ def format_docs(docs):
     return out.strip()
 
 TEMPLATE = """
-<|system|>
-Bạn là trợ lý giao thông. Chỉ trả lời dựa trên CONTEXT và VIDEO DESCRIPTION.
-STRICT RULE :
-1. Chỉ chọn đáp án đúng.
-2. Không giải thích gì thêm.
-3. Không suy diễn.
-4.Nếu không có thông tin → trả lời đúng câu:
-"Tôi không tìm thấy biển báo phù hợp trong cơ sở dữ liệu."
-Không suy diễn. Không thêm kiến thức ngoài context.
-<|end|>
+<|im_start|>system
+Bạn là trợ lý giao thông chuyên nghiệp. Nhiệm vụ của bạn là trả lời các câu hỏi về luật giao thông dựa trên các dữ liệu đầu vào.
 
+QUY TẮC BẮT BUỘC (STRICT RULES):
+1. Độc quyền: **Chỉ chọn đáp án đúng (A, B, C, hoặc D).**
+2. Không giải thích: **Tuyệt đối không giải thích, không thêm bất kỳ văn bản nào ngoài chữ cái đáp án.**
+3. Nguồn duy nhất & Bắt buộc trả lời: **Bắt buộc phải chọn một đáp án (A, B, C, hoặc D)** dựa trên CONTEXT và VIDEO DESCRIPTION. Không suy diễn hoặc thêm kiến thức bên ngoài. **Tuyệt đối không sử dụng câu trả lời mặc định/lỗi.**
+<|im_end|>
+
+<|im_start|>user
 ### FEW-SHOT EXAMPLES ###
 
-<|user|>
-video_description: The road section has three lanes. The outermost right lane is a mixed lane for both motorbikes and cars. Ahead, there is a sign allowing vehicles to go straight or turn right.
+video_description: Frame 1: Xe đang chạy trên đoạn đường có ba làn. Làn ngoài cùng bên phải là làn hỗn hợp cho cả xe máy và ô tô. Phía trước có biển báo cho phép xe đi thẳng hoặc rẽ phải. [Loại đối tượng là R.412, độ tin cậy: 0.985.]
 question: Nếu xe ô tô đang chạy ở làn ngoài cùng bên phải trong video này thì xe đó chỉ được phép rẽ phải?
 choices:
-- A. Đúng
-- B. Sai
+A. Đúng
+B. Sai
 
 <context>FAKE_CONTEXT</context>
 
 Hãy chọn đáp án đúng.
-<|assistant|>
-B
+<|im_end|>
+<|im_start|>assistant
+B<|im_end|>
 
-<|user|>
-video_description: The road section contains three lanes. A traffic sign R.411 ahead shows arrows indicating allowed directions: straight, left turn, and right turn.
+<|im_start|>user
+video_description: Frame 2: Đoạn đường chứa ba làn xe. Phía trước có biển báo R.411 chỉ dẫn các hướng được phép: đi thẳng, rẽ trái và rẽ phải. Mặt đường thông thoáng và có nhiều xe máy gần đó. [Loại đối tượng là R.411, độ tin cậy: 0.992.]
 question: Phần đường trong video cho phép các phương tiện đi theo hướng nào khi đến nút giao?
 choices:
-- A. Đi thẳng
-- B. Đi thẳng và rẽ phải
-- C. Đi thẳng, rẽ trái và rẽ phải
-- D. Rẽ trái và rẽ phải
+A. Đi thẳng
+B. Đi thẳng và rẽ phải
+C. Đi thẳng, rẽ trái và rẽ phải
+D. Rẽ trái và rẽ phải
 
 <context>FAKE_CONTEXT</context>
 
 Hãy chọn đáp án đúng.
-<|assistant|>
-C
+<|im_end|>
+<|im_start|>assistant
+C<|im_end|>
 
 ### END FEW-SHOT EXAMPLES ###
 
-
 ### REAL USER QUESTION ###
 
-<|user|>
 video_description: {video_description}
-{question}
+question: {question}
+choices: {choices}
 
 <context>
 {context}
 </context>
 
 Hãy chọn đáp án đúng.
-<|assistant|>
+<|im_end|>
+<|im_start|>assistant
 """
 
 prompt = PromptTemplate.from_template(TEMPLATE)
 
-# 6. PUBLIC FUNCTION: lm_generate()
-def lm_generate(*,llm, tokenizer,retriever, reranker, vlm_description: str, question: str) -> str:
-    """Hàm public để team gọi từ pipeline chính"""
+# Sửa đổi hàm lm_generate để tối ưu hóa cho Qwen và trích xuất đáp án
+def lm_generate(*, models, vlm_description: str, question: str, choices: str = "") -> str:
+    """Hàm public để team gọi từ pipeline chính, đã tối ưu cho Qwen Parsing."""
+    llm = models['llm']
+    tokenizer = models['llm_tokenizer']
+    retriever = models['retriever']
+    reranker = models['reranker']
 
-    # 1. Retrieve
     docs = retriever.invoke(vlm_description)
-
-    # 2. Rerank
     top_docs = rerank(reranker, vlm_description, docs, k=3)
-
-    # 3. Kiểm tra context rỗng
-    if len(top_docs) == 0:
-        return "Tôi không tìm thấy biển báo phù hợp trong cơ sở dữ liệu."
-
-    # 4. Format context
     context = format_docs(top_docs)
-
-    # 5. Run LLM
-    final_prompt = prompt.format(context=context, video_description=vlm_description, question=question)
-    # 5.1. Tokenize prompt
-    inputs = tokenizer(final_prompt, return_tensors="pt", return_attention_mask=False).to(llm.device)
     
-    # 5.2. Generate answer
-    # Lưu ý: Cần thêm max_new_tokens để giới hạn độ dài câu trả lời của LLM
-    outputs = llm.generate(
-        **inputs,
-        max_new_tokens=256, # Giới hạn 256 token mới cho câu trả lời
-        pad_token_id=tokenizer.pad_token_id, # Cần thiết cho mô hình Phi-3
-        eos_token_id=tokenizer.eos_token_id
+    final_prompt = prompt.format(
+        context=context, 
+        video_description=vlm_description, 
+        question=question, 
+        choices=choices
+    )
+    model_inputs = tokenizer([final_prompt], return_tensors="pt", return_attention_mask=False).to(llm.device)
+    
+    generated_ids = llm.generate(
+        **model_inputs,
+        max_new_tokens=512,
+        do_sample=False,
+        temperature=0.0
     )
 
-    # 5.3. Decode (Chỉ giải mã phần câu trả lời)
-    # Do mô hình sinh ra cả prompt, chúng ta cần loại bỏ độ dài của prompt gốc.
-    prompt_length = inputs['input_ids'].shape[1]
-    
-    # Debug: in ra thông tin generation
-    print(f"🔍 Prompt length: {prompt_length}")
-    print(f"🔍 Output length: {outputs[0].shape}")
-    
-    # Giải mã phần token được sinh ra (sau prompt)
-    if outputs[0].shape[0] > prompt_length:
-        generated_tokens = outputs[0][prompt_length:]
-        answer = tokenizer.decode(generated_tokens, skip_special_tokens=True)
-        print(f"🔍 Generated tokens: {generated_tokens[:10]}")  # In 10 token đầu
-        print(f"🔍 Raw answer: '{answer}'")
-    else:
-        # Fallback: decode toàn bộ rồi loại bỏ prompt
-        full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        prompt_text = tokenizer.decode(inputs['input_ids'][0], skip_special_tokens=True)
-        
-        print(f"🔍 Full output: {full_output[:300]}...")
-        print(f"🔍 Prompt text: {prompt_text[-200:]}")  # In 200 ký tự cuối của prompt
-        
-        if prompt_text in full_output:
-            answer = full_output.replace(prompt_text, "", 1).strip()
-        else:
-            answer = full_output.strip()
-        
-        print(f"🔍 Final answer after cleanup: '{answer}'")
+    output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist() 
 
-    # Làm sạch answer - chỉ lấy ký tự đầu tiên nếu đó là A, B, C, D
-    answer_clean = answer.strip()
-    if answer_clean and answer_clean[0] in ['A', 'B', 'C', 'D']:
-        answer_clean = answer_clean[0]
-    elif 'A' in answer_clean:
-        answer_clean = 'A'
-    elif 'B' in answer_clean:
-        answer_clean = 'B' 
-    elif 'C' in answer_clean:
-        answer_clean = 'C'
-    elif 'D' in answer_clean:
-        answer_clean = 'D'
-    else:
-        print(f"⚠️ No valid answer found, defaulting to A. Raw: '{answer_clean}'")
-        answer_clean = 'A'
+    try:
+        index = len(output_ids) - output_ids[::-1].index(151668)
+    except ValueError:
+        index = 0
+
+    thinking_content = tokenizer.decode(output_ids[:index], skip_special_tokens=True).strip("\n")
+    answer = tokenizer.decode(output_ids[index:], skip_special_tokens=True).strip("\n")
+
+    print("thinking content:", thinking_content)
+    print("Answer:", answer)
     
-    print(f"🔍 Final cleaned answer: '{answer_clean}'")
-    return answer_clean
+    # QUY TẮC BẮT BUỘC: Đảm bảo chỉ trả về chữ cái đáp án đầu tiên
+    return answer.split()[0] if answer else "A"

@@ -6,7 +6,7 @@ import torch
 from load_models import load_models
 from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
-from modules.vlm import describe_frame_with_prompt
+from modules.vlm import describe_frame_with_prompt, generate_description, generate_video_description, predict_answer
 from modules.qa import lm_generate
 from utils.cached_helper import *
 from ultralytics import YOLO
@@ -41,7 +41,6 @@ def process_yolo_tracker(frames_queue, model: YOLO) -> BestFrameTracker:
     return tracker
 
 def choise_answer(models, vlm_description, question_data):
-    """Chọn câu trả lời từ VLM description và câu hỏi"""
     question = question_data["question"]
     choices = question_data["choices"]
 
@@ -52,19 +51,17 @@ def choise_answer(models, vlm_description, question_data):
             retriever=models['retriever'],
             reranker=models['reranker'],
             vlm_description=vlm_description,
-            question=question + "\n" + "\n".join(choices),
+            question=question,
+            choices=choices
         )
     
-    clean_answer = final_answer.strip()[0] if final_answer.strip() else "A"
-    return clean_answer
+    return final_answer
 
 
 def process_single_question(question_data, models, question_index, total_questions):
-    """Xử lý một câu hỏi với cache VLM"""
     video_path = question_data['video_path']
     
     try:
-        # Kiểm tra cache VLM trước
         vlm_description = get_vlm_cache(video_path)
         if vlm_description:
             return {
@@ -76,28 +73,22 @@ def process_single_question(question_data, models, question_index, total_questio
         frames_queue = extract_frames_to_queue(video_path)
         tracker = process_yolo_tracker(frames_queue, models['yolo'])
 
-        all_caption = ""
+        frames = []
+        box_info_list = [] # Dùng list để chứa các đoạn text, nhanh hơn cộng chuỗi
+
         for track_id, frameData in tracker.best_frames.items():
             box = frameData.box_info
+            frames.append(frameData.frame)
+            info_str = f"Frame {track_id} [Loại đối tượng là {box.class_name}, vị trí: {box.bbox}, điểm đánh giá với 40% độ tin cậy và 60% độ nét: {frameData.score:.3f}.]"
+            box_info_list.append(info_str)
 
-            prompt = (
-                f"Hãy mô tả chi tiết môi trường xung quanh và bối cảnh giao thông của chiếc xe. "
-                f"Đồng thời, hãy cho biết **chính xác văn bản hoặc ký hiệu** nào có thể nhìn thấy trên biển báo giao thông "
-                f"trong vùng bounding box {box.bbox}? Bao gồm cả các phương tiện giao thông khác và tình hình đường xá xung quanh."
-            )
+        if box_info_list:
+            box_info = "".join(box_info_list) # Python tối ưu hóa memory cực tốt cho hàm join
+        else:
+            box_info = "Không phát hiện đối tượng nào quan trọng trong video."
 
-            with torch.no_grad():
-                caption = describe_frame_with_prompt(
-                    frameData.frame, 
-                    prompt, 
-                    models['processor'], 
-                    models['vlm']
-                )
-                
-            all_caption += f"Frame {track_id}: {caption} [The traffic sign class is {box.class_name}, score: {frameData.score:.3f}.]"
-
-        vlm_description = all_caption
-        # Lưu cache
+        # 4. Gọi VLM
+        vlm_description = generate_video_description(frames, models, box_info)
         save_vlm_cache(video_path, vlm_description)
 
         return {

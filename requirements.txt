@@ -17,3 +17,4 @@ datasets
 scipy
 tqdm
 qwen_vl_utils
+python-dotenv
