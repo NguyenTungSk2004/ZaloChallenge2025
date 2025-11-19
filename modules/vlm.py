@@ -12,11 +12,18 @@ def generate_video_description(frames, models, box_info, question):
         if not frames or len(frames) == 0:
             return "Không có frames để xử lý trong video."
             
-        if hasattr(frames[0], 'shape'):  # numpy array
+        # Lọc bỏ frames None và validate
+        valid_frames = [frame for frame in frames if frame is not None]
+        if not valid_frames:
+            return "Không có frames hợp lệ để xử lý trong video."
+            
+        if hasattr(valid_frames[0], 'shape'):  # numpy array
             from PIL import Image
-            frames = [Image.fromarray(frame.astype("uint8")).convert("RGB") for frame in frames]
+            frames = [Image.fromarray(frame.astype("uint8")).convert("RGB") for frame in valid_frames]
+        else:
+            frames = valid_frames
         
-        # Đảm bảo có ít nhất 1 frame hợp lệ
+        # Đảm bảo có ít nhất 1 frame hợp lệ sau conversion
         if len(frames) == 0:
             return "Không có frames hợp lệ để xử lý trong video."
 
