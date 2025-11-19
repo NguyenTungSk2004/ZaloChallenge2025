@@ -1,10 +1,7 @@
-from transformers import Qwen2VLForConditionalGeneration, AutoProcessor, Qwen2VLProcessor
+from transformers import Qwen2VLProcessor
 from qwen_vl_utils import process_vision_info
 from PIL import Image
 import torch
-
-from main import process_yolo_tracker
-from modules.extract_frames import extract_frames_to_queue
 
 def describe_frame_with_prompt(frame_np, prompt, vlm_processor: Qwen2VLProcessor, vlm_model):
     raw_image = Image.fromarray(frame_np.astype("uint8")).convert("RGB")
