@@ -4,11 +4,11 @@ import os
 if __name__ == "__main__":
 
     # 1. SỬA ĐƯỜNG DẪN: Đã chuyển sang định dạng Windows (dấu \) và dùng string thô (r"...")
-    DATA_PATH = r"yolo_data_split_v3\yolo_data_split\dataset.yaml"
-    
+    DATA_PATH = r"dataset\data.yaml"
+
     # Khởi tạo mô hình (kiểm tra lại tên file: 'yolo12s.pt' hoặc 'yolov12s.pt')
     model = YOLO("yolo12s.pt")  
-    
+
     # Điều chỉnh tham số training
     results = model.train(
         data=DATA_PATH,
@@ -40,15 +40,15 @@ if __name__ == "__main__":
         close_mosaic=10,
 
         project="traffic_signs_vietnam",
-        name="yolo12s_v3",
+        name="yolo12s_finetune_v2",
         exist_ok=True,
         val=True,
         verbose=True,
     )
-    
-    print(f"\n Training completed!")
-    print(f" Results: {results.save_dir}")
-    
+
+    print(f"\n✅ Training completed!")
+    print(f"📁 Results: {results.save_dir}")
+
     best_model = YOLO(f"{results.save_dir}/weights/best.pt")
     metrics = best_model.val()
     print(f"\n📊 Best mAP50: {metrics.box.map50:.4f}")

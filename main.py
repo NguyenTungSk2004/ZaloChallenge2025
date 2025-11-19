@@ -1,21 +1,22 @@
-import shutil
 import time
 import json
 import csv
 import torch
 from load_models import load_models
-from modules.tracker import BestFrameTracker
 from modules.extract_frames import extract_frames_to_queue
-from modules.vlm import describe_frame_with_prompt
-from modules.qa import lm_generate
+from modules.vlm import generate_video_description
+from modules.llm import llm_choise_answer
 from utils.cached_helper import *
 from ultralytics import YOLO
 import os
 
-def process_yolo_tracker(frames_queue, model: YOLO) -> BestFrameTracker:
-    tracker = BestFrameTracker()
+def process_yolo_tracker(frames_queue, model: YOLO):
+    frames = []
+    video_info_list = []
+
     while True:
         frame = frames_queue.get()
+        box_info_list = []
         if frame is None:
             break
         try:
@@ -30,78 +31,46 @@ def process_yolo_tracker(frames_queue, model: YOLO) -> BestFrameTracker:
         # Cập nhật tracker
         for box in results[0].boxes:
             if box.id is None: continue
-
-            x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
+    
+            bbox = box.xyxy[0].cpu().numpy().astype(int)
             track_id = int(box.id)
             conf = float(box.conf)
             cls_id = int(box.cls)
             cls_name = results[0].names[cls_id]
 
-            tracker.update_track(frame, track_id, (x1, y1, x2, y2), conf, cls_name)
-    return tracker
+            info_str = f"Object {track_id} [Object type is {cls_name}, position: {bbox}, confidence: {conf:.3f}.]"
+            box_info_list.append(info_str)
 
-def choise_answer(models, vlm_description, question_data):
-    """Chọn câu trả lời từ VLM description và câu hỏi"""
-    question = question_data["question"]
-    choices = question_data["choices"]
+        if box_info_list:
+            box_info_str = " ".join(box_info_list)
+            frames.append(frame)
+            video_info_list.append(box_info_str)
+        else:
+            box_info_str = "No important objects detected in the frame."
 
-    with torch.no_grad():
-        final_answer = lm_generate(
-            llm=models['llm'],
-            tokenizer=models['tokenizer'],
-            retriever=models['retriever'],
-            reranker=models['reranker'],
-            vlm_description=vlm_description,
-            question=question + "\n" + "\n".join(choices),
-        )
-    
-    clean_answer = final_answer.strip()[0] if final_answer.strip() else "A"
-    return clean_answer
-
+    if video_info_list:
+        video_info = " ".join(video_info_list)
+    else:
+        video_info = "No important objects detected in the video."
+    return frames, video_info
 
 def process_single_question(question_data, models, question_index, total_questions):
-    """Xử lý một câu hỏi với cache VLM"""
     video_path = question_data['video_path']
     
     try:
-        # Kiểm tra cache VLM trước
-        vlm_description = get_vlm_cache(video_path)
-        if vlm_description:
-            return {
-                'id': question_data['id'],
-                'answer': choise_answer(models, vlm_description, question_data),
-                'index': question_index
-            }
+        vlm_description, video_info = get_vlm_cache(video_path)
         
-        frames_queue = extract_frames_to_queue(video_path)
-        tracker = process_yolo_tracker(frames_queue, models['yolo'])
+        if vlm_description is None:  # Chỉ xử lý khi không có cache
+            frames_queue = extract_frames_to_queue(video_path)
+            frames, video_info = process_yolo_tracker(frames_queue, models['yolo'])
 
-        all_caption = ""
-        for track_id, frameData in tracker.best_frames.items():
-            box = frameData.box_info
-
-            prompt = (
-                f"Question: Describe the environment and context of the car. "
-                f"Also, what is the **exact text or symbol** visible on the traffic sign associated with the bounding box {box.bbox}? Answer:"
-            )
-
-            with torch.no_grad():
-                caption = describe_frame_with_prompt(
-                    frameData.frame, 
-                    prompt, 
-                    models['processor'], 
-                    models['model']
-                )
-                
-            all_caption += f" {caption} [The traffic sign class is {box.class_name}, score: {frameData.score:.3f}.]"
-
-        vlm_description = all_caption
-        # Lưu cache
-        save_vlm_cache(video_path, vlm_description)
-
+            # 4. Gọi VLM
+            vlm_description = generate_video_description(frames, models, video_info, question_data['question'] + "\n".join(question_data['choices']))
+            save_vlm_cache(video_path, vlm_description, video_info)
+        
         return {
             'id': question_data['id'],
-            'answer': choise_answer(models, vlm_description, question_data),
+            'answer': llm_choise_answer(models, vlm_description, question_data, video_info),
             'index': question_index
         }
         
@@ -117,23 +86,23 @@ def main():
     """Hàm chính xử lý tuần tự từng câu hỏi"""
     os.makedirs('Results', exist_ok=True)
         
-    # Load data
     with open('public_test/public_test.json', 'r', encoding='utf-8') as f:
         test_data = json.load(f)
     
     questions = test_data['data']
     
-    # Load models
     models = load_models()
     
-    # Xử lý tuần tự từng câu hỏi
     results = []
     
     for i, question in enumerate(questions, 1):
+        print(f"\n🔍 Đang xử lý câu hỏi {i}/{len(questions)}: {question['id']}")
+        start_time = time.time()
         result = process_single_question(question, models, i, len(questions))
         results.append(result)
-        
-        # Backup mỗi 20 câu hỏi
+        end_time = time.time() - start_time
+        print(f"⏱️ Thời gian xử lý: {end_time:.2f} giây")
+        print(f"✅ [{i:3d}/{len(questions)}] {result['id']}: {result['answer']}")
         if i % 20 == 0:
             temp_file = f'Results/submission_{i}.csv'
             save_temp_results(results, temp_file)
