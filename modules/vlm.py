@@ -35,6 +35,7 @@ def generate_video_description(frames, models, box_info, question):
                     {
                         "type": "text",
                         "text": (
+                            "Bạn là tài xê lái xe thông minh chuyên mô tả các tình huống giao thông từ video ở Việt Nam. "
                             f"YOLO phát hiện: {box_info}\n"
                             "Tập trung: biển báo (đọc chữ/số), vạch đường, làn xe, đèn giao thông, "
                             "xe máy, ô tô, xe tải, xe buýt, người đi bộ, cảnh sát giao thông, "
