@@ -9,7 +9,7 @@ from transformers import (
     AutoTokenizer,
     BitsAndBytesConfig
 )
-from transformers import Qwen2VLForConditionalGeneration
+from transformers import Qwen3VLForConditionalGeneration
 from sentence_transformers import CrossEncoder
 from dotenv import load_dotenv
 import os
@@ -19,7 +19,7 @@ load_dotenv()
 # Load environment variables
 YOLO_MODEL_PATH = os.getenv('YOLO_MODEL_PATH', 'models/yolo_best.pt')
 LLM_MODEL_PATH = os.getenv('LLM_MODEL_PATH', 'models/Qwen/Qwen3-4B')
-VLM_MODEL_PATH = os.getenv('VLM_MODEL_PATH', 'models/Qwen/Qwen2-VL-7B-Instruct')
+VLM_MODEL_PATH = os.getenv('VLM_MODEL_PATH', 'models/Qwen/Qwen3-VL-2B-Instruct')
 RERANKER_MODEL_PATH = os.getenv('RERANKER_MODEL_PATH', 'models/namdp-ptit/ViRanker')
 VECTOR_DB_PATH = os.getenv('VECTOR_DB_PATH', 'Vecto_Database/db_bienbao_2')
 EMBEDDING_PATH = os.getenv('EMBEDDING_PATH', 'models/bkai-foundation-models/vietnamese-bi-encoder')
@@ -64,7 +64,7 @@ def load_model_yolo(model_path):
 def load_model_vlm(model_path):
     bnb_config = get_quantization_config()
     processor = AutoProcessor.from_pretrained(model_path)
-    model = Qwen2VLForConditionalGeneration.from_pretrained(
+    model = Qwen3VLForConditionalGeneration.from_pretrained(
         model_path,
         quantization_config=bnb_config,
         low_cpu_mem_usage=True,

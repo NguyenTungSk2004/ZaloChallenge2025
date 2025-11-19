@@ -18,47 +18,52 @@ def format_docs(docs):
 
 def create_messages(context, video_description, question, choices):
     """
-    Tạo messages cho Qwen format chuẩn ChatML.
-    Tách Few-shot examples thành các lượt User/Assistant riêng biệt để model học pattern tốt hơn.
+    Tạo messages cho Qwen format chuẩn ChatML, sử dụng tiếng Anh để tối ưu hóa khả năng reasoning.
     """
     
-    # 1. SYSTEM PROMPT (Luật nghiêm ngặt)
-    system_prompt = """Bạn là trợ lý giao thông chuyên nghiệp. Nhiệm vụ của bạn là trả lời các câu hỏi về luật giao thông.
+    # 1. SYSTEM PROMPT (ENGLISH - Đã sửa Quy tắc 3)
+    system_prompt = """You are a professional traffic assistant. Your task is to answer traffic law questions.
 
-QUY TẮC BẮT BUỘC (STRICT RULES):
-1. Độc quyền: Chỉ chọn đáp án đúng (A, B, C, hoặc D).
-2. Không giải thích: Tuyệt đối không giải thích, không thêm bất kỳ văn bản nào ngoài chữ cái đáp án.
-3. Nguồn duy nhất: Bắt buộc trả lời dựa trên CONTEXT và VIDEO DESCRIPTION.
-4. Định dạng: Chỉ trả về duy nhất 1 ký tự viết hoa. Ví dụ: "A"."""
+STRICT RULES:
+1. Exclusive: Only select the correct answer (A, B, C, or D).
+2. No Explanation: Absolutely do not explain or add any text besides the answer letter.
+3. Single Source: Must answer based on the CONTEXT and VIDEO DESCRIPTION. **IMPORTANT: If specific information (like street names or sign details) in the VIDEO DESCRIPTION contradicts or is not supported by the CONTEXT, you must prioritize the accurate information from the CONTEXT.**
+4. Format: Return only 1 capitalized character. Example: "A"."""
 
-    # 2. FEW-SHOT EXAMPLES (Định nghĩa mẫu hội thoại)
-    # Lưu ý: Format của User content trong ví dụ PHẢI GIỐNG HỆT format của câu hỏi thật.
+    # 2. FEW-SHOT EXAMPLES (ENGLISH - Giả lập lỗi VLM và sửa bằng Context)
     
-    # --- Example 1 ---
-    ex1_content = """video_description: Góc nhìn đêm. Trên giá long môn có 02 biển xanh: Biển trái ghi ĐẦU GIÂY LONG THÀNH (đi thẳng), biển phải ghi ĐƯỜNG ĐỖ XUÂN HỢP (rẽ phải). Mặt đường có vạch giảm tốc màu vàng và vạch phân làn nét đứt. Bên phải có xe 16 chỗ đang vượt.
-question: Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường nào?
+    # --- Example 1 (Simulating VLM Hallucination) ---
+    # VLM sends wrong name ('GUONG DO XUAN KEP'), but Context implies the correct one ('Đường Đỗ Xuân Hợp').
+    ex1_context = """
+[Biển số: Cấm rẽ phải]
+Đây là quy định về Đường Đỗ Xuân Hợp thuộc khu vực thành phố Thủ Đức. Biển báo xanh là biển chỉ dẫn.
+"""
+    ex1_content = f"""video_description: Night view. On the overhead gantry, there are 02 blue signs: The left sign reads DAU GIAY LONG THANH (straight), the right sign reads DUONG **GUONG DO XUAN KEP** (turn right). The road has yellow speed reduction strips and dashed lane dividers. A 16-seater vehicle is overtaking on the right.
+question: According to the video, if the car turns slightly right, which road does it enter?
 choices:
-"A. Không có thông tin",
+"A. No information available",
 "B. Dầu Giây Long Thành",
 "C. Đường Đỗ Xuân Hợp",
 "D. Xa Lộ Hà Nội"
 
-<context>FAKE_CONTEXT</context>
+<context>
+{ex1_context}
+</context>
 
-Hãy chọn đáp án đúng."""
+Please select the correct answer."""
     
-    # --- Example 2 ---
-    ex2_content = """video_description: Đèn đỏ phía trước đang sáng.
-question: Phía trước có đèn giao thông không?
+    # --- Example 2 (General rule) ---
+    ex2_content = """video_description: The red traffic light ahead is lit.
+question: Is there a traffic light ahead?
 choices:
-"A. Có",
-"B. Không"
+"A. Yes",
+"B. No"
 
 <context>FAKE_CONTEXT</context>
 
-Hãy chọn đáp án đúng."""
+Please select the correct answer."""
 
-    # 3. REAL USER QUESTION (Câu hỏi thực tế)
+    # 3. REAL USER QUESTION (ENGLISH format, retaining Vietnamese content)
     real_content = f"""video_description: {video_description}
 question: {question}
 choices: {choices}
@@ -67,7 +72,7 @@ choices: {choices}
 {context}
 </context>
 
-Hãy chọn đáp án đúng."""
+Please select the correct answer."""
 
     # 4. TỔNG HỢP MESSAGES
     messages = [
@@ -87,7 +92,7 @@ Hãy chọn đáp án đúng."""
     
     return messages
 
-# Sửa đổi hàm lm_generate để tối ưu hóa cho Qwen và trích xuất đáp án
+# Hàm llm_choise_answer (GIỮ NGUYÊN)
 def llm_choise_answer(models, vlm_description: str, question_data, box_info: str = "") -> str:
     llm = models['llm']
     tokenizer = models['llm_tokenizer']
@@ -103,9 +108,10 @@ def llm_choise_answer(models, vlm_description: str, question_data, box_info: str
 
     docs = retriever.invoke(vlm_description)
 
+    # Prompt Reranker cũng nên chuyển sang tiếng Anh để nhất quán
     rank_prompt = f"""
-        Dựa trên mô tả video: "{vlm_description}", hãy tìm các thông tin liên quan trong các tài liệu sau để trả lời câu hỏi: "{question}" 
-        Thông tin từ cảm biến YOLO: [{box_info}]
+        Based on the video description: "{vlm_description}", find the relevant information in the following documents to answer the question: "{question}" 
+        Information from YOLO sensor: [{box_info}]
     """
     top_docs = rerank(reranker, rank_prompt, docs, k=3)
     context = format_docs(top_docs)
@@ -137,7 +143,6 @@ def llm_choise_answer(models, vlm_description: str, question_data, box_info: str
     
     answer = tokenizer.batch_decode(generated_ids_trimmed, skip_special_tokens=True)[0]
     
-
     data_cache = {
         "vlm_description": vlm_description,
         "context": context,

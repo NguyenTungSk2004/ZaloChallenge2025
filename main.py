@@ -46,12 +46,12 @@ def process_yolo_tracker(frames_queue, model: YOLO):
             frames.append(frame)
             video_info_list.append(box_info_str)
         else:
-            box_info_str = "Không phát hiện đối tượng nào quan trọng trong frame."
+            box_info_str = "No important objects detected in the frame."
 
     if video_info_list:
         video_info = " ".join(video_info_list)
     else:
-        video_info = "Không phát hiện đối tượng nào quan trọng trong video."
+        video_info = "No important objects detected in the video."
     return frames, video_info
 
 def process_single_question(question_data, models, question_index, total_questions):
