@@ -35,24 +35,24 @@ QUY TẮC BẮT BUỘC (STRICT RULES):
     # Lưu ý: Format của User content trong ví dụ PHẢI GIỐNG HỆT format của câu hỏi thật.
     
     # --- Example 1 ---
-    ex1_content = """video_description: Frame 1: Xe đang chạy trên đoạn đường có ba làn. Làn ngoài cùng bên phải là làn hỗn hợp cho cả xe máy và ô tô. Phía trước có biển báo cho phép xe đi thẳng hoặc rẽ phải. [Loại đối tượng là R.412, độ tin cậy: 0.985.]
-question: Nếu xe ô tô đang chạy ở làn ngoài cùng bên phải trong video này thì xe đó chỉ được phép rẽ phải?
+    ex1_content = """video_description: Góc nhìn đêm. Trên giá long môn có 02 biển xanh: Biển trái ghi ĐẦU GIÂY LONG THÀNH (đi thẳng), biển phải ghi ĐƯỜNG ĐỖ XUÂN HỢP (rẽ phải). Mặt đường có vạch giảm tốc màu vàng và vạch phân làn nét đứt. Bên phải có xe 16 chỗ đang vượt.
+question: Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường nào?
 choices:
-A. Đúng
-B. Sai
+"A. Không có thông tin",
+"B. Dầu Giây Long Thành",
+"C. Đường Đỗ Xuân Hợp",
+"D. Xa Lộ Hà Nội"
 
 <context>FAKE_CONTEXT</context>
 
 Hãy chọn đáp án đúng."""
     
     # --- Example 2 ---
-    ex2_content = """video_description: Frame 2: Đoạn đường chứa ba làn xe. Phía trước có biển báo R.411 chỉ dẫn các hướng được phép: đi thẳng, rẽ trái và rẽ phải. Mặt đường thông thoáng và có nhiều xe máy gần đó. [Loại đối tượng là R.411, độ tin cậy: 0.992.]
-question: Phần đường trong video cho phép các phương tiện đi theo hướng nào khi đến nút giao?
+    ex2_content = """video_description: Đèn đỏ phía trước đang sáng.
+question: Phía trước có đèn giao thông không?
 choices:
-A. Đi thẳng
-B. Đi thẳng và rẽ phải
-C. Đi thẳng, rẽ trái và rẽ phải
-D. Rẽ trái và rẽ phải
+"A. Có",
+"B. Không"
 
 <context>FAKE_CONTEXT</context>
 
@@ -75,11 +75,11 @@ Hãy chọn đáp án đúng."""
         
         # Lượt hội thoại mẫu 1
         {"role": "user", "content": ex1_content},
-        {"role": "assistant", "content": "B"},
+        {"role": "assistant", "content": "C"},
         
         # Lượt hội thoại mẫu 2
         {"role": "user", "content": ex2_content},
-        {"role": "assistant", "content": "C"},
+        {"role": "assistant", "content": "A"},
         
         # Câu hỏi thực tế cần trả lời
         {"role": "user", "content": real_content}
