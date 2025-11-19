@@ -31,9 +31,16 @@ def generate_video_description(frames, models, box_info, question):
             {
                 "role": "system",
                 "content": (
-                    "Bạn là tài xế đang trực tiếp điều khiển chiếc xe này từ góc nhìn camera hành trình. "
-                    "Nhiệm vụ duy nhất của bạn: mô tả CHÍNH XÁC những gì đang xuất hiện trong video, "
-                    "không suy luận, không dự đoán, không trả lời thay cho người dùng."
+                    "Bạn là AI thị giác máy tính (Vision Encoder) chuyên trách của hệ thống xe tự lái. "
+                    "Nhiệm vụ của bạn là chuyển đổi dữ liệu hình ảnh từ camera hành trình thành văn bản mô tả khách quan (Scene Captioning).\n\n"
+                    "QUY TẮC AN TOÀN (SAFETY PROTOCOLS):\n"
+                    "1. TRUNG THỰC: Chỉ mô tả những gì nhìn thấy rõ ràng. Nếu không rõ, hãy báo 'Không rõ'.\n"
+                    "2. KHÁCH QUAN: Không đưa ra ý kiến cá nhân, không dự đoán, không trả lời câu hỏi trắc nghiệm (A,B,C,D).\n"
+                    "3. CHÍNH XÁC: Đọc chính xác từng ký tự chữ/số trên biển báo."
+                    "4. CHI TIẾT: Cung cấp mô tả chi tiết về các yếu tố quan trọng liên quan đến giao thông.\n"
+                    "5. TẬP TRUNG: Ưu tiên mô tả các biển báo giao thông và tín hiệu đèn đường quan trọng ảnh hưởng đến việc lái xe an toàn.\n"
+                    "6. NGẮN GỌN: Mô tả ngắn gọn, súc tích trong giới hạn 500 từ.\n"
+                    "7. KHÔNG LẶP LẠI PROMPT: Không bao giờ lặp lại hoặc nhắc lại nội dung của prompt trong mô tả.\n"
                 ),
             },
             {
@@ -46,39 +53,26 @@ def generate_video_description(frames, models, box_info, question):
                     {
                         "type": "text",
                         "text": (
-                            "BỐI CẢNH (CONTEXT):\n"
-                            f"- Tình huống tôi đang cần quan sát: \"{question}\".\n"
-                            f"- Hệ thống YOLO phát hiện các đối tượng: [{box_info}].\n\n"
+                            f"PHÂN TÍCH DỮ LIỆU THỊ GIÁC:\n"
+                            f"- Mục tiêu tìm kiếm: Các manh mối liên quan đến câu hỏi \"{question}\".\n"
+                            f"- Dữ liệu cảm biến (YOLO) gợi ý: [{box_info}].\n\n"
 
-                            "NHIỆM VỤ MÔ TẢ (TASK):\n"
-                            "Hãy mô tả lại KHUNG CẢNH GIAO THÔNG y như một biên bản hiện trường, theo 3 mục sau:\n"
-                            "1) TRƯỚC MŨI XE & HƯỚNG DI CHUYỂN:\n"
-                            "- Xe tôi đang ở làn nào?\n"
-                            "- Vạch kẻ đường dưới bánh xe là nét liền hay nét đứt?\n"
-                            "- Có mũi tên chỉ hướng nào trên mặt đường (nếu thấy)?\n\n"
+                            "YÊU CẦU: Hãy quét video và điền thông tin chi tiết vào BÁO CÁO HIỆN TRƯỜNG sau:\n\n"
+                            
+                            "1. [CẤU TRÚC ĐƯỜNG]:\n"
+                            "- Số lượng làn xe? Xe chủ đang đi làn nào?\n"
+                            "- Loại vạch kẻ đường (nét liền/đứt, màu sắc)?\n"
+                            "- Mũi tên chỉ hướng trên mặt đường (nếu có)?\n\n"
 
-                            "2) BIỂN BÁO, KÝ HIỆU & CHỮ/SỐ:\n"
-                            "- Liệt kê TẤT CẢ biển báo nhìn thấy.\n"
-                            "- Đọc to và chính xác chữ/số trên biển báo.\n"
-                            "- Ưu tiên biển trên giá long môn, bên phải đường, hoặc biển giới hạn tốc độ.\n\n"
+                            "2. [HỆ THỐNG BIỂN BÁO] (Quan trọng nhất):\n"
+                            "- Quét kỹ biển báo trên giá long môn (trên cao) và lề đường bên phải.\n"
+                            "- TRÍCH XUẤT NGUYÊN VĂN chữ và số trên biển báo (VD: 'Cấm đi ngược chiều', '60', 'Đồng Nai').\n\n"
 
-                            "3) CÁC PHƯƠNG TIỆN KHÁC:\n"
-                            "- Xe phía trước/2 bên đang đi thế nào?\n"
-                            "- Có xe tạt đầu, xi nhan, sang làn, phanh gấp, hoặc cản trở không?\n\n"
+                            "3. [TÌNH HUỐNG GIAO THÔNG]:\n"
+                            "- Thời điểm (Ngày/Đêm)?\n"
+                            "- Hành vi của các phương tiện xung quanh (nếu ảnh hưởng đến xe chủ).\n\n"
 
-                            "QUY TẮC BẮT BUỘC (NEGATIVE CONSTRAINTS):\n"
-                            "- Chỉ mô tả những gì nhìn thấy. KHÔNG được tự suy luận.\n"
-                            "- KHÔNG được trả lời câu hỏi trắc nghiệm.\n"
-                            "- KHÔNG đưa ra nhận xét đúng/sai, nên/không nên, dự đoán tương lai.\n"
-                            "- KHÔNG mô tả các hình phản chiếu trên kính lái.\n"
-                            "- KHÔNG thêm thông tin không nhìn thấy rõ.\n\n"
-
-                            "MẪU MÔ TẢ CHUẨN (EXAMPLE):\n"
-                            "“Trời tối. Trên giá long môn có 2 biển xanh: biển trái ghi ĐẦU GIÂY LONG THÀNH (đi thẳng), "
-                            "biển phải ghi ĐƯỜNG ĐỖ XUÂN HỢP (rẽ phải). Mặt đường có vạch giảm tốc màu vàng và "
-                            "vạch phân làn nét đứt. Bên phải có xe 16 chỗ đang vượt.”\n\n"
-
-                            "BÁO CÁO QUAN SÁT THỰC TẾ CỦA BẠN:"
+                            "Bắt đầu báo cáo:"
                         )
                     }
                 ]
@@ -100,7 +94,7 @@ def generate_video_description(frames, models, box_info, question):
         inputs = inputs.to("cuda")
 
         # Inference: Generation of the output
-        generated_ids = model.generate(**inputs, max_new_tokens=1024, do_sample=True, temperature=0.7)
+        generated_ids = model.generate(**inputs, max_new_tokens=512, do_sample=False, temperature=0.7)
         generated_ids_trimmed = [
             out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
         ]
