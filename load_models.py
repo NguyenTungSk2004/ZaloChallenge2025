@@ -1,5 +1,6 @@
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
+from peft import PeftModel
 import torch
 from ultralytics import YOLO
 from transformers import (
@@ -22,6 +23,28 @@ VLM_MODEL_PATH = os.getenv('VLM_MODEL_PATH', 'models/Qwen/Qwen2-VL-7B-Instruct')
 RERANKER_MODEL_PATH = os.getenv('RERANKER_MODEL_PATH', 'models/namdp-ptit/ViRanker')
 VECTOR_DB_PATH = os.getenv('VECTOR_DB_PATH', 'Vecto_Database/db_bienbao_2')
 EMBEDDING_PATH = os.getenv('EMBEDDING_PATH', 'models/bkai-foundation-models/vietnamese-bi-encoder')
+ADAPTER_LLM_PATH = os.getenv('ADAPTER_LLM_PATH', 'models/qwen-3-4b-finetuned')
+
+def load_model_embeddings_and_retriever(emb_path, db_path):
+    embeddings = HuggingFaceEmbeddings(
+        model_name=emb_path,
+        model_kwargs={'device': 'cuda' if torch.cuda.is_available() else 'cpu'},
+        encode_kwargs={'normalize_embeddings': False}
+    )
+
+    vectordb = Chroma(
+        persist_directory=db_path,
+        embedding_function=embeddings
+    )
+    retriever = vectordb.as_retriever(search_kwargs={"k": 3})
+    print("✅ Embeddings và Retriever đã load thành công")
+    return retriever
+
+def load_model_reranker(model_path):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    reranker = CrossEncoder(model_path, device=device)
+    print("✅ Reranker đã load thành công")
+    return reranker
 
 def get_quantization_config():
     return BitsAndBytesConfig(
@@ -53,39 +76,33 @@ def load_model_vlm(model_path):
     print("✅ VLM model đã load thành công")
     return processor, model
 
-def load_model_embeddings_and_retriever(emb_path, db_path):
-    embeddings = HuggingFaceEmbeddings(
-        model_name=emb_path,
-        model_kwargs={'device': 'cuda' if torch.cuda.is_available() else 'cpu'},
-        encode_kwargs={'normalize_embeddings': False}
-    )
+def load_model_llm(base_model_id, adapter_path):
+    bnb_config = get_quantization_config() 
 
-    vectordb = Chroma(
-        persist_directory=db_path,
-        embedding_function=embeddings
-    )
-    retriever = vectordb.as_retriever(search_kwargs={"k": 3})
-    print("✅ Embeddings và Retriever đã load thành công")
-    return retriever
+    attn_impl = "sdpa" # Mặc định an toàn
+    if torch.cuda.get_device_capability()[0] >= 8:
+        try:
+            attn_impl = "flash_attention_2"
+        except ImportError:
+            pass
 
-def load_model_reranker(model_path):
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    reranker = CrossEncoder(model_path, device=device)
-    print("✅ Reranker đã load thành công")
-    return reranker
-
-def load_model_llm(model_path):
-    bnb_config = get_quantization_config()
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
     llm = AutoModelForCausalLM.from_pretrained(
-        model_path,
+        base_model_id,
         quantization_config=bnb_config,
         device_map="auto",
         low_cpu_mem_usage=True,
-        torch_dtype=torch.float16,
+        attn_implementation=attn_impl,
+        torch_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
     )
+    llm = PeftModel.from_pretrained(llm, adapter_path)
+    tokenizer = AutoTokenizer.from_pretrained(adapter_path, trust_remote_code=True)
+    
+    # Fix lỗi padding token thường gặp ở Qwen/Llama nếu chưa có
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
     llm.eval()
-    print("✅ LLM model đã load thành công")
+    print("✅ LLM model (Fine-tuned) đã load thành công")
     return llm, tokenizer
 
 def load_models():
@@ -102,6 +119,6 @@ def load_models():
     )
     
     models['vlm_processor'], models['vlm'] = load_model_vlm(VLM_MODEL_PATH)
-    models['llm'], models['llm_tokenizer'] = load_model_llm(LLM_MODEL_PATH)
+    models['llm'], models['llm_tokenizer'] = load_model_llm(LLM_MODEL_PATH, ADAPTER_LLM_PATH)
     
     return models
