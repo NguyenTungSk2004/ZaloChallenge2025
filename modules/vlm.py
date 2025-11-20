@@ -1,5 +1,6 @@
 from qwen_vl_utils import process_vision_info
-from PIL import Image 
+from PIL import Image
+import json  # <-- Thêm import json
 
 def generate_video_description(frames, models, box_info, question):
     """
@@ -8,8 +9,6 @@ def generate_video_description(frames, models, box_info, question):
     try:
         model = models['vlm']
         processor = models['vlm_processor']
-        
-        # ... (Frame validation and conversion code remains the same) ...
         
         # Validate frames
         if not frames or len(frames) == 0:
@@ -28,14 +27,24 @@ def generate_video_description(frames, models, box_info, question):
             
         if len(frames) == 0:
             return "No valid frames available for processing in the video."
-            
-        # SỬA ĐỔI: Prompt hoàn toàn bằng Tiếng Anh, yêu cầu nội dung biển báo là Tiếng Việt.
+        
+        # --- SỬA ĐỔI: Chuyển box_info thành JSON ---
+        try:
+            yolo_json = json.dumps(box_info, ensure_ascii=False)
+        except Exception as e:
+            print(f"❌ Error converting YOLO data to JSON: {e}")
+            yolo_json = str(box_info)
+        
+        # Prompt hoàn toàn bằng tiếng Anh, yêu cầu biển báo là Tiếng Việt
         instruction_text_en = (
             "You are a smart driver's assistant specializing in describing traffic situations in Vietnam based on the video provided. "
-            f"**YOLO detection data**: {box_info}\n"
-            "Focus on checking the existence and status of the following objects: **traffic signs** (read the text/numbers on the signs and **MUST REPORT THEM IN VIETNAMESE**), **road markings**, **lanes**, **traffic lights**, motorcycles, cars, trucks, buses, pedestrians, traffic police, obstacles, construction, weather, and visibility.\n"
+            f"**YOLO detection data (JSON format)**: {yolo_json}\n"
+            "Focus on checking the existence and status of the following objects: "
+            "**traffic signs** (read the text/numbers on the signs and **MUST REPORT THEM IN VIETNAMESE**), "
+            "**road markings**, **lanes**, **traffic lights**, motorcycles, cars, trucks, buses, pedestrians, traffic police, obstacles, construction, weather, and visibility.\n"
             "**Strictly describe only what is seen in the video, do not speculate or add external information.**\n"
-            "Analyze the scene and provide the final description **ENTIRELY IN ENGLISH**, but ensure the sign text you read is in **VIETNAMESE**." # Yêu cầu trả lời bằng tiếng Anh, nhưng nội dung biển báo là tiếng Việt
+            "Analyze the scene and provide the final description **ENTIRELY IN ENGLISH**, "
+            "but ensure the sign text you read is in **VIETNAMESE**."
         )
 
         messages = [
@@ -45,7 +54,6 @@ def generate_video_description(frames, models, box_info, question):
                     {"type": "video", "video": frames},
                     {
                         "type": "text",
-                        # Chèn placeholder <video> vào đầu hướng dẫn text
                         "text": f"<video>{instruction_text_en}" 
                     }
                 ]
@@ -94,7 +102,7 @@ def generate_video_description(frames, models, box_info, question):
         
         result = output_text[0].strip() if isinstance(output_text, list) else str(output_text).strip()
         
-        # ✅ Post-processing: Loại bỏ đoạn lặp nếu còn sót (Unchanged)
+        # ✅ Post-processing: loại bỏ đoạn lặp
         sentences = result.split('. ')
         unique_sentences = []
         seen = set()
