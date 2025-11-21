@@ -19,7 +19,7 @@ load_dotenv()
 # Load environment variables
 YOLO_MODEL_PATH = os.getenv('YOLO_MODEL_PATH', 'models/yolo_best.pt')
 LLM_MODEL_PATH = os.getenv('LLM_MODEL_PATH', 'models/Qwen/Qwen3-4B')
-VLM_MODEL_PATH = os.getenv('VLM_MODEL_PATH', 'models/Qwen/Qwen3-VL-2B-Instruct')
+VLM_MODEL_PATH = os.getenv('VLM_MODEL_PATH', 'models/Qwen/Qwen3-VL-4B-Instruct')
 RERANKER_MODEL_PATH = os.getenv('RERANKER_MODEL_PATH', 'models/namdp-ptit/ViRanker')
 VECTOR_DB_PATH = os.getenv('VECTOR_DB_PATH', 'Vecto_Database/db_bienbao_2')
 EMBEDDING_PATH = os.getenv('EMBEDDING_PATH', 'models/bkai-foundation-models/vietnamese-bi-encoder')

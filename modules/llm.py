@@ -1,6 +1,7 @@
 from utils.cached_helper import save_json
+import re
 
-def rerank(reranker, query, docs, k=3):
+def rerank(reranker, query, docs, k=5):
     if not docs:
         return []
     pairs = [(query, d.page_content) for d in docs]
@@ -8,7 +9,6 @@ def rerank(reranker, query, docs, k=3):
     ranked = sorted(zip(docs, scores), key=lambda x: x[1], reverse=True)
     return [d for d, _ in ranked[:k]]
 
-# 5. PROMPT
 def format_docs(docs):
     out = ""
     for d in docs:
@@ -18,74 +18,120 @@ def format_docs(docs):
 
 def create_messages(context, video_description, question, choices):
     """
-    Tạo messages cho Qwen format chuẩn ChatML, sử dụng tiếng Anh để tối ưu hóa khả năng reasoning.
+    FIXED: Trust YOLO detections for existence questions
     """
     
-    # 1. SYSTEM PROMPT (ENGLISH - Đã thêm Quy tắc ưu tiên Context)
-    system_prompt = """You are a professional traffic assistant. Your task is to answer traffic law questions.
+    system_prompt = """You are a Vietnamese traffic law expert.
 
-STRICT RULES:
-1. Exclusive: Only select the correct answer (A, B, C, or D).
-2. No Explanation: Absolutely do not explain or add any text besides the answer letter.
-3. Single Source: Must answer based on the CONTEXT and VIDEO DESCRIPTION. **IMPORTANT: If specific information (like street names or sign details) in the VIDEO DESCRIPTION contradicts or is not supported by the CONTEXT, you must prioritize the accurate information from the CONTEXT.**
-4. Format: Return only 1 capitalized character. Example: "A"."""
+TASK: Answer multiple choice questions about traffic laws.
 
-    # 2. FEW-SHOT EXAMPLES (ENGLISH - Giả lập lỗi VLM)
-    # --- Example 1 (Simulating VLM Hallucination) ---
-    # Giả định VLM đọc sai 'GƯƠNG ĐỖ XUÂN KẾP', nhưng Context chứa 'Đường Đỗ Xuân Hợp'
-    ex1_content = f"""video_description: Night view. On the overhead gantry, there are 02 blue signs: The left sign reads DAU GIAY LONG THANH (straight), the right sign reads DUONG **GUONG DO XUAN KEP** (turn right). The road has yellow speed reduction strips and dashed lane dividers. A 16-seater vehicle is overtaking on the right.
-question: Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường nào?
+RULES:
+1. Output: ONLY one letter (A, B, C, or D)
+2. NO explanation, NO extra text
+3. **For "existence" questions (Có... không?): Trust YOLO detections FIRST**
+4. For "law/regulation" questions: Trust CONTEXT first
+5. Priority depends on question type:
+   - "Có [object] không?" → YOLO > VIDEO > CONTEXT
+   - "Được phép... không?" → CONTEXT > YOLO > VIDEO
+   - "Phải làm gì?" → CONTEXT > YOLO > VIDEO"""
+
+    # ✅ NEW EXAMPLE: YOLO detection for existence question
+    ex_yolo_detection = """video_description: YOLO: - TRAFFIC_LIGHT_GREEN
+Scene: City street at night.
+
+question: Phía trước có đèn giao thông không?
 choices:
-"A. Không có thông tin",
-"B. Dầu Giây Long Thành",
-"C. Đường Đỗ Xuân Hợp",
-"D. Xa Lộ Hà Nội"
+A. Có
+B. Không
 
-<context>FAKE_CONTEXT</context>
+<context>
+[Biển số: Đèn vàng]
+Tín hiệu đèn màu vàng phải dừng lại...
+</context>
 
-Please select the correct answer."""
-    
-    # --- Example 2 ---
-    ex2_content = """video_description: The red traffic light ahead is lit.
-question: Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường Xa Lộ Hà Nội. Đúng hay sai??
+Answer:"""
+
+    # Example 2: YOLO + Law question
+    ex_law_with_yolo = """video_description: YOLO: - TRAFFIC_LIGHT_RED
+Scene: Intersection.
+
+question: Khi đèn đỏ, xe có được đi tiếp không?
 choices:
-"A. Đúng",
-"B. Sai"
+A. Được
+B. Không được
 
-<context>FAKE_CONTEXT</context>
+<context>
+[Biển số: Đèn đỏ]
+Khi đèn đỏ bật, phải dừng lại trước vạch dừng.
+</context>
 
-Please select the correct answer."""
+Answer:"""
 
-    # 3. REAL USER QUESTION (ENGLISH format, retaining Vietnamese content)
+    # Example 3: No YOLO detection
+    ex_no_detection = """video_description: YOLO: None
+Scene: Highway, no signs visible.
+
+question: Có biển cấm rẽ trái không?
+choices:
+A. Có
+B. Không
+
+<context>
+[No relevant information]
+</context>
+
+Answer:"""
+
+    # Example 4: YOLO detects sign
+    ex_sign_detection = """video_description: YOLO: - P.102: Cấm đi ngược chiều
+Scene: City street.
+
+question: Có biển cấm không?
+choices:
+A. Có
+B. Không
+
+<context>
+[Biển số: P.102]
+Biển P.102 là biển cấm đi ngược chiều.
+</context>
+
+Answer:"""
+
+    # Real question
     real_content = f"""video_description: {video_description}
+
 question: {question}
-choices: {choices}
+choices:
+{choices}
 
 <context>
 {context}
 </context>
 
-Please select the correct answer."""
+Answer:"""
 
-    # 4. TỔNG HỢP MESSAGES
     messages = [
         {"role": "system", "content": system_prompt},
         
-        # Lượt hội thoại mẫu 1
-        {"role": "user", "content": ex1_content},
-        {"role": "assistant", "content": "C"},
+        # YOLO detection examples
+        {"role": "user", "content": ex_yolo_detection},
+        {"role": "assistant", "content": "A"},  # ← Trust YOLO!
         
-        # Lượt hội thoại mẫu 2
-        {"role": "user", "content": ex2_content},
-        {"role": "assistant", "content": "A"},
+        {"role": "user", "content": ex_law_with_yolo},
+        {"role": "assistant", "content": "B"},  # ← Trust CONTEXT for law
         
-        # Câu hỏi thực tế cần trả lời
+        {"role": "user", "content": ex_no_detection},
+        {"role": "assistant", "content": "B"},  # ← No detection = No
+        
+        {"role": "user", "content": ex_sign_detection},
+        {"role": "assistant", "content": "A"},  # ← Trust YOLO
+        
         {"role": "user", "content": real_content}
     ]
     
     return messages
 
-# Hàm llm_choise_answer (Đã sửa prompt reranker sang tiếng Anh)
 def llm_choise_answer(models, vlm_description: str, question_data, box_info: str = "") -> str:
     llm = models['llm']
     tokenizer = models['llm_tokenizer']
@@ -95,54 +141,78 @@ def llm_choise_answer(models, vlm_description: str, question_data, box_info: str
     question = question_data["question"]
     choices = question_data["choices"]
 
-    # Chuyển đổi choices từ list thành string
     if isinstance(choices, list):
         choices = "\n".join(choices)
 
-    docs = retriever.invoke(vlm_description)
-
-    # Prompt Reranker (Đã chuyển sang tiếng Anh)
-    rank_prompt = f"""
-        Based on the video description: "{vlm_description}", find the relevant information in the following documents to answer the question: "{question}" 
-        Information from YOLO sensor: [{box_info}]
-    """
-    top_docs = rerank(reranker, rank_prompt, docs, k=3)
+    # ✅ FIX: RETRIEVE BY QUESTION, not VLM description
+    docs = retriever.invoke(question)
+    
+    # ✅ Extract YOLO keywords from vlm_description
+    yolo_keywords = []
+    if "YOLO:" in vlm_description:
+        yolo_part = vlm_description.split("YOLO:")[1].split("Scene:")[0]
+        # Parse YOLO objects
+        for line in yolo_part.split("\n"):
+            if line.strip().startswith("-"):
+                obj = line.strip()[1:].strip()
+                if obj and obj != "None":
+                    yolo_keywords.append(obj)
+    
+    # ✅ RERANK: Question + YOLO keywords
+    yolo_str = ", ".join(yolo_keywords) if yolo_keywords else "None"
+    rank_prompt = f"Question: {question}\nYOLO detected: {yolo_str}"
+    
+    top_docs = rerank(reranker, rank_prompt, docs, k=5)
     context = format_docs(top_docs)
     
-    # Tạo messages format
+    # Create messages
     messages = create_messages(context, vlm_description, question, choices)
     
-    # Apply chat template với enable_thinking=False để tắt thinking mode
+    # Apply chat template
     text = tokenizer.apply_chat_template(
         messages,
         tokenize=False,
         add_generation_prompt=True,
-        enable_thinking=False  # Tắt thinking mode
+        enable_thinking=False
     )
     
     model_inputs = tokenizer([text], return_tensors="pt").to(llm.device)
     
+    # ✅ Generation
     generated_ids = llm.generate(
         **model_inputs,
-        max_new_tokens=10,  # Chỉ cần 1-2 ký tự cho đáp án
+        max_new_tokens=3,        # Giảm từ 10 xuống 3
         do_sample=False,
-        temperature=0.0
+        pad_token_id=tokenizer.pad_token_id,
+        eos_token_id=tokenizer.eos_token_id
     )
 
-    # Decode output
+    # Decode
     generated_ids_trimmed = [
         out_ids[len(in_ids):] for in_ids, out_ids in zip(model_inputs.input_ids, generated_ids)
     ]
     
-    answer = tokenizer.batch_decode(generated_ids_trimmed, skip_special_tokens=True)[0]
+    raw_answer = tokenizer.batch_decode(generated_ids_trimmed, skip_special_tokens=True)[0].strip()
     
+    # ✅ EXTRACT A/B/C/D
+    match = re.search(r'\b[ABCD]\b', raw_answer.upper())
+    if match:
+        answer = match.group(0)
+    else:
+        answer = raw_answer[0].upper() if raw_answer and raw_answer[0].upper() in "ABCD" else "A"
+    
+    # Save cache
     data_cache = {
         "vlm_description": vlm_description,
+        "yolo_keywords": yolo_keywords,
         "context": context,
         "question": question,
         "choices": choices,
-        "output": answer
+        "raw_output": raw_answer,
+        "final_answer": answer
     }
     save_json(data_cache, f"{question_data['id']}.json")
-    print("LLM Output:", repr(answer))
+    
+    print(f"LLM: {repr(raw_answer)} → {answer}")
+    
     return answer
