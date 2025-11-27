@@ -3,9 +3,7 @@ from PIL import Image
 import json
 
 def format_yolo_for_vlm(box_info):
-    """
-    Format YOLO data with special markers to preserve Vietnamese.
-    """
+    """Format YOLO data with special markers to preserve Vietnamese."""
     if isinstance(box_info, str):
         try:
             box_info = json.loads(box_info)
@@ -22,7 +20,6 @@ def format_yolo_for_vlm(box_info):
         confidence = obj.get('confidence', 0.0)
         track_id = obj.get('track_id', 'N/A')
         
-        # ✅ Wrap Vietnamese text in special markers
         line = f"• Object {track_id}: «{obj_type}» (confidence: {confidence:.0%})"
         formatted_lines.append(line)
     
@@ -52,7 +49,7 @@ def generate_video_description(frames, models, box_info, question):
         if len(frames) == 0:
             return "No valid frames."
         
-        # ✅ PARSE YOLO JSON
+        # Parse YOLO JSON
         if isinstance(box_info, str):
             try:
                 box_data = json.loads(box_info)
@@ -61,7 +58,7 @@ def generate_video_description(frames, models, box_info, question):
         else:
             box_data = box_info
         
-        # ✅ SIMPLE FORMAT - Chỉ liệt kê
+        # Format YOLO detections
         if not box_data:
             yolo_text = "None"
         else:
@@ -75,16 +72,35 @@ def generate_video_description(frames, models, box_info, question):
         print(yolo_text)
         print("="*50 + "\n")
         
-        # ✅ CỰC KỲ ĐƠN GIẢN - CHỈ TRẢ LỜI 5 CÂU HỎI
+        # ✅ IMPROVED PROMPT - Focus on text reading + key info
         instruction_text = (
-            f"YOLO detected:\n{yolo_text}\n\n"
-            "Answer these 5 questions about the video:\n"
-            "1. Road type? (highway/city street/rural)\n"
-            "2. Lane markings? (solid/dashed, white/yellow)\n"
-            "3. Number of lanes?\n"
-            "4. Vehicles around? (front/rear/sides)\n"
-            "5. Time? (day/night)\n\n"
-            "Answer briefly. Start with: '1.'"
+            f"Detected objects:\n{yolo_text}\n\n"
+            
+            "Describe the traffic scene. Answer these questions:\n\n"
+            
+            "1. ROAD & MARKINGS:\n"
+            "   - Road type? (highway/city street/intersection/rural)\n"
+            "   - Lane markings? (solid/dashed, white/yellow)\n"
+            "   - Number of lanes?\n\n"
+            
+            "2. TRAFFIC SIGNS (IMPORTANT - READ TEXT!):\n"
+            "   - Traffic lights? (red/yellow/green, position)\n"
+            "   - Direction signs:\n"
+            "     * READ TEXT ON SIGNS! (road names, destinations)\n"
+            "     * Examples: 'Xa Lộ Hà Nội', 'Dầu Giây', 'Đường Đỗ Xuân Hợp'\n"
+            "     * Arrow directions (straight/left/right)\n"
+            "   - Warning/regulatory signs: type and position\n\n"
+            
+            "3. VEHICLES:\n"
+            "   - Vehicles around? (ego vehicle, front, rear, left, right)\n"
+            "   - Vehicle types and actions\n\n"
+            
+            "4. OTHER:\n"
+            "   - Time of day? (day/dusk/night)\n"
+            "   - Any visible violations?\n\n"
+            
+            "**CRITICAL: If you see text on direction signs, READ IT EXACTLY!**\n"
+            "Answer in Vietnamese for better accuracy. Be specific about sign text and locations."
         )
 
         messages = [
@@ -111,13 +127,13 @@ def generate_video_description(frames, models, box_info, question):
         )
         inputs = inputs.to("cuda")
         
-        # ✅ Generation - CỰC KỲ STABLE
+        # ✅ Generation - Increased tokens for text reading
         generated_ids = model.generate(
             **inputs, 
-            max_new_tokens=120,      # Giảm mạnh
+            max_new_tokens=200,      # Tăng từ 120 lên 200 cho OCR
             do_sample=False,         # Greedy decoding
-            repetition_penalty=1.5,
-            no_repeat_ngram_size=5,
+            repetition_penalty=1.3,  # Giảm từ 1.5 để cho phép lặp tên đường
+            no_repeat_ngram_size=3,  # Giảm từ 5 xuống 3
             eos_token_id=processor.tokenizer.eos_token_id, 
             pad_token_id=processor.tokenizer.pad_token_id
         )
@@ -135,10 +151,10 @@ def generate_video_description(frames, models, box_info, question):
         
         result = output_text[0].strip() if isinstance(output_text, list) else str(output_text).strip()
         
-        # ✅ Kết hợp YOLO + VLM description
+        # Kết hợp YOLO + VLM description
         final_output = f"YOLO: {yolo_text}\n\nScene: {result}"
         
-        print("VLM OUTPUT:", final_output[:200])
+        print("VLM OUTPUT (with text reading):", final_output[:300])
         
         return final_output
             
